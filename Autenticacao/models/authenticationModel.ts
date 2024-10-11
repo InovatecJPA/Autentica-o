@@ -1,15 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AuthenticationParams } from '../interfaces/interfaces';
+import { AuthenticationParams, IAuthentication } from '../interfaces/interfaces';
 
 
 
-class Authentication {
+class Authentication implements IAuthentication { 
     id: string;
     login: string | null;
     passwordHash: string | null;
     isExternal: boolean;
     externalId: string | null;
     active: boolean;
+    password_token_reset: string | null;
+    password_expiry_date: Date | null;
     createdAt: Date;
     updatedAt: Date;
     
