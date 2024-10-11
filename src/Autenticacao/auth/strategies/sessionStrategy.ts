@@ -2,7 +2,7 @@ import { IAuthentication, IAuthStrategy } from "../../interfaces/interfaces";
 
 export class SessionStrategy implements IAuthStrategy {
 
-    async authenticate(auth: IAuthentication): Promise<string> {
+    async authenticate(auth: Partial<IAuthentication>): Promise<string> {
         return `Session started for user ${auth.id}`;
     }
 

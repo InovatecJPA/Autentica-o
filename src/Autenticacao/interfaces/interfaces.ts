@@ -1,4 +1,6 @@
+import exp from "constants";
 import { Request, Response } from "express";
+import { Session } from "express-session";
 
 export interface IAuthentication {
     id: string;
@@ -48,6 +50,7 @@ export interface IAuthenticationService  {
     activateAccountAuthentication(id: string): Promise<void>;
     setPasswordTokenAndExpiryDate(id: string): Promise<void>;
     deleteAuthentication(id: string): Promise<void>;
+    createExternalAuthentication(authData: IAuthenticationParams): Promise<void>;
 }
 
 export interface IAuthenticationController {
@@ -63,7 +66,17 @@ export interface IAuthenticationController {
     deleteAuthentication(req: Request, res: Response): Promise<void>;
 }
 
+
+
 export interface IAuthStrategy {
-    authenticate(auth: IAuthentication): Promise<string>;
+    authenticate(auth: Partial<IAuthentication>): Promise<string>;
     verify(tokenOrSessionId: string): Promise<any>;
+}
+
+export interface CustomSession extends Session {
+    auth: Partial<IAuthentication>;
+}
+
+export interface CustomRequest extends Request {
+    auth: Partial<IAuthentication>;
 }

@@ -1,10 +1,11 @@
-import { AuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/interfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/interfaces";
 
 class authenticationRepositoryAlternativo implements IAuthenticationRepository {
-    createAuthentication(authData: AuthenticationParams): Promise<IAuthentication> {
+
+    createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
         throw new Error("Method not implemented.");
     }
-    updateAuthentication(id: string, updateData: Partial<AuthenticationParams>): Promise<IAuthentication> {
+    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
         throw new Error("Method not implemented.");
     }
     findById(id: string): Promise<IAuthentication | null> {

@@ -1,21 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../../config/sequelize";
-import { IAuthentication } from "../../interfaces/interfaces";
-
-class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
-    public id!: string;
-    public login!: string | null;
-    public passwordHash!: string | null;
-    public isExternal!: boolean;
-    public externalId!: string | null;
-    public active!: boolean;
-    public password_token_reset!: string | null;
-    public password_token_expiry_date!: Date | null;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+class AuthenticationModelSequelize extends Model {
 }
-
-AuthenticationModelSequelize.init({ 
+AuthenticationModelSequelize.init({
     id: {
         type: DataTypes.STRING,
         primaryKey: true
@@ -51,6 +38,5 @@ AuthenticationModelSequelize.init({
     sequelize,
     tableName: 'authentications',
     timestamps: false
-})
-
+});
 export default AuthenticationModelSequelize;
