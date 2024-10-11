@@ -40,22 +40,23 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
 
 
 
-    /**
-     * Salva autenticao no banco de dados.
-     * Caso ja exista uma autenticao com o mesmo login, atualiza a mesma.
-     * Caso contrario, salva uma nova autenticao.
-     * @param {{login?: string | null, passwordHash?: string | null, externalId: string | null, isExternal: boolean, id?: string}} authData
-     * @returns {Promise<IAuthentication>}
-     */
-    async saveAuthentication(authData: AuthenticationParams): Promise<IAuthentication> {
-        if (authData.id && await this.findById(authData.id)) {
-            const {id, ...updateData} = authData;
-            const [affectedCount, updatedRows] = await AuthenticationModelSequelize.update({...updateData, updatedAt: new Date()}, {where: {id: authData.id}, returning: true});
-            return updatedRows[0];
-        }else {
-            const auth = new Authentication(authData);
-            return await AuthenticationModelSequelize.create(auth);
+    async createAuthentication(authData: AuthenticationParams): Promise<IAuthentication> {
+        const auth = new Authentication(authData);
+        return await AuthenticationModelSequelize.create(auth);
+    }
+
+
+    async updateAuthentication(id: string, updateData: Partial<AuthenticationParams>): Promise<IAuthentication> {
+        const [affectedCount, updatedRows] = await AuthenticationModelSequelize.update(
+            { ...updateData, updatedAt: new Date() },
+            { where: { id }, returning: true }
+        );
+
+        if (affectedCount === 0) {
+            throw new Error('Authentication not found');
         }
+
+        return updatedRows[0];
     }
     
     /**

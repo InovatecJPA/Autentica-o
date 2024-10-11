@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../../../config/sequelize";
+import sequelize from "../../../../config/sequelize";
 import { IAuthentication } from "../../interfaces/interfaces";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
@@ -10,12 +10,12 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
     public externalId!: string | null;
     public active!: boolean;
     public password_token_reset!: string | null;
-    public password_expiry_date: Date | null;
+    public password_token_expiry_date: Date | null;
     public createdAt!: Date;
     public updatedAt!: Date;
 }
 
-AuthenticationModelSequelize.init({
+AuthenticationModelSequelize.init({ 
     id: {
         type: DataTypes.STRING,
         primaryKey: true
@@ -38,7 +38,7 @@ AuthenticationModelSequelize.init({
     password_token_reset: {
         type: DataTypes.STRING
     },
-    password_expiry_date: {
+    password_token_expiry_date: {
         type: DataTypes.DATE
     },
     createdAt: {

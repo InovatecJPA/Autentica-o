@@ -1,4 +1,4 @@
-import exp from "constants";
+import { Request, Response } from "express";
 
 export interface IAuthentication {
     id: string;
@@ -8,21 +8,24 @@ export interface IAuthentication {
     externalId: string | null;
     active: boolean;
     password_token_reset: string | null;
-    password_expiry_date: Date | null;
+    password_token_expiry_date: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }
 
 export interface AuthenticationParams {
-    id: string | null;
     login: string | null;
     passwordHash: string | null;
     externalId: string | null;
     isExternal: boolean;
+    active?: boolean;
+    password_token_reset?: string;
+    password_expiry_date?: Date;
 }
 
 export interface IAuthenticationRepository {
-    saveAuthentication(authData: AuthenticationParams): Promise<IAuthentication>;
+    createAuthentication(authData: AuthenticationParams): Promise<IAuthentication>;
+    updateAuthentication(id: string, updateData: Partial<AuthenticationParams>): Promise<IAuthentication>;
     findById(id: string): Promise<IAuthentication | null>;
     findAll(): Promise<IAuthentication[] | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
@@ -31,16 +34,30 @@ export interface IAuthenticationRepository {
 }
 
 export interface IAuthenticationService  {
+    findAll(): Promise<IAuthentication[] | null>;
     findById(id:string): Promise<IAuthentication | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
     findByExternalId(externalId: string): Promise<IAuthentication | null>;
-    saveAuthentication(authData: AuthenticationParams): Promise<void>;
+    createAuthentication(authData: AuthenticationParams): Promise<void>;
     isPasswordTokenValid(id: string, token: string): Promise<boolean>;
-    validatePassword(id: string, passwordHash: string): Promise<void>;
+    validatePassword(id: string, passwordHash: string): Promise<boolean>;
     authenticate(login: string, passwordHash: string): Promise<IAuthentication | null>;
     updatePassword(id: string, passwordHash: string): Promise<void>;
     deactivateAccountAuthentication(id: string): Promise<void>;
     activateAccountAuthentication(id: string): Promise<void>;
     setPasswordTokenAndExpiryDate(id: string, token: string): Promise<void>;
     deleteAuthentication(id: string): Promise<void>;
+}
+
+export interface IAuthenticationController {
+    findAll(req: Request, res: Response): Promise<void>;
+    findById(req: Request, res: Response): Promise<void>;
+    createAuthentication(req: Request, res: Response): Promise<void>;
+    validatePassword(req: Request, res: Response): Promise<void>;
+    authenticate(req: Request, res: Response): Promise<void>;
+    updateAuthentication(req: Request, res: Response): Promise<void>;
+    updatePassword(req: Request, res: Response): Promise<void>;
+    toogleAuthenticationStatus(req: Request, res: Response): Promise<void>;
+    requerstPasswordChange(req: Request, res: Response): Promise<void>;
+    deleteAuthentication(req: Request, res: Response): Promise<void>;
 }

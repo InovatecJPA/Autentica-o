@@ -11,7 +11,7 @@ class Authentication implements IAuthentication {
     externalId: string | null;
     active: boolean;
     password_token_reset: string | null;
-    password_expiry_date: Date | null;
+    password_token_expiry_date: Date | null;
     createdAt: Date;
     updatedAt: Date;
     
