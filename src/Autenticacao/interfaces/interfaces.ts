@@ -13,7 +13,7 @@ export interface IAuthentication {
     updatedAt: Date;
 }
 
-export interface AuthenticationParams {
+export interface IAuthenticationParams {
     login: string | null;
     passwordHash: string | null;
     externalId: string | null;
@@ -24,8 +24,8 @@ export interface AuthenticationParams {
 }
 
 export interface IAuthenticationRepository {
-    createAuthentication(authData: AuthenticationParams): Promise<IAuthentication>;
-    updateAuthentication(id: string, updateData: Partial<AuthenticationParams>): Promise<IAuthentication>;
+    createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
+    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
     findById(id: string): Promise<IAuthentication | null>;
     findAll(): Promise<IAuthentication[] | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
@@ -38,14 +38,15 @@ export interface IAuthenticationService  {
     findById(id:string): Promise<IAuthentication | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
     findByExternalId(externalId: string): Promise<IAuthentication | null>;
-    createAuthentication(authData: AuthenticationParams): Promise<void>;
+    createAuthentication(authData: IAuthenticationParams): Promise<void>;
+    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<void>;
     isPasswordTokenValid(id: string, token: string): Promise<boolean>;
     validatePassword(id: string, passwordHash: string): Promise<boolean>;
     authenticate(login: string, passwordHash: string): Promise<IAuthentication | null>;
     updatePassword(id: string, passwordHash: string): Promise<void>;
     deactivateAccountAuthentication(id: string): Promise<void>;
     activateAccountAuthentication(id: string): Promise<void>;
-    setPasswordTokenAndExpiryDate(id: string, token: string): Promise<void>;
+    setPasswordTokenAndExpiryDate(id: string): Promise<void>;
     deleteAuthentication(id: string): Promise<void>;
 }
 
@@ -58,6 +59,11 @@ export interface IAuthenticationController {
     updateAuthentication(req: Request, res: Response): Promise<void>;
     updatePassword(req: Request, res: Response): Promise<void>;
     toogleAuthenticationStatus(req: Request, res: Response): Promise<void>;
-    requerstPasswordChange(req: Request, res: Response): Promise<void>;
+    requestPasswordChange(req: Request, res: Response): Promise<void>;
     deleteAuthentication(req: Request, res: Response): Promise<void>;
+}
+
+export interface IAuthStrategy {
+    authenticate(auth: IAuthentication): Promise<string>;
+    verify(tokenOrSessionId: string): Promise<any>;
 }

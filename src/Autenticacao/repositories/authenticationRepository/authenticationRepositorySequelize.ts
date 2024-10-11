@@ -1,4 +1,4 @@
-import { AuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/interfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/interfaces";
 import Authentication from "../../models/authenticationModel";
 import AuthenticationModelSequelize from "../../models/sequelize/authenticationModelSequelize";
 
@@ -40,13 +40,13 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
 
 
 
-    async createAuthentication(authData: AuthenticationParams): Promise<IAuthentication> {
+    async createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
         const auth = new Authentication(authData);
         return await AuthenticationModelSequelize.create(auth);
     }
 
 
-    async updateAuthentication(id: string, updateData: Partial<AuthenticationParams>): Promise<IAuthentication> {
+    async updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
         const [affectedCount, updatedRows] = await AuthenticationModelSequelize.update(
             { ...updateData, updatedAt: new Date() },
             { where: { id }, returning: true }

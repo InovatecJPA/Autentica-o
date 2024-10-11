@@ -1,6 +1,6 @@
-import { IAuthenticationRepository } from "../../interfaces/interfaces";
-import authenticationRepositoryAlternativo from "./authenticationRepositoryAlternativo";
-import authenticationRepositorySequelize from "./authenticationRepositorySequelize";
+import { IAuthenticationRepository } from "../interfaces/interfaces";
+import authenticationRepositoryAlternativo from "./authenticationRepository/authenticationRepositoryAlternativo";
+import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize";
 
 function createAuthenticationRepository(): IAuthenticationRepository {
     if (process.env.AUTHENTICATION_REPOSITORY === "alternativo")  {

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AuthenticationParams, IAuthentication } from '../interfaces/interfaces';
+import { IAuthenticationParams, IAuthentication } from '../interfaces/interfaces';
 
 
 
@@ -21,7 +21,7 @@ class Authentication implements IAuthentication {
      * @throws {Error} Caso o login ou passwordHash sejam nulos e isExternal seja false
      * @throws {Error} Caso o externalId seja nulo e isExternal seja true
      */
-    constructor({login = null, passwordHash = null, externalId = null, isExternal} : AuthenticationParams){
+    constructor({login = null, passwordHash = null, externalId = null, isExternal} : IAuthenticationParams){
         
         if (isExternal){
             this.validateExternalId(externalId!);

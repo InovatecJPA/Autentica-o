@@ -1,5 +1,5 @@
-import createAuthenticationRepository from "../repositories/authenticationRepository/factoryAuthenticationRepository";
-import { AuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../interfaces/interfaces";
+import createAuthenticationRepository from "../repositories/factoryAuthenticationRepository";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../interfaces/interfaces";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
@@ -73,12 +73,22 @@ class AuthenticationService implements IAuthenticationService {
      * @param {{login?: string | null, passwordHash?: string | null, externalId: string | null, isExternal: boolean}} authData
      * @returns {Promise<void>}
      */
-    async createAuthentication(authData: AuthenticationParams): Promise<void> {
+    async createAuthentication(authData: IAuthenticationParams): Promise<void> {
         
         const salt = bcrypt.genSaltSync(10);
         authData.passwordHash = await bcrypt.hash(authData.passwordHash, salt);
         
         await this.authRepository.createAuthentication(authData);
+    }
+
+
+    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
+        for (const key in authData) {
+            if (authData[key] === null || authData[key] === undefined || authData[key].trim() === '') {    
+                delete authData[key];
+            }
+        }
+        await this.authRepository.updateAuthentication(id, authData);
     }
 
     /**

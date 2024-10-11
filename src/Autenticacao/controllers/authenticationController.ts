@@ -1,4 +1,4 @@
-import { AuthenticationParams, IAuthentication, IAuthenticationController, IAuthenticationService } from "../interfaces/interfaces";
+import { IAuthenticationParams, IAuthenticationController, IAuthenticationService } from "../interfaces/interfaces";
 import AuthenticationService from "../services/authenticationService";
 import { Request, Response } from "express";
 
@@ -84,7 +84,7 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const { login, password, externalId, isExternal }  = req.body;
 
-            const authData: AuthenticationParams = {
+            const authData: IAuthenticationParams = {
                 login,
                 passwordHash: password, 
                 externalId,
@@ -99,47 +99,124 @@ class AuthenticationController implements IAuthenticationController{
     }
 
 
-    /**
-     * Validates a password for an authentication.
-     * @param req The request object. The id and passwordHash should be in the body of the request.
-     * @param res The response object.
-     * @returns A promise that resolves with a 200 status code if the password is valid, a 400 status code if the password is invalid, or a 500 status code if an error occurs.
-     * @throws {Error} If an error occurs while validating the password.
-     * Perguntar se coloco no controller tambem ou se uso o authenticate
-     */
-    async validatePassword(req: Request, res: Response): Promise<void> {
-        try {
-            const {id, passwordHash} = req.body;
+
     
-            const valid = await this.authService.validatePassword(id, passwordHash);
-            
-            if (valid) {
-                res.status(200).json({ message: 'Password valid' });
-            } else {
-                res.status(400).json({ message: 'Password invalid' });
-            }         
-        } catch (error) {
+
+
+    async updateAuthentication(req: Request, res: Response): Promise<void> {
+        try{
+            const {id} = req.params;
+            const {login, isExternal } = req.body;
+
+            const authData: Partial<IAuthenticationParams> = {
+                login,
+                isExternal
+            }
+
+            await this.authService.updateAuthentication(id, authData);
+            res.status(200).json({ message: 'Authentication updated successfully' });
+        }catch(error){
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
+     * Requests a password change for a given authentication, generating a
+     * password token and expiry date.
+     * @param req The request object. The login of the authentication to change
+     *            the password for should be in the body of the request.
+     * @param res The response object.
+     * @returns A promise that resolves with a 200 status code if the password
+     *          token was created successfully, or a 404 status code if the
+     *          authentication was not found, or a 500 status code if an error
+     *          occurs.
+     * @throws {Error} If an error occurs while creating the password token.
+     */
+    async requestPasswordChange(req: Request, res: Response): Promise<void> {
+        try{
+            const { login } = req.body;
+            const auth = await this.authService.findByLogin(login);
+            if (!auth) {
+                res.status(404).json({ message: 'Authentication not found' });
+            }
+
+            this.authService.setPasswordTokenAndExpiryDate(auth!.id);
+            res.status(200).json({ message: 'Password token created successfully' });
+        }catch(error){
             res.status(500).json({ message: error.message });
         }
     }
     
+    /**
+     * Deletes an authentication.
+     * @param req The request object. The id of the authentication to delete
+     *            should be in the params of the request.
+     * @param res The response object.
+     * @returns A promise that resolves with a 200 status code if the
+     *          authentication was deleted successfully, or a 500 status code if
+     *          an error occurs.
+     * @throws {Error} If an error occurs while deleting the authentication.
+     */
+    async deleteAuthentication(req: Request, res: Response): Promise<void> {
+        try{
+            const { id } = req.params;
+
+            await this.authService.deleteAuthentication(id);
+            res.status(200).json({ message: 'Authentication deleted successfully' });
+        }catch(error){
+            res.status(500).json({ message: error.message });
+        }
+    }
+
     async authenticate(req: Request, res: Response): Promise<void> {
         throw new Error("Method not implemented.");
     }
-    updateAuthentication(req: Request, res: Response): Promise<void> {
+    
+    async updatePassword(req: Request, res: Response): Promise<void> {
+        // try{
+            // const { password } = req.body;
+            // const id = req.user.id;
+            
+            // await this.authService.updatePassword(id, password);
+        //     res.status(200).json({ message: 'Password updated successfully' });
+        // } catch(error){
+        //     res.status(500).json({ message: error.message });   
+        // }
         throw new Error("Method not implemented.");
     }
-    updatePassword(req: Request, res: Response): Promise<void> {
+
+    async toogleAuthenticationStatus(req: Request, res: Response): Promise<void> {
+        // try{
+            // const { toogle } = req.query;
+            // const id = req.user.id;
+        //     if (toogle === 'true') {
+        //         await this.authService.activateAccountAuthentication(req.params.id);
+        //     } else {
+        //         await this.authService.deactivateAccountAuthentication(req.params.id);
+        //     }
+        //     res.status(200).json({ message: 'Account updated successfully' });
+        // } catch(error){
+        //     res.status(500).json({ message: error.message });   
+        // }
         throw new Error("Method not implemented.");
     }
-    toogleAuthenticationStatus(req: Request, res: Response): Promise<void> {
+
+    async validatePassword(req: Request, res: Response): Promise<void> {
+        // try {
+        //     const {passwordHash} = req.body;
+        //     const id = req.user.id;
+        //     const valid = await this.authService.validatePassword(id, passwordHash);
+            
+        //     if (valid) {
+        //         res.status(200).json({ message: 'Password valid' });
+        //     } else {
+        //         res.status(400).json({ message: 'Password invalid' });
+        //     }         
+        // } catch (error) {
+        //     res.status(500).json({ message: error.message });
+        // }
         throw new Error("Method not implemented.");
-    }
-    requerstPasswordChange(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-    deleteAuthentication(req: Request, res: Response): Promise<void> {
-        throw new Error("Method not implemented.");
+        
     }
 }
 
