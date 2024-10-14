@@ -3,6 +3,10 @@ import session from 'express-session';
 
 const app = express();
 
+
+class App {
+    
+}
 // Outros middlewares (body-parser, etc.)
 app.use(express.json());
 

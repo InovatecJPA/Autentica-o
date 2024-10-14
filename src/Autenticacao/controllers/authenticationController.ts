@@ -1,8 +1,7 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy, CustomRequest } from "../interfaces/interfaces";
+import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy, IHttpRequest, IHttpResponse } from "../interfaces/interfaces";
 import AuthenticationService from "../services/authenticationService";
-import { Request, Response } from "express";
-
+ 
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
@@ -40,7 +39,7 @@ class AuthenticationController implements IAuthenticationController{
      * @returns A promise that resolves with the list of authentications, or a 404 status code if no authentications are found.
      * @throws {Error} If an error occurs while finding the authentications.
      */
-    async findAll(req: Request, res: Response): Promise<void> {
+    async findAll(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try {
             const authentications = await this.authService.findAll();
     
@@ -61,7 +60,7 @@ class AuthenticationController implements IAuthenticationController{
      * @param res The response object.
      * @returns A promise that resolves with the authentication if it exists, or a 404 status code if it doesn't.
      */
-    async findById(req: Request, res: Response): Promise<void> {
+    async findById(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try {
             const { id } = req.params;
 
@@ -83,7 +82,7 @@ class AuthenticationController implements IAuthenticationController{
      * @returns A promise that resolves with a 201 status code if the authentication is created successfully, or a 500 status code if an error occurs.
      * @throws {Error} If an error occurs while creating the authentication.
      */
-    async createAuthentication(req: Request, res: Response): Promise<void> {
+    async createAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try {
             const { login, password, externalId, isExternal }  = req.body;
 
@@ -112,12 +111,7 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-
-
-    
-
-
-    async updateAuthentication(req: Request, res: Response): Promise<void> {
+    async updateAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const {id} = req.params;
             const {login, isExternal } = req.body;
@@ -146,7 +140,7 @@ class AuthenticationController implements IAuthenticationController{
      *          occurs.
      * @throws {Error} If an error occurs while creating the password token.
      */
-    async requestPasswordChange(req: Request, res: Response): Promise<void> {
+    async requestPasswordChange(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const { login } = req.body;
             const auth = await this.authService.findByLogin(login);
@@ -155,6 +149,9 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             this.authService.setPasswordTokenAndExpiryDate(auth!.id);
+            // Implementar funcionalidade
+            // Criar serviço de email
+            // this.mailerService.sendPasswordResetEmail(auth!.login);
             res.status(200).json({ message: 'Password token created successfully' });
         }catch(error: any){
             res.status(500).json({ message: error.message });
@@ -171,7 +168,7 @@ class AuthenticationController implements IAuthenticationController{
      *          an error occurs.
      * @throws {Error} If an error occurs while deleting the authentication.
      */
-    async deleteAuthentication(req: Request, res: Response): Promise<void> {
+    async deleteAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const { id } = req.params;
 
@@ -182,7 +179,7 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-    async authenticate(req: Request, res: Response): Promise<void> {
+    async authenticate(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const { login, password } = req.body;
             
@@ -201,10 +198,10 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-    async updatePassword(req: Request, res: Response): Promise<void> {
+    async updatePassword(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const { password } = req.body;
-            const id = (req as CustomRequest).auth.id;
+            const id = req.auth?.id;
             
             if (!id) {
                 res.status(401).json({ message: 'Invalid credentials' });
@@ -218,10 +215,10 @@ class AuthenticationController implements IAuthenticationController{
         throw new Error("Method not implemented.");
     }
 
-    async toogleAuthenticationStatus(req: Request, res: Response): Promise<void> {
+    async toogleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try{
             const { toogle } = req.query;
-            const id = (req as CustomRequest).auth.id;
+            const id = req.auth?.id;
 
             if (!id) {
                 res.status(401).json({ message: 'Invalid credentials' });
@@ -240,10 +237,10 @@ class AuthenticationController implements IAuthenticationController{
         throw new Error("Method not implemented.");
     }
 
-    async validatePassword(req: Request, res: Response): Promise<void> {
+    async validatePassword(req: IHttpRequest, res: IHttpResponse): Promise<void> {
         try {
             const {passwordHash} = req.body;
-            const id = (req as CustomRequest).auth.id;
+            const id = req.auth?.id;
 
             if (!id) {
                 res.status(401).json({ message: 'Invalid credentials' });

@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import createAuthStrategy from '../auth/authFactory';
-import { CustomRequest, CustomSession } from '../interfaces/interfaces';
+import { IHttpRequest } from '../interfaces/interfaces';
 
-async function authenticate(req: Request, res: Response, next: NextFunction)  {
+async function authenticate(req: IHttpRequest, res: Response, next: NextFunction)  {
     try {
         const authStrategy = createAuthStrategy();
         let authId: string | null = null;
 
         if (process.env.AUTH_STRATEGY === 'session') {
-            if (req.session &&(req.session as CustomSession).auth && (req.session as CustomSession).auth.id) {
-                authId = (req.session as CustomSession).auth!.id!;
+            if (req.session && req.session.auth && req.session.auth.id) { 
+                authId = req.session.auth!.id!;
             }    
         }
 
@@ -21,11 +21,15 @@ async function authenticate(req: Request, res: Response, next: NextFunction)  {
             }
         }
 
+        if (process.env.AUTH_STRATEGY === 'passport') {
+            
+        }
+
         if (!authId) {
             return res.status(401).json({ message: 'User not authenticated' });
         }
 
-        (req as CustomRequest).auth = { id: authId };
+        req.auth = { id: authId };
 
         next();
     } catch  {
