@@ -1,5 +1,5 @@
 import createAuthenticationRepository from "../repositories/factoryAuthenticationRepository";
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../interfaces/interfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../interfaces/authInterfaces";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 

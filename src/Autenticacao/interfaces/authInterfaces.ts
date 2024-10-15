@@ -67,27 +67,9 @@ export interface IAuthenticationController {
 }
 
 
-
 export interface IAuthStrategy {
     authenticate(auth: Partial<IAuthentication>): Promise<string>;
     verify(tokenOrSessionId: string): Promise<any>;
 }
 
-export interface CustomSession extends Session {
-    auth: Partial<IAuthentication>;
-}
 
-export interface IHttpRequest {
-    body: any;
-    query: any;
-    params: any;
-    headers: any;
-    session?: any;
-    auth?: Partial<IAuthentication>;
-}
-
-export interface IHttpResponse {
-    status(code: number): this;
-    json(data: any): this;
-    send(data: any): this;
-}

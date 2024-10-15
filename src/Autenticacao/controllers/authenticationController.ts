@@ -1,5 +1,6 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy, IHttpRequest, IHttpResponse } from "../interfaces/interfaces";
+import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../interfaces/authInterfaces";
+import { IHttpRequest, IHttpResponse } from "../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
  
 class AuthenticationController implements IAuthenticationController{

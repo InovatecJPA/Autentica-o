@@ -1,4 +1,4 @@
-import { IAuthentication, IAuthStrategy } from "../../interfaces/interfaces";
+import { IAuthentication, IAuthStrategy } from "../../interfaces/authInterfaces";
 
 class SessionStrategy implements IAuthStrategy {
 

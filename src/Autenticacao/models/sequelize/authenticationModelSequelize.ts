@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../../config/sequelize";
-import { IAuthentication } from "../../interfaces/interfaces";
+import { IAuthentication } from "../../interfaces/authInterfaces";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;

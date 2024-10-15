@@ -1,4 +1,4 @@
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/interfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/authInterfaces";
 
 class authenticationRepositoryAlternativo implements IAuthenticationRepository {
 

@@ -1,5 +1,6 @@
-import { IAuthentication, IHttpRequest } from "../../interfaces/interfaces";
+import { IAuthentication } from "../../interfaces/authInterfaces";
 import { Request } from "express";
+import  { IHttpRequest } from "../../interfaces/httpInterface";
 
 class ExpressRequestAdapter implements IHttpRequest{
     body: any;
