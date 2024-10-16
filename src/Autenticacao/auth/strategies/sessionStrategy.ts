@@ -11,7 +11,7 @@ class SessionStrategy implements IAuthStrategy {
         if (!sessionId) {
             throw new Error('Invalid session');
         }
-        return { id: sessionId };
+        return { id: sessionId }; 
     }
 
 }

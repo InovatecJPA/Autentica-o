@@ -3,7 +3,7 @@ import  { IHttpNext, IHttpRequest, IHttpResponse } from "../../../interfaces/htt
 import { IFrameworkAdapter } from "../../../interfaces/appInterface";
 
 class ExpressAdapter  {
-    static toHttpRequest(req: Request): IHttpRequest {
+    toHttpRequest(req: Request): IHttpRequest {
         return{
             body: req.body,
             query: req.query,
@@ -13,7 +13,7 @@ class ExpressAdapter  {
         }
     }
 
-    static toHttpResponse(res: Response): IHttpResponse {
+    toHttpResponse(res: Response): IHttpResponse {
         return {
             status: (code: number) => res.status(code),
             json: (data: any) => res.json(data),
@@ -21,7 +21,7 @@ class ExpressAdapter  {
         }
     }
 
-    static toHttpNext(next: NextFunction): IHttpNext {
+    toHttpNext(next: NextFunction): IHttpNext {
         return (error?: any) => next(error);
     }
 }

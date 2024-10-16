@@ -1,69 +1,57 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
-import passport from 'passport';
 import dotenv from 'dotenv';
 dotenv.config();
 import authRouter from "./Autenticacao/routes/AuthenticationRouter";
 import HttpError from './utils/customErrors/httpError';
-import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface';
+import { IApp } from './interfaces/appInterface';
+import AuthenticationRouter from './Autenticacao/routes/AuthenticationRouter';
+import createAppFactory from './express/appFactory';
 
 class App {
-    public app: express.Application;
-    private static instace: App;
-
+    public app: IApp;
+    private static instance: App;
+    
     constructor(){
-        this.app = express();
+        this.app = createAppFactory();
         this.middlewares();
         this.routes();
         this.errorHandler();
     }
-
+    
     public static getInstance(): App {
-        if (!App.instace) {
-            App.instace = new App();
+        if (!App.instance) {
+            App.instance = new App();
         }
-        return App.instace;
+        return App.instance;
     }
 
-    private middlewares(){
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));
 
-        if (process.env.AUTH_STRATEGY === 'session') {
-            this.app.use(session({
-                secret: process.env.SESSION_SECRET || "cat",
-                resave: false,
-                saveUninitialized: false,
-                cookie: { secure: false },
-            }));
-        }
+    private middlewares() {
+        // this.app.use();
     }
-
 
     private routes() {
-        this.app.use('/auth', authRouter);
+        // AuthenticationRouter.registerRoutes(this.app) ;
     }
 
-    private errorHandler(){
-        this.app.use((err: any, req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            if(!res.headersSent){
-                if (err instanceof HttpError){
+    private errorHandler() {
+        this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+            if (!res.headersSent) {
+                if (err instanceof HttpError) {
                     res.status(err.status).json({ message: err.message });
                 } else {
                     res.status(500).json({ message: err.message });
                 }
-            }else{
+            } else {
                 next(err);
             }
         });
-        }
+    }
 
     public start(port: number): void {
-        this.app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
-        });
+        this.app.start(port);
     }
 }
-
 
 export default App.getInstance();

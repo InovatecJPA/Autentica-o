@@ -3,9 +3,10 @@
 import dotenv from 'dotenv';
 import { IFrameworkAdapter } from '../../interfaces/appInterface';
 import ExpressAdapter from './adapters/expressAdapter';
+dotenv.config()
 
 function createFrameworkAdapter(): IFrameworkAdapter {
-    if (process.env.FRAMEWORK === 'express') {
+    if (process.env.SERVER_FRAMEWORK === 'express') {
         return new ExpressAdapter();
     }
 
