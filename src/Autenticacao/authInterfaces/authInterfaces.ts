@@ -1,6 +1,4 @@
-import exp from "constants";
-import { Request, Response } from "express";
-import { Session } from "express-session";
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 
 export interface IAuthentication {
     id: string;
@@ -40,7 +38,7 @@ export interface IAuthenticationService  {
     findById(id:string): Promise<IAuthentication | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
     findByExternalId(externalId: string): Promise<IAuthentication | null>;
-    createAuthentication(authData: IAuthenticationParams): Promise<void>;
+    createStandartAuthentication(authData: IAuthenticationParams): Promise<void>;
     updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<void>;
     isPasswordTokenValid(id: string, token: string): Promise<boolean>;
     validatePassword(id: string, passwordHash: string): Promise<boolean>;
@@ -54,16 +52,16 @@ export interface IAuthenticationService  {
 }
 
 export interface IAuthenticationController {
-    findAll(req: Request, res: Response): Promise<void>;
-    findById(req: Request, res: Response): Promise<void>;
-    createAuthentication(req: Request, res: Response): Promise<void>;
-    validatePassword(req: Request, res: Response): Promise<void>;
-    authenticate(req: Request, res: Response): Promise<void>;
-    updateAuthentication(req: Request, res: Response): Promise<void>;
-    updatePassword(req: Request, res: Response): Promise<void>;
-    toogleAuthenticationStatus(req: Request, res: Response): Promise<void>;
-    requestPasswordChange(req: Request, res: Response): Promise<void>;
-    deleteAuthentication(req: Request, res: Response): Promise<void>;
+    findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    findById(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    requestPasswordChange(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    toogleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 

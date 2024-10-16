@@ -2,8 +2,10 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
-
 dotenv.config();
+import authRouter from "./Autenticacao/routes/AuthenticationRouter";
+import HttpError from './utils/customErrors/httpError';
+import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface';
 
 class App {
     public app: express.Application;
@@ -13,6 +15,7 @@ class App {
         this.app = express();
         this.middlewares();
         this.routes();
+        this.errorHandler();
     }
 
     public static getInstance(): App {
@@ -38,10 +41,22 @@ class App {
 
 
     private routes() {
-        this.app.get('/', (req, res) => {
-            res.send('Hello World!!!!!!!');
-        });
+        this.app.use('/auth', authRouter);
     }
+
+    private errorHandler(){
+        this.app.use((err: any, req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            if(!res.headersSent){
+                if (err instanceof HttpError){
+                    res.status(err.status).json({ message: err.message });
+                } else {
+                    res.status(500).json({ message: err.message });
+                }
+            }else{
+                next(err);
+            }
+        });
+        }
 
     public start(port: number): void {
         this.app.listen(port, () => {

@@ -1,7 +1,8 @@
 import createAuthenticationRepository from "../repositories/factoryAuthenticationRepository";
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../interfaces/authInterfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../authInterfaces/authInterfaces";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
+import HttpError from "../../utils/customErrors/httpError";
 
 
 class AuthenticationService implements IAuthenticationService {
@@ -27,7 +28,7 @@ class AuthenticationService implements IAuthenticationService {
         if (!AuthenticationService.instance) {
             AuthenticationService.instance = new AuthenticationService();
         }
-   
+        
         return AuthenticationService.instance;
     }   
     
@@ -73,16 +74,27 @@ class AuthenticationService implements IAuthenticationService {
      * @param {{login?: string | null, passwordHash?: string | null, externalId: string | null, isExternal: boolean}} authData
      * @returns {Promise<void>}
      */
-    async createAuthentication(authData: IAuthenticationParams): Promise<void> {
+    async createStandartAuthentication(authData: IAuthenticationParams): Promise<void> {
+        const auth = await this.authRepository.findByLogin(authData.login!);
         
+        if (auth) {
+            throw new HttpError(409, 'Authentication already exists');
+        }
+
         const salt = bcrypt.genSaltSync(10);
-        const password = bcrypt.hash(authData.passwordHash!, salt);
-        authData.passwordHash 
+        const password = await bcrypt.hash(authData.passwordHash!, salt);
+        authData.passwordHash = password 
         
         await this.authRepository.createAuthentication(authData);
     }
 
     async createExternalAuthentication(authData: IAuthenticationParams): Promise<void> {
+        const auth = await this.authRepository.findByExternalId(authData.externalId!);
+        
+        if (auth) {
+            throw new HttpError(409, 'Authentication already exists');
+        }
+        
         await this.authRepository.createAuthentication(authData);
     }
 
@@ -169,9 +181,15 @@ class AuthenticationService implements IAuthenticationService {
      */
     async authenticate(login: string, passwordHash: string): Promise<IAuthentication | null> {
         const auth: IAuthentication | null = await this.authRepository.findByLogin(login);
+        
         if (!auth) {
             return null;
         }
+
+        if(auth.active === false) {
+            throw new HttpError(403, 'Usuário inativo');
+        }
+
         if (await this.validatePassword(auth.id, passwordHash)) {
             return auth;
         }

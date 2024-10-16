@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { IAuthenticationParams, IAuthentication } from '../interfaces/authInterfaces';
+import { IAuthenticationParams, IAuthentication } from '../authInterfaces/authInterfaces';
 
 
 

@@ -1,10 +1,11 @@
-import { IAuthentication, IAuthStrategy } from "../../interfaces/authInterfaces";
+import { IAuthentication, IAuthStrategy } from "../../authInterfaces/authInterfaces";
 
 class SessionStrategy implements IAuthStrategy {
 
     async authenticate(auth: Partial<IAuthentication>): Promise<string> {
         return `Session started for user ${auth.id}`;
     }
+
 
     async verify(sessionId: string): Promise<any> {
         if (!sessionId) {

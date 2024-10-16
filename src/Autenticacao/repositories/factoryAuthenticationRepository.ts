@@ -1,4 +1,4 @@
-import { IAuthenticationRepository } from "../interfaces/authInterfaces";
+import { IAuthenticationRepository } from "../authInterfaces/authInterfaces";
 import authenticationRepositoryAlternativo from "./authenticationRepository/authenticationRepositoryAlternativo";
 import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize";
 import dotenv from 'dotenv';

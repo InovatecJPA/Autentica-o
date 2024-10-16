@@ -1,4 +1,4 @@
-import { IAuthentication, IAuthStrategy } from "../../interfaces/interfaces";
+import { IAuthentication, IAuthStrategy } from "../../authInterfaces/authInterfaces";
 import jwt from 'jsonwebtoken';
 
 class JwtStrategy implements IAuthStrategy {    

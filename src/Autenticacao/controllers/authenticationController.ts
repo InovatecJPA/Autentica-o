@@ -1,7 +1,9 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../interfaces/authInterfaces";
-import { IHttpRequest, IHttpResponse } from "../interfaces/httpInterface";
+import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../authInterfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
+import HttpError from "../../utils/customErrors/httpError";
+import { nextTick } from "process";
  
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
@@ -38,19 +40,19 @@ class AuthenticationController implements IAuthenticationController{
      * @param req The request object.
      * @param res The response object.
      * @returns A promise that resolves with the list of authentications, or a 404 status code if no authentications are found.
-     * @throws {Error} If an error occurs while finding the authentications.
+     * @throws {Error} If an error occurs whil e finding the authentications.
      */
-    async findAll(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const authentications = await this.authService.findAll();
     
-            if (authentications) {
-                res.status(200).json(authentications);
-            } else {
-                res.status(404).json({ message: 'No authentications found' });
+            if (!authentications) {
+                throw new HttpError(404, 'Authentications not found');
             }
+
+            res.status(200).json(authentications);
         } catch (error: any) {
-            res.status(500).json({ message: error.message }); 
+            next(error)
         }
     }
 
@@ -61,21 +63,26 @@ class AuthenticationController implements IAuthenticationController{
      * @param res The response object.
      * @returns A promise that resolves with the authentication if it exists, or a 404 status code if it doesn't.
      */
-    async findById(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async findById(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
 
+            if (!id) {
+                throw new HttpError(400, 'Id is required');
+            }
+
             const auth = await this.authService.findById(id);
             
-            if (auth) {
-                res.status(200).json(auth);
-            } else {
-                res.status(404).json({ message: 'Authentication not found' });
-            }   
+            if (!auth) {
+                throw new HttpError(404, 'Authentication not found');
+            }
+
+            res.status(200).json(auth);
         } catch (error: any) {
-            res.status(500).json({ message: error.message });
+            next(error)
         }
     }
+
     /**
      * Creates a new authentication in the database.
      * @param req The request object. The authentication data should be in the body of the request.
@@ -83,7 +90,7 @@ class AuthenticationController implements IAuthenticationController{
      * @returns A promise that resolves with a 201 status code if the authentication is created successfully, or a 500 status code if an error occurs.
      * @throws {Error} If an error occurs while creating the authentication.
      */
-    async createAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { login, password, externalId, isExternal }  = req.body;
 
@@ -93,39 +100,50 @@ class AuthenticationController implements IAuthenticationController{
                 externalId,
                 isExternal
             }
+
             if(isExternal){
                 if(!externalId){
-                    res.status(400).json('External Id is required');
+                    throw new HttpError(400, 'External Id is required');
                 }
-                await this.authService.createAuthentication(authData);
+
+                await this.authService.createExternalAuthentication(authData);
             }else{ 
                 if(!login || !password){
-                    res.status(400).json('Login and password are required');
+                    throw new HttpError(400, 'Login and password are required');
                 }
-                await this.authService.createExternalAuthentication(authData);
+
+                await this.authService.createStandartAuthentication(authData);
             }
 
-    
             res.status(201).json({ message: 'Authentication created successfully' });
         } catch (error: any) {
-            res.status(500).json({ message: error.message });
+            next(error)
         }
     }
 
-    async updateAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const {id} = req.params;
-            const {login, isExternal } = req.body;
+            const {login, isExternal, externalId } = req.body;
+
+            if(!id){
+                throw new HttpError(400, 'Id is required');
+            }
+
+            if(!login && !isExternal && !externalId){
+                throw new HttpError(400, 'Login, isExternal or externalId is required');
+            }
 
             const authData: Partial<IAuthenticationParams> = {
                 login,
-                isExternal
+                isExternal,
+                externalId
             }
 
             await this.authService.updateAuthentication(id, authData);
             res.status(200).json({ message: 'Authentication updated successfully' });
         }catch(error: any){
-            res.status(500).json({ message: error.message });
+            next(error)
         }
     }
 
@@ -141,12 +159,18 @@ class AuthenticationController implements IAuthenticationController{
      *          occurs.
      * @throws {Error} If an error occurs while creating the password token.
      */
-    async requestPasswordChange(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async requestPasswordChange(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { login } = req.body;
+            
+            if (!login){
+                throw new HttpError(400, 'Login is required');
+            }
+
             const auth = await this.authService.findByLogin(login);
+            
             if (!auth) {
-                res.status(404).json({ message: 'Authentication not found' });
+               throw new HttpError(404, 'Authentication not found');
             }
 
             this.authService.setPasswordTokenAndExpiryDate(auth!.id);
@@ -155,7 +179,7 @@ class AuthenticationController implements IAuthenticationController{
             // this.mailerService.sendPasswordResetEmail(auth!.login);
             res.status(200).json({ message: 'Password token created successfully' });
         }catch(error: any){
-            res.status(500).json({ message: error.message });
+            next(error)
         }
     }
     
@@ -169,60 +193,89 @@ class AuthenticationController implements IAuthenticationController{
      *          an error occurs.
      * @throws {Error} If an error occurs while deleting the authentication.
      */
-    async deleteAuthentication(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { id } = req.params;
+
+            if(!id){
+                throw new HttpError(400, 'Id is required');
+            }
 
             await this.authService.deleteAuthentication(id);
             res.status(200).json({ message: 'Authentication deleted successfully' });
         }catch(error: any){
-            res.status(500).json({ message: error.message });
+            next(error)
         }
     }
 
-    async authenticate(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
-            const { login, password } = req.body;
-            
-            const auth = await this.authService.authenticate(login, password);
-            if (!auth) {
-                res.status(401).json({ message: 'Invalid credentials' });
+            const { login, password, isExternal, externalId  } = req.body;
+            let auth = null
+
+            if (isExternal) {
+                if (!externalId) {
+                    throw new HttpError(400, 'External Id is required');
+                } else {
+                    auth = await this.authService.findByExternalId(externalId);
+                    
+                    if (!auth) {
+                        throw new HttpError(404, 'Authentication not found');
+                    }
+
+                    if (auth!.active === false) {
+                        throw new HttpError(403, 'Authentication not activated');
+                    }
+
+                }
+            } else {
+                if (!login || !password) {
+                    throw new HttpError(400, 'Login and password are required');
+                }
+                
+                auth = await this.authService.authenticate(login, password);
+                if (!auth) {
+                    throw new HttpError(404, 'Authentication not found');
+                }
             }
 
             const tokenOrSessionId = await this.authStrategy.authenticate({id: auth!.id}); 
-            if (tokenOrSessionId) {
-                res.status(200).json({ tokenOrSessionId });
+            if (!tokenOrSessionId) {
+                throw new HttpError(401, 'AuthStrategy Failed');
             }
+            res.status(200).json({ tokenOrSessionId });
         }catch(error: any){
-            res.status(500).json({ message: error.message });
-            
+            next(error)
         }
     }
 
-    async updatePassword(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { password } = req.body;
             const id = req.auth?.id;
             
+            if (!password) {
+                throw new HttpError(400, 'Password is required');
+            }
+
             if (!id) {
-                res.status(401).json({ message: 'Invalid credentials' });
+                throw new HttpError(401, 'Invalid credentials');
             }
 
             await this.authService.updatePassword(id!, password);
             res.status(200).json({ message: 'Password updated successfully' });
         } catch(error: any){
-            res.status(500).json({ message: error.message });   
+            next(error)
         }
-        throw new Error("Method not implemented.");
     }
 
-    async toogleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async toogleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { toogle } = req.query;
             const id = req.auth?.id;
 
             if (!id) {
-                res.status(401).json({ message: 'Invalid credentials' });
+                throw new HttpError(401, 'Invalid credentials');
             }
 
             if (toogle === 'true') {
@@ -233,32 +286,34 @@ class AuthenticationController implements IAuthenticationController{
 
             res.status(200).json({ message: 'Account updated successfully' });
         } catch(error: any){
-            res.status(500).json({ message: error.message });   
+            next(error)
         }
-        throw new Error("Method not implemented.");
     }
 
-    async validatePassword(req: IHttpRequest, res: IHttpResponse): Promise<void> {
+    async validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const {passwordHash} = req.body;
             const id = req.auth?.id;
 
+            if (!passwordHash) {
+                throw new HttpError(400, 'Password is required');
+            }
+
             if (!id) {
-                res.status(401).json({ message: 'Invalid credentials' });
+                throw new HttpError(401, 'Invalid credentials');
             }
 
             const valid = await this.authService.validatePassword(id!, passwordHash);
             
-            if (valid) {
-                res.status(200).json({ message: 'Password valid' });
-            } else {
-                res.status(400).json({ message: 'Password invalid' });
-            }         
+            if (!valid) {
+                res.status(200).json({ message: 'Password invalid' });
+                return
+            } 
+
+            res.status(200).json({ message: 'Password valid' });
         } catch (error: any) {
-            res.status(500).json({ message: error.message });
-        }
-        throw new Error("Method not implemented.");
-        
+            next(error)
+        }       
     }
 }
 

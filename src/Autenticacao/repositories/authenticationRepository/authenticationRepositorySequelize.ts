@@ -1,4 +1,4 @@
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../interfaces/authInterfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../authInterfaces/authInterfaces";
 import Authentication from "../../models/authenticationModel";
 import AuthenticationModelSequelize from "../../models/sequelize/authenticationModelSequelize";
 

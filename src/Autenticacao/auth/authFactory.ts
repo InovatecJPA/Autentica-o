@@ -1,4 +1,4 @@
-import { IAuthStrategy } from "../interfaces/authInterfaces";
+import { IAuthStrategy } from "../authInterfaces/authInterfaces";
 import JwtStrategy from "./strategies/jwtStrategy";
 import PassportStrategy from "./strategies/passportStrategy";
 import SessionStrategy from "./strategies/sessionStrategy";

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import createAuthStrategy from '../auth/authFactory';
-import { IHttpRequest } from '../interfaces/httpInterface';
+import { IHttpRequest } from '../../interfaces/httpInterface';
 import dotenv from 'dotenv';
 
 dotenv.config();
