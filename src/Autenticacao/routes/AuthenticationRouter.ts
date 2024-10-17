@@ -1,16 +1,13 @@
-import App from "../../app";
-import {  IAppRouter, IFrameworkAdapter } from "../../interfaces/appInterface";
+import {  IAppRouter } from "../../interfaces/appInterface";
+import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import { IAuthenticationController } from "../authInterfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
-import createFrameworkAdapter from "./adapterFactory";
 
 class AuthenticationRouter {
     private static instance: AuthenticationRouter;
     private authenticationController: IAuthenticationController;
-    private adapter: IFrameworkAdapter;
 
     constructor() {
-        this.adapter = createFrameworkAdapter();
         this.authenticationController = AuthenticationController;
     }
 
@@ -20,24 +17,16 @@ class AuthenticationRouter {
         }
         return AuthenticationRouter.instance;
     }
-    
-    public registerRoutes(app: IAppRouter): void {
-        app.post('/login', (req: any, res: any, next: any) => {
-            const customReq = this.adapter.toHttpRequest(req);
-            const customRes = this.adapter.toHttpResponse(res);
-            const customNext = this.adapter.toHttpNext(next);
 
-            this.authenticationController.authenticate(customReq, customRes, customNext);
+    public registerRoutes(basePath: string, app: IAppRouter): void {
+        app.post(`${basePath}/login`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.authenticate(req, res, next);
+
         });
 
-        app.post('/register', (req: any, res: any, next: any) => {
-            const customReq = this.adapter.toHttpRequest(req);
-            const customRes = this.adapter.toHttpResponse(res);
-            const customNext = this.adapter.toHttpNext(next);
-
-            this.authenticationController.createAuthentication(customReq, customRes, customNext);
+        app.post(`${basePath}/register`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.createAuthentication(req, res, next);
         });
-        return
     }
 }
 

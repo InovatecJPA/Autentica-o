@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import  { IHttpNext, IHttpRequest, IHttpResponse } from "../../../interfaces/httpInterface";
-import { IFrameworkAdapter } from "../../../interfaces/appInterface";
+import  { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 
-class ExpressAdapter  {
+class ExpressAppAdapter  {
     toHttpRequest(req: Request): IHttpRequest {
         return{
             body: req.body,
@@ -26,4 +25,4 @@ class ExpressAdapter  {
     }
 }
 
-export default ExpressAdapter
+export default ExpressAppAdapter
