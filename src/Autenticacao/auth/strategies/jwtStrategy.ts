@@ -11,12 +11,12 @@ class JwtStrategy implements IAuthStrategy {
         return jwt.sign({ id: auth.id }, process.env.JWT_SECRET || '123', { expiresIn: '1h' });
     }
 
-    async verify(token: string): Promise<any> {
+    async verify(token: string): Promise<object |string> {
         try {
         /**
          * Verifica se o token JWT  vlido.
          * @param {string} token - O token JWT.
-         * @returns {Promise<any>} Retorna o payload do token JWT, caso o token seja vlido.
+         * @returns {Promise<object | string>} Retorna o payload do token JWT, caso o token seja vlido.
          * @throws {Error} Caso o token seja inv lido.
          */
             return jwt.verify(token, process.env.JWT_SECRET || "123");

@@ -67,7 +67,7 @@ export interface IAuthenticationController {
 
 export interface IAuthStrategy {
     authenticate(auth: Partial<IAuthentication>): Promise<string>;
-    verify(tokenOrSessionId: string): Promise<any>;
+    verify(tokenOrSessionId: string): Promise<object | string>;
 }
 
 

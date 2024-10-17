@@ -7,7 +7,7 @@ class SessionStrategy implements IAuthStrategy {
     }
 
 
-    async verify(sessionId: string): Promise<any> {
+    async verify(sessionId: string): Promise<object | string> {
         if (!sessionId) {
             throw new Error('Invalid session');
         }
