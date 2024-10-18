@@ -1,7 +1,6 @@
-import { IHttpNext, IHttpRequest, IHttpResponse } from "./httpInterface"
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "./httpInterface"
 
 export interface IApp {
-    adapter: IAppAdapter
     router: IAppRouter
     use(middleware: any): void
     useRoute(path: string, middleware: any): void
@@ -9,15 +8,12 @@ export interface IApp {
 }
 
 export interface IAppRouter{
+    use(middleware: any): void
     getRouter(): IAppRouter
-    post(path: string, middleware: any): void
-    get(path: string, middleware: any): void
-    put(path: string, middleware: any): void
-    delete(path: string, middleware: any): void
-    patch(path: string, middleware: any): void
-    options(path: string, middleware: any): void
-    head(path: string, middleware: any): void
-    all(path: string, middleware: any): void
+    get(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void
+    post(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void
+    put(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void
+    delete(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void
 }
 
 export interface IAppAdapter {

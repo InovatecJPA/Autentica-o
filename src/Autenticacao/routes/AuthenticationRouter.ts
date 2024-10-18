@@ -2,6 +2,8 @@ import {  IAppRouter } from "../../interfaces/appInterface";
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import { IAuthenticationController } from "../authInterfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
+import {authenticate} from "../middlewares/authenticate";
+
 
 class AuthenticationRouter {
     private static instance: AuthenticationRouter;
@@ -18,7 +20,12 @@ class AuthenticationRouter {
         return AuthenticationRouter.instance;
     }
 
-    public registerRoutes(basePath: string, app: IAppRouter): void {
+
+    private registerMiddleware(app: IAppRouter): void {
+        app.use(authenticate)
+    }
+
+    private registerRoutesGet(basePath: string, app: IAppRouter): void {
         app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findAll(req, res, next);
         })
@@ -26,39 +33,64 @@ class AuthenticationRouter {
         app.get(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findById(req, res, next);
         })
-        
+    }
+
+    private registerRoutesPost(basePath: string, app: IAppRouter): void {
         app.post(`${basePath}/register`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.createAuthentication(req, res, next);
         });
-
+    
         app.post(`${basePath}/login`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.authenticate(req, res, next);
         });
-
+    
         app.post(`${basePath}/forgot-password`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.requestPasswordChange(req, res, next);
         });
 
-        app.post(`${basePath}/validate-password`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/validate-password`, authenticate, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            console.log("Handler da rota validate-password executado");
             this.authenticationController.validatePassword(req, res, next);
         });
+    }
 
-        app.put(`${basePath}/update/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.updateAuthentication(req, res, next);
-        });
-
+    private registerRoutesPut(basePath: string, app: IAppRouter): void {
+        
         app.put(`${basePath}/update-password`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updatePassword(req, res, next);
         });
-
+        
         app.put(`${basePath}/toggle-status/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.toogleAuthenticationStatus(req, res, next);
+            this.authenticationController.toggleAuthenticationStatus(req, res, next);
         });
+        
+        app.put(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.updateAuthentication(req, res, next);
+        });
+    }
 
+    private registerRoutesDelete(basePath: string, app: IAppRouter): void {
         app.delete(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.deleteAuthentication(req, res, next);
         });
     }
+
+    public registerRoutes(basePath: string, app: IAppRouter): void {
+        
+        // Para aplicar o middleware em toda a rota
+        // this.registerMiddleware(app);
+
+        // this.registerRoutesGet(basePath, app);
+        
+        this.registerRoutesPost(basePath, app);
+
+        // this.registerRoutesPut(basePath, app);
+
+        // this.registerRoutesDelete(basePath, app);
+    }
 }
 
 export default AuthenticationRouter.getInstance();
+
+
+

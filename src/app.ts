@@ -25,23 +25,14 @@ class App {
         return App.instance;
     }
 
-    private adaptHttpMethods() {
-        return (req: any, res: any, next: any) =>{
-            req = this.app.adapter.toHttpRequest(req);
-            res = this.app.adapter.toHttpResponse(res);
-            next = this.app.adapter.toHttpNext(next);
-            next();
-        }
-    }
     
 
     private middlewares() {
         this.app.use(bodyParser.json());
-        this.app.use(this.adaptHttpMethods());
     }
 
     private routes() {
-        AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);
+        AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
 
         this.app.use((this.app.router.getRouter()));
     }

@@ -10,7 +10,6 @@ export interface IHttpRequest {
 
 export interface IHttpAuthenticatedRequest extends IHttpRequest {
     auth?: Partial<IAuthentication>;
-
 }
 
 export interface IHttpResponse {

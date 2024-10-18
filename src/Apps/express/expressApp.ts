@@ -2,17 +2,14 @@
 import express, { Application } from 'express';
 import { IApp, IAppAdapter, IAppRouter } from '../../interfaces/appInterface';
 import ExpressRouter from './ExpressRouter';
-import ExpressAppAdapter from './expressAdapter';
 
 export class ExpressApp implements IApp {
   router: IAppRouter
-  adapter: IAppAdapter
   private app: Application;
 
   constructor() {
     this.app = express();
     this.router = new ExpressRouter
-    this.adapter = new ExpressAppAdapter
   }
 
   use(middleware: any): void {

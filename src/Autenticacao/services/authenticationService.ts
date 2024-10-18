@@ -221,7 +221,7 @@ class AuthenticationService implements IAuthenticationService {
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getHours() + 1);
 
-        await this.authRepository.updateAuthentication(id, {password_token_reset: token, password_expiry_date: expiryDate});
+        await this.authRepository.updateAuthentication(id, {password_token_reset: token, password_token_expiry_date: expiryDate});
     }
 
 }

@@ -20,7 +20,7 @@ export interface IAuthenticationParams {
     isExternal: boolean;
     active?: boolean;
     password_token_reset?: string;
-    password_expiry_date?: Date;
+    password_token_expiry_date?: Date;
 }
 
 export interface IAuthenticationRepository {
@@ -61,7 +61,7 @@ export interface IAuthenticationController {
     deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-    toogleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    toggleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 

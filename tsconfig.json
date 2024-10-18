@@ -1,16 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "ES2017",               // Define o padrão de JavaScript para o qual o TypeScript será compilado
-      "module": "ESNext",               // Utiliza ESNext para permitir 'import' e 'export'
-      "moduleResolution": "node",       // Resolve módulos no estilo Node.js
-      "outDir": "./dist",               // Diretório de saída para os arquivos JavaScript compilados
-      "rootDir": "./src",               // Diretório raiz dos arquivos de origem TypeScript
-      "esModuleInterop": true,          // Habilita interoperabilidade entre CommonJS e ES Modules
-      "forceConsistentCasingInFileNames": true, // Força consistência de caixa nos nomes de arquivos
-      "strict": true,                   // Habilita todas as opções de verificação estrita
-      "skipLibCheck": true              // Ignora verificação de tipos em arquivos de declaração
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
-  }
-  
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "sourceMap": true, // Necessário para gerar arquivos de mapa de origem
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

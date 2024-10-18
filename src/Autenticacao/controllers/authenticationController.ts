@@ -269,16 +269,17 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-    async toogleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    async toggleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
-            const { toogle } = req.query;
-            const id = req.auth?.id;
+            
+            const { id } = req.params;
+            const { toggle } = req.query;
 
             if (!id) {
                 throw new HttpError(401, 'Invalid credentials');
             }
 
-            if (toogle === 'true') {
+            if (toggle === 'true') {
                 await this.authService.activateAccountAuthentication(id!);
             } else {
                 await this.authService.deactivateAccountAuthentication(id!);
@@ -295,6 +296,8 @@ class AuthenticationController implements IAuthenticationController{
             const {passwordHash} = req.body;
             const id = req.auth?.id;
 
+            console.log(req)
+            
             if (!passwordHash) {
                 throw new HttpError(400, 'Password is required');
             }
