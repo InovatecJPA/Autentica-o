@@ -10,6 +10,7 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
         let authId: string | null = null;
 
         if (process.env.AUTH_STRATEGY === 'session') {
+            console.log(req.session)
             if (req.session && req.session.auth && req.session.auth.id) { 
                 authId = req.session.auth!.id!;
             }    
@@ -37,7 +38,7 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
         }
 
         req.auth = { id: authId };
-
+        console.log(req.auth)
         next();
     } catch (error: any) {
         console.log(error)

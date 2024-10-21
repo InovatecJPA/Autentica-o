@@ -272,6 +272,11 @@ class AuthenticationController implements IAuthenticationController{
             if (!tokenOrSessionId) {
                 throw new HttpError(401, 'AuthStrategy Failed');
             }
+            
+            if (process.env.AUTH_STRATEGY === 'session') {
+                req.session = { auth: { id: auth!.id } };
+            }
+
             res.status(200).json({ tokenOrSessionId });
         }catch(error: any){
             next(error)

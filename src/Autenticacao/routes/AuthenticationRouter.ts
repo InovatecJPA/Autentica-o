@@ -4,13 +4,7 @@ import { IAuthenticationController } from "../authInterfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
 
-function a (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) {
-    console.log("Handler da rota a executado");
-}
 
-function b (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) {
-    console.log("Handler da rota b executado");
-}
 
 class AuthenticationRouter {
     private static instance: AuthenticationRouter;

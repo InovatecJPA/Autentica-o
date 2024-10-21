@@ -6,7 +6,9 @@ import createAppFactory from './Apps/appFactory';
 import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface';
 import AuthenticationRouter from './Autenticacao/routes/AuthenticationRouter';
 import bodyParser from 'body-parser';
+import cookieSession from 'cookie-session';
 
+  
 class App {
     public app: IApp;
     private static instance: App;
@@ -25,10 +27,17 @@ class App {
         return App.instance;
     }
 
-    
-
     private middlewares() {
         this.app.use(bodyParser.json());
+        
+        if (process.env.AUTH_STRATEGY === 'session') {
+            this.app.use(cookieSession({ 
+                secret: process.env.SESSION_SECRET || 'HESTIA',
+                name: 'authSession',
+                maxAge: 24 * 60 * 60 * 1000,
+                secure: false
+            }))
+        }
     }
 
     private routes() {
