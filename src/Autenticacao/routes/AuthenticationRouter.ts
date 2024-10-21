@@ -4,6 +4,13 @@ import { IAuthenticationController } from "../authInterfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
 
+function a (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) {
+    console.log("Handler da rota a executado");
+}
+
+function b (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) {
+    console.log("Handler da rota b executado");
+}
 
 class AuthenticationRouter {
     private static instance: AuthenticationRouter;
@@ -49,14 +56,13 @@ class AuthenticationRouter {
         });
 
         app.post(`${basePath}/validate-password`, authenticate, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            console.log("Handler da rota validate-password executado");
             this.authenticationController.validatePassword(req, res, next);
         });
     }
 
     private registerRoutesPut(basePath: string, app: IAppRouter): void {
         
-        app.put(`${basePath}/update-password`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/update-password`, authenticate, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updatePassword(req, res, next);
         });
         
@@ -80,13 +86,13 @@ class AuthenticationRouter {
         // Para aplicar o middleware em toda a rota
         // this.registerMiddleware(app);
 
-        // this.registerRoutesGet(basePath, app);
+        this.registerRoutesGet(basePath, app);
         
         this.registerRoutesPost(basePath, app);
 
-        // this.registerRoutesPut(basePath, app);
+        this.registerRoutesPut(basePath, app);
 
-        // this.registerRoutesDelete(basePath, app);
+        this.registerRoutesDelete(basePath, app);
     }
 }
 

@@ -59,6 +59,10 @@ class AuthenticationService implements IAuthenticationService {
         return await this.authRepository.findByExternalId(externalId);
     }
 
+    async findByToken(token: string): Promise<IAuthentication | null> {
+        return await this.authRepository.findByToken(token);
+    }
+
     /**
      * Encontra todas as autenticacoes no banco de dados.
      * @returns {Promise<IAuthentication[] | null>}
@@ -101,7 +105,7 @@ class AuthenticationService implements IAuthenticationService {
 
     //VERIFICAR ESSA FUNÇÂO
     async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
-        const cleanedAuthData: Record<string, string | Date | boolean | null | undefined> = {};
+        const cleanedAuthData: Record<string, string | boolean | null | undefined> = {};
 
         for (const [key, value] of Object.entries(authData)) {
             if (value !== null && value !== undefined) {
@@ -111,7 +115,7 @@ class AuthenticationService implements IAuthenticationService {
                         cleanedAuthData[key as keyof IAuthenticationParams] = trimmedValue;
                     }
                 } else {
-                    cleanedAuthData[key as keyof IAuthenticationParams] = value as string | Date | boolean | null | undefined;
+                    cleanedAuthData[key as keyof IAuthenticationParams] = value as string |  boolean | null | undefined;
                 }
             }
         }

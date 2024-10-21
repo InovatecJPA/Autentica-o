@@ -182,6 +182,35 @@ class AuthenticationController implements IAuthenticationController{
             next(error)
         }
     }
+
+    async updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try{
+            const { token } = req.params;
+            const { password } = req.body;
+
+            if(!token){
+                throw new HttpError(400, 'Token is required');
+            }
+            if(!password){
+                throw new HttpError(400, 'Password is required');
+            }
+
+            const user = await this.authService.findByToken(token);
+
+            if(!user){
+                throw new HttpError(404, 'Authentication not found');
+            }
+
+            if(!user.password_token_expiry_date || user.password_token_expiry_date < new Date()){
+                throw new HttpError(400, 'Token expired');
+            }
+
+            await this.authService.updatePassword(user.id, password);
+            res.status(200).json({ message: 'Password updated successfully' });
+        } catch(error: any){
+            next(error)
+        }
+    }
     
     /**
      * Deletes an authentication.
@@ -251,10 +280,10 @@ class AuthenticationController implements IAuthenticationController{
 
     async updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
-            const { password } = req.body;
+            const { oldPassword, newPassword} = req.body;
             const id = req.auth?.id;
-            
-            if (!password) {
+
+            if (!oldPassword || !newPassword) {
                 throw new HttpError(400, 'Password is required');
             }
 
@@ -262,7 +291,11 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(401, 'Invalid credentials');
             }
 
-            await this.authService.updatePassword(id!, password);
+            if (!await this.authService.validatePassword(id, oldPassword)) {
+                throw new HttpError(401, 'Invalid password');
+            }
+
+            await this.authService.updatePassword(id!, newPassword);
             res.status(200).json({ message: 'Password updated successfully' });
         } catch(error: any){
             next(error)
@@ -295,8 +328,6 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const {passwordHash} = req.body;
             const id = req.auth?.id;
-
-            console.log(req)
             
             if (!passwordHash) {
                 throw new HttpError(400, 'Password is required');

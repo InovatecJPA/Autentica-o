@@ -34,7 +34,7 @@ class App {
     private routes() {
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
 
-        this.app.use((this.app.router.getRouter()));
+        this.app.use(this.app.router.getRouter());
     }
 
     private errorHandler() {
@@ -46,7 +46,7 @@ class App {
                     res.status(500).json({ message: err.message });
                 }
             } else {
-                next(err);
+                next();
             }
         });
     }

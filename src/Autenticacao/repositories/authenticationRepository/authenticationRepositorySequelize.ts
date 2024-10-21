@@ -11,6 +11,10 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     async findById(id: string): Promise<IAuthentication | null> {
         return await AuthenticationModelSequelize.findOne({where: {id: id}});
     }
+
+    async findByToken(token: string): Promise<IAuthentication | null> {
+        return await AuthenticationModelSequelize.findOne({where: {password_token_reset: token}});
+    }
     
     /**
      * Encontra todas as autenticacoes no banco de dados.

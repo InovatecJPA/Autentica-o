@@ -38,7 +38,6 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
 
         req.auth = { id: authId };
 
-        console.log(req.auth)
         next();
     } catch (error: any) {
         console.log(error)

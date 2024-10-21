@@ -27,6 +27,7 @@ export interface IAuthenticationRepository {
     createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
     updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
     findById(id: string): Promise<IAuthentication | null>;
+    findByToken(token: string): Promise<IAuthentication | null>;
     findAll(): Promise<IAuthentication[] | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
     findByExternalId(externalId: string): Promise<IAuthentication | null>;
@@ -35,6 +36,7 @@ export interface IAuthenticationRepository {
 
 export interface IAuthenticationService  {
     findAll(): Promise<IAuthentication[] | null>;
+    findByToken(token: string): Promise<IAuthentication | null>;
     findById(id:string): Promise<IAuthentication | null>;
     findByLogin(login: string): Promise<IAuthentication | null>;
     findByExternalId(externalId: string): Promise<IAuthentication | null>;
@@ -62,6 +64,7 @@ export interface IAuthenticationController {
     validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     toggleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 

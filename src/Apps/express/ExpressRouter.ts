@@ -8,36 +8,36 @@ class ExpressRouter implements IAppRouter {
         this.router = Router();
     }
 
-    public post(path: string, middleware: any): void {
-        this.router.post(path, middleware);
+    public post(path: string, ...args:  any[]): void {
+        this.router.post(path, args);
     }
 
-    public get(path: string, middleware: any): void {
-        this.router.get(path, middleware);
+    public get(path: string, ...args:  any[]): void {
+        this.router.get(path, args);
     }
 
-    public put(path: string, middleware: any): void {
-        this.router.put(path, middleware);
+    public put(path: string, ...args:  any[]): void {
+        this.router.put(path, args);
     }
 
-    public delete(path: string, middleware: any): void {
-        this.router.delete(path, middleware);
+    public delete(path: string, ...args:  any[]): void {
+        this.router.delete(path, args);
     }
 
-    public patch(path: string, middleware: any): void {
-        this.router.patch(path, middleware);
+    public patch(path: string, ...args:  any[]): void {
+        this.router.patch(path, args);
     }
 
-    public options(path: string, middleware: any): void {
-        this.router.options(path, middleware);
+    public options(path: string, ...args:  any[]): void {
+        this.router.options(path, args);
     }
 
-    public head(path: string, middleware: any): void {
-        this.router.head(path, middleware);
+    public head(path: string, ...args:  any[]): void {
+        this.router.head(path, args);
     }
 
-    public all(path: string, middleware: any): void {
-        this.router.all(path, middleware);
+    public all(path: string, ...args:  any[]): void {
+        this.router.all(path, args);
     }
 
     public use(...args: any[]): void {
