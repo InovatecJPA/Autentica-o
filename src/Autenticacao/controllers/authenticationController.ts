@@ -1,5 +1,5 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../authInterfaces/authInterfaces";
+import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../Interfaces/authInterfaces";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
 import HttpError from "../../utils/customErrors/httpError";
@@ -96,9 +96,10 @@ class AuthenticationController implements IAuthenticationController{
 
             const authData: IAuthenticationParams = {
                 login,
-                passwordHash: password, 
+                passwordHash: password,
                 externalId,
-                isExternal
+                isExternal,
+                profileId : null
             }
 
             if(isExternal){
@@ -121,23 +122,52 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    async updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try{
+
+            const id = req.session?.auth?.id;
+            const {login, isExternal, externalId, profileId} = req.body;
+            
+            if(!id){
+                throw new HttpError(400, 'Id is required');
+            }
+            
+            if(!login && (isExternal && !externalId) && !profileId){
+                throw new HttpError(400, 'Login, isExternal or externalId is required');
+            }
+            
+            const authData: Partial<IAuthenticationParams> = {
+                login,
+                isExternal,
+                externalId,
+                profileId
+            }
+            
+            await this.authService.updateAuthentication(id, authData);
+            res.status(200).json({ message: 'Authentication updated successfully' });
+        } catch(error: any){
+            next(error)
+        }
+    }
+
     async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const {id} = req.params;
-            const {login, isExternal, externalId } = req.body;
+            const {login, isExternal, externalId, profileId } = req.body;
 
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
 
-            if(!login && !isExternal && !externalId){
+            if(!login && (isExternal && !externalId) && profileId){
                 throw new HttpError(400, 'Login, isExternal or externalId is required');
             }
 
             const authData: Partial<IAuthenticationParams> = {
                 login,
                 isExternal,
-                externalId
+                externalId,
+                profileId
             }
 
             await this.authService.updateAuthentication(id, authData);
@@ -286,7 +316,7 @@ class AuthenticationController implements IAuthenticationController{
     async updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { oldPassword, newPassword} = req.body;
-            const id = req.auth?.id;
+            const id = req.session?.auth?.id;
 
             if (!oldPassword || !newPassword) {
                 throw new HttpError(400, 'Password is required');
@@ -332,7 +362,7 @@ class AuthenticationController implements IAuthenticationController{
     async validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const {passwordHash} = req.body;
-            const id = req.auth?.id;
+            const id = req.session?.auth?.id;
             
             if (!passwordHash) {
                 throw new HttpError(400, 'Password is required');

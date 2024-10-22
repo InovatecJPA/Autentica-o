@@ -1,6 +1,6 @@
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../authInterfaces/authInterfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../Interfaces/authInterfaces";
 import Authentication from "../../models/authenticationModel";
-import AuthenticationModelSequelize from "../../models/sequelize/authenticationModelSequelize";
+import { models } from "../../models/sequelize";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     /**
@@ -9,11 +9,11 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @returns {Promise<IAuthentication | null>}
      */
     async findById(id: string): Promise<IAuthentication | null> {
-        return await AuthenticationModelSequelize.findOne({where: {id: id}});
+        return await models.AuthenticationModelSequelize.findOne({where: {id: id}});
     }
 
     async findByToken(token: string): Promise<IAuthentication | null> {
-        return await AuthenticationModelSequelize.findOne({where: {password_token_reset: token}});
+        return await models.AuthenticationModelSequelize.findOne({where: {password_token_reset: token}});
     }
     
     /**
@@ -21,7 +21,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @returns {Promise<IAuthentication[] | null>}
      */
     async findAll(): Promise<IAuthentication[] | null> {
-        return await AuthenticationModelSequelize.findAll();
+        return await models.AuthenticationModelSequelize.findAll();
     }
 
     /**
@@ -30,7 +30,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @returns {Promise<IAuthentication | null>}
      */
     async findByLogin(login: string): Promise<IAuthentication | null> {
-        return await AuthenticationModelSequelize.findOne({where: {login: login}});
+        return await models.AuthenticationModelSequelize.findOne({where: {login: login}});
     }
 
     /**
@@ -39,20 +39,24 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @returns {Promise<IAuthentication | null>}
      */
     async findByExternalId(externalId: string): Promise<IAuthentication | null> {
-        return await AuthenticationModelSequelize.findOne({where: {externalId: externalId}});
+        return await models.AuthenticationModelSequelize.findOne({where: {externalId: externalId}});
     }
 
 
 
     async createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
         const auth = new Authentication(authData);
-        return await AuthenticationModelSequelize.create(auth);
+        return await models.AuthenticationModelSequelize.create(auth);
     }
 
 
     async updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
-        const [affectedCount, updatedRows] = await AuthenticationModelSequelize.update(
-            { ...updateData, updatedAt: new Date() },
+        const filteredUpdateData = Object.fromEntries(
+            Object.entries(updateData).filter(([_, value]) => value !== null)
+        );
+        
+        const [affectedCount, updatedRows] = await models.AuthenticationModelSequelize.update(
+            { ...filteredUpdateData, updatedAt: new Date() },
             { where: { id }, returning: true }
         );
 
@@ -69,7 +73,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @returns {Promise<void>}
      */
     async deleteAuthentication(id: string): Promise<void> {
-        await AuthenticationModelSequelize.destroy({where: {id: id}});
+        await models.AuthenticationModelSequelize.destroy({where: {id: id}});
     }
 
 }

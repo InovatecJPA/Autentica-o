@@ -1,6 +1,6 @@
 import {  IAppRouter } from "../../interfaces/appInterface";
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
-import { IAuthenticationController } from "../authInterfaces/authInterfaces";
+import { IAuthenticationController } from "../Interfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
 

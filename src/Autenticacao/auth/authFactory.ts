@@ -1,6 +1,5 @@
-import { IAuthStrategy } from "../authInterfaces/authInterfaces";
+import { IAuthStrategy } from "../Interfaces/authInterfaces";
 import JwtStrategy from "./strategies/jwtStrategy";
-import PassportStrategy from "./strategies/passportStrategy";
 import SessionStrategy from "./strategies/sessionStrategy";
 import dotenv from 'dotenv';
 
@@ -15,9 +14,6 @@ function createAuthStrategy(): IAuthStrategy {
         return new SessionStrategy();
     }
 
-    if (process.env.AUTH_STRATEGY === "passport") {
-        return new PassportStrategy();
-    }
     
    throw new Error("Repository not found");
 }

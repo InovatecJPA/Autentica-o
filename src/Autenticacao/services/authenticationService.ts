@@ -1,5 +1,5 @@
 import createAuthenticationRepository from "../repositories/factoryAuthenticationRepository";
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../authInterfaces/authInterfaces";
+import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../Interfaces/authInterfaces";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import HttpError from "../../utils/customErrors/httpError";
@@ -88,7 +88,7 @@ class AuthenticationService implements IAuthenticationService {
         const salt = bcrypt.genSaltSync(10);
         const password = await bcrypt.hash(authData.passwordHash!, salt);
         authData.passwordHash = password 
-        
+
         await this.authRepository.createAuthentication(authData);
     }
 
@@ -104,24 +104,24 @@ class AuthenticationService implements IAuthenticationService {
 
 
     //VERIFICAR ESSA FUNÇÂO
-    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
-        const cleanedAuthData: Record<string, string | boolean | null | undefined> = {};
+async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
+    const cleanedAuthData: Partial<IAuthenticationParams> = {};
 
-        for (const [key, value] of Object.entries(authData)) {
-            if (value !== null && value !== undefined) {
-                if (typeof value === 'string') {
-                    const trimmedValue = value.trim();
-                    if (trimmedValue !== '') {
-                        cleanedAuthData[key as keyof IAuthenticationParams] = trimmedValue;
-                    }
-                } else {
-                    cleanedAuthData[key as keyof IAuthenticationParams] = value as string |  boolean | null | undefined;
+    for (const [key, value] of Object.entries(authData)) {
+        if (value !== undefined && value !== null) {
+            if (typeof value === 'string') {
+                const trimmedValue = value.trim();
+                if (trimmedValue !== '') {
+                    cleanedAuthData[key as keyof IAuthenticationParams] = trimmedValue;
                 }
+            } else {
+                cleanedAuthData[key as keyof IAuthenticationParams] = value;
             }
         }
-
-        await this.authRepository.updateAuthentication(id, cleanedAuthData);
     }
+
+    await this.authRepository.updateAuthentication(id, cleanedAuthData);
+}
 
     /**
      * Deleta uma autenticao do banco de dados.

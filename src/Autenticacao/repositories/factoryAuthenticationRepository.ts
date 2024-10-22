@@ -1,14 +1,9 @@
-import { IAuthenticationRepository } from "../authInterfaces/authInterfaces";
-import authenticationRepositoryAlternativo from "./authenticationRepository/authenticationRepositoryAlternativo";
+import { IAuthenticationRepository } from "../Interfaces/authInterfaces";
 import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize";
 import dotenv from 'dotenv';
 dotenv.config();
 
 function createAuthenticationRepository(): IAuthenticationRepository {
-    if (process.env.AUTHENTICATION_REPOSITORY === "alternativo")  {
-        return new authenticationRepositoryAlternativo();
-    }
-
     if (process.env.AUTHENTICATION_REPOSITORY === "sequelize") {
         return new authenticationRepositorySequelize();
     }

@@ -61,6 +61,7 @@ class App {
     }
 
     public start(port: number): void {
+        
         this.app.start(port);
     }
 }

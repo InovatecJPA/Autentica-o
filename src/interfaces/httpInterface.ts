@@ -1,4 +1,4 @@
-import { IAuthentication } from "../Autenticacao/authInterfaces/authInterfaces";
+import { IAuthentication } from "../Autenticacao/Interfaces/authInterfaces";
 
 export interface IHttpRequest {
     body: any;
@@ -9,7 +9,9 @@ export interface IHttpRequest {
 }
 
 export interface IHttpAuthenticatedRequest extends IHttpRequest {
-    auth?: Partial<IAuthentication>;
+    session: {
+        auth: Partial<IAuthentication>
+    }
 }
 
 export interface IHttpResponse {

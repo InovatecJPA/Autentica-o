@@ -9,6 +9,7 @@ export interface IAuthentication {
     active: boolean;
     password_token_reset: string | null;
     password_token_expiry_date: Date | null;
+    profileId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -18,6 +19,7 @@ export interface IAuthenticationParams {
     passwordHash: string | null;
     externalId: string | null;
     isExternal: boolean;
+    profileId: string | null;
     active?: boolean;
     password_token_reset?: string;
     password_token_expiry_date?: Date;
@@ -71,6 +73,7 @@ export interface IAuthenticationController {
 export interface IAuthStrategy {
     authenticate(auth: Partial<IAuthentication>): Promise<string>;
     verify(tokenOrSessionId: string): Promise<object | string>;
+    checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object>;
 }
 
 

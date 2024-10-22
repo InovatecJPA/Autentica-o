@@ -1,4 +1,6 @@
-import { IAuthentication, IAuthStrategy } from "../../authInterfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface";
+import HttpError from "../../../utils/customErrors/httpError";
+import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
 
 class SessionStrategy implements IAuthStrategy {
 
@@ -12,6 +14,15 @@ class SessionStrategy implements IAuthStrategy {
             throw new Error('Invalid session');
         }
         return { id: sessionId }; 
+    }
+
+    async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object> {
+        console.log(req.session.auth)
+        if (!req.session || !req.session.auth || !req.session.auth.id 
+            || !req.session.auth.profileId) {
+                throw new HttpError(401, 'Invalid session');
+            }
+        return { id: req.session.auth.id, profileId: req.session.auth.profileId };
     }
 
 }
