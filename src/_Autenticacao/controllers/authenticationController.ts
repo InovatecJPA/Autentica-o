@@ -1,4 +1,4 @@
-import createAuthStrategy from "../auth/authFactory";
+import createAuthStrategy from "../../auth/authFactory";
 import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../Interfaces/authInterfaces";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";

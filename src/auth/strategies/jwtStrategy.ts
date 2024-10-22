@@ -1,6 +1,6 @@
-import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface";
-import HttpError from "../../../utils/customErrors/httpError";
-import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest } from "../../interfaces/httpInterface";
+import HttpError from "../../utils/customErrors/httpError";
+import { IAuthentication, IAuthStrategy } from "../../_Autenticacao/Interfaces/authInterfaces";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 class JwtStrategy implements IAuthStrategy {    

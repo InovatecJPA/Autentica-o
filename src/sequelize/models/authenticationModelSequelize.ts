@@ -1,6 +1,6 @@
 import { Model, DataTypes, Association, Sequelize } from "sequelize";
-import sequelize from "../../../config/sequelize";
-import { IAuthentication } from "../../Interfaces/authInterfaces";
+import sequelize from "../../config/sequelize";
+import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
 import { ProfileModelSequelize } from "./profileModelSequelize";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {

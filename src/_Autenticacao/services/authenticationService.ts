@@ -102,8 +102,7 @@ class AuthenticationService implements IAuthenticationService {
         await this.authRepository.createAuthentication(authData);
     }
 
-
-    //VERIFICAR ESSA FUNÇÂO
+    
 async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
     const cleanedAuthData: Partial<IAuthenticationParams> = {};
 
@@ -112,9 +111,11 @@ async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>)
             if (typeof value === 'string') {
                 const trimmedValue = value.trim();
                 if (trimmedValue !== '') {
+
                     cleanedAuthData[key as keyof IAuthenticationParams] = trimmedValue;
                 }
             } else {
+
                 cleanedAuthData[key as keyof IAuthenticationParams] = value;
             }
         }

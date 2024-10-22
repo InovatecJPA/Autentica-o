@@ -1,4 +1,4 @@
-import sequelize from "../../../config/sequelize"
+import sequelize from "../../config/sequelize"
 import { AuthenticationModelSequelize, initAuthenticationModelSequelize } from "./authenticationModelSequelize"
 import { initProfileModelSequelize, ProfileModelSequelize } from "./profileModelSequelize"
 
