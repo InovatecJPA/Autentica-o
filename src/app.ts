@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import HttpError from './utils/customErrors/httpError';
 import { IApp } from './interfaces/appInterface';
-import createAppFactory from './Apps/appFactory';
+import createAppFactory from './AppFactory/appFactory';
 import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface';
 import AuthenticationRouter from './_Autenticacao/routes/AuthenticationRouter';
 import bodyParser from 'body-parser';

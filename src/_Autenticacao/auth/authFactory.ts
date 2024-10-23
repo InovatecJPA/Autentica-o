@@ -1,4 +1,4 @@
-import { IAuthStrategy } from "../_Autenticacao/Interfaces/authInterfaces";
+import { IAuthStrategy } from "../Interfaces/authInterfaces";
 import JwtStrategy from "./strategies/jwtStrategy";
 import SessionStrategy from "./strategies/sessionStrategy";
 import dotenv from 'dotenv';

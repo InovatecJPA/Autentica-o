@@ -6,14 +6,18 @@ import { IProfile, IProfileParams } from '../Interfaces/profileInterfaces';
 class Profile implements IProfile { 
     id: string;
     name: string;
+    description: string | null;
+    grantsList: string[];
     createdAt: Date;
     updatedAt: Date;
 
-    constructor({name} : IProfileParams){
+    constructor({name, description = null} : IProfileParams){
         this.validateName(name);
         this.name = name;
 
         this.id = uuidv4()
+        this.description = description
+        this.grantsList = [];
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }

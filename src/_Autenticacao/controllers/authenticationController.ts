@@ -1,4 +1,4 @@
-import createAuthStrategy from "../../auth/authFactory";
+import createAuthStrategy from "../auth/authFactory";
 import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy} from "../Interfaces/authInterfaces";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
@@ -298,7 +298,7 @@ class AuthenticationController implements IAuthenticationController{
                 }
             }
 
-            const tokenOrSessionId = await this.authStrategy.authenticate({id: auth!.id}); 
+            const tokenOrSessionId = await this.authStrategy.authenticate(req, {id: auth!.id}); 
             if (!tokenOrSessionId) {
                 throw new HttpError(401, 'AuthStrategy Failed');
             }

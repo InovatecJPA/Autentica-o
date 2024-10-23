@@ -44,8 +44,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
 
 
 
-    async createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
-        const auth = new Authentication(authData);
+    async createAuthentication(auth: IAuthentication): Promise<IAuthentication> {
         return await models.AuthenticationModelSequelize.create(auth);
     }
 

@@ -1,4 +1,4 @@
-import createAuthStrategy from '../../auth/authFactory';
+import createAuthStrategy from '../auth/authFactory';
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from '../../interfaces/httpInterface';
 import dotenv from 'dotenv';
 

@@ -1,6 +1,6 @@
-import { IHttpAuthenticatedRequest, IHttpRequest } from "../../interfaces/httpInterface";
-import HttpError from "../../utils/customErrors/httpError";
-import { IAuthentication, IAuthStrategy } from "../../_Autenticacao/Interfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface";
+import HttpError from "../../../utils/customErrors/httpError";
+import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 class JwtStrategy implements IAuthStrategy {    
@@ -9,7 +9,7 @@ class JwtStrategy implements IAuthStrategy {
      * @param {Partial<IAuthentication>} auth - A autenticao.
      * @returns {Promise<string>} Retorna o token JWT.
      */
-    async authenticate(auth: Partial<IAuthentication>): Promise<string> {
+    async authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string> {
         return jwt.sign({ id: auth.id, profileId: auth.profileId }, process.env.JWT_SECRET || '123', { expiresIn: '1h' });
     }
 

@@ -1,10 +1,14 @@
-import { IHttpAuthenticatedRequest, IHttpRequest } from "../../interfaces/httpInterface";
-import HttpError from "../../utils/customErrors/httpError";
-import { IAuthentication, IAuthStrategy } from "../../_Autenticacao/Interfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface";
+import HttpError from "../../../utils/customErrors/httpError";
+import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
 
 class SessionStrategy implements IAuthStrategy {
 
-    async authenticate(auth: Partial<IAuthentication>): Promise<string> {
+    async authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string> {
+        if (!req.session){
+            throw new HttpError(500, 'Internal server error');
+        }
+        req.session.auth = auth;
         return `Session started for user ${auth.id}`;
     }
 
@@ -17,7 +21,6 @@ class SessionStrategy implements IAuthStrategy {
     }
 
     async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object> {
-        console.log(req.session.auth)
         if (!req.session || !req.session.auth || !req.session.auth.id 
             || !req.session.auth.profileId) {
                 throw new HttpError(401, 'Invalid session');

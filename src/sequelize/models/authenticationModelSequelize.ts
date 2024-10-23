@@ -1,7 +1,7 @@
 import { Model, DataTypes, Association, Sequelize } from "sequelize";
 import sequelize from "../../config/sequelize";
 import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
-import { ProfileModelSequelize } from "./profileModelSequelize";
+import  ProfileModelSequelize  from "./profileModelSequelize";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;
@@ -28,58 +28,55 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
             as: 'profiles'
         })
     }
+
+    public static initModel (sequelize: Sequelize) {
+        AuthenticationModelSequelize.init({ 
+            id: {
+                type: DataTypes.STRING,
+                primaryKey: true
+            },
+            profileId: {
+                type: DataTypes.STRING,
+                references: {
+                    model: 'profiles',
+                    key: 'id'
+                }
+            },
+            login: {
+                type: DataTypes.STRING
+            },
+            passwordHash: {
+                type: DataTypes.STRING
+            },
+            isExternal: {
+                type: DataTypes.BOOLEAN
+            },
+            externalId: {
+                type: DataTypes.STRING
+            },
+            active: {
+                type: DataTypes.BOOLEAN
+            },
+            password_token_reset: {
+                type: DataTypes.STRING
+            },
+            password_token_expiry_date: {
+                type: DataTypes.DATE
+            },
+            createdAt: {
+                type: DataTypes.DATE
+            },
+            updatedAt: {
+                type: DataTypes.DATE
+            }
+        }, {
+            sequelize,
+            tableName: 'authentications',
+            modelName: 'AuthenticationModelSequelize',
+            timestamps: false
+        })
+    }
 }
 
-const initAuthenticationModelSequelize = (sequelize: Sequelize) => {
-    AuthenticationModelSequelize.init({ 
-        id: {
-            type: DataTypes.STRING,
-            primaryKey: true
-        },
-        profileId: {
-            type: DataTypes.STRING,
-            // references: {
-            //     model: 'profiles',
-            //     key: 'id'
-            // }
-        },
-        login: {
-            type: DataTypes.STRING
-        },
-        passwordHash: {
-            type: DataTypes.STRING
-        },
-        isExternal: {
-            type: DataTypes.BOOLEAN
-        },
-        externalId: {
-            type: DataTypes.STRING
-        },
-        active: {
-            type: DataTypes.BOOLEAN
-        },
-        password_token_reset: {
-            type: DataTypes.STRING
-        },
-        password_token_expiry_date: {
-            type: DataTypes.DATE
-        },
-        createdAt: {
-            type: DataTypes.DATE
-        },
-        updatedAt: {
-            type: DataTypes.DATE
-        }
-    }, {
-        sequelize,
-        tableName: 'authentications',
-        modelName: 'AuthenticationModelSequelize',
-        timestamps: false
-    })
-}
 
-
-export { 
-    AuthenticationModelSequelize,
-    initAuthenticationModelSequelize
-};
+export default AuthenticationModelSequelize

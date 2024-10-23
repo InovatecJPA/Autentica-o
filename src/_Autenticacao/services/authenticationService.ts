@@ -3,6 +3,7 @@ import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAut
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import HttpError from "../../utils/customErrors/httpError";
+import Authentication from "../models/authenticationModel";
 
 
 class AuthenticationService implements IAuthenticationService {
@@ -79,7 +80,7 @@ class AuthenticationService implements IAuthenticationService {
      * @returns {Promise<void>}
      */
     async createStandartAuthentication(authData: IAuthenticationParams): Promise<void> {
-        const auth = await this.authRepository.findByLogin(authData.login!);
+        let auth = await this.authRepository.findByLogin(authData.login!);
         
         if (auth) {
             throw new HttpError(409, 'Authentication already exists');
@@ -89,39 +90,42 @@ class AuthenticationService implements IAuthenticationService {
         const password = await bcrypt.hash(authData.passwordHash!, salt);
         authData.passwordHash = password 
 
-        await this.authRepository.createAuthentication(authData);
+        auth = new Authentication(authData);
+
+        await this.authRepository.createAuthentication(auth);
     }
 
     async createExternalAuthentication(authData: IAuthenticationParams): Promise<void> {
-        const auth = await this.authRepository.findByExternalId(authData.externalId!);
+        let auth = await this.authRepository.findByExternalId(authData.externalId!);
         
         if (auth) {
             throw new HttpError(409, 'Authentication already exists');
         }
         
-        await this.authRepository.createAuthentication(authData);
+        auth = new Authentication(authData);
+        await this.authRepository.createAuthentication(auth);
     }
 
     
 async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
-    const cleanedAuthData: Partial<IAuthenticationParams> = {};
+    const auth = await this.authRepository.findById(id);
+    if (!auth) {
+        throw new HttpError(404, 'Authentication not found');
+    }
+    
+    const filteredData = Object.entries(authData)
+        .filter(([_, value]) => value !== null && value !== undefined && 
+            !(typeof value === 'string' && value.trim() === ''))
+        .reduce((acc, [key, value]) => {
+            acc[key as keyof IAuthenticationParams] = value as any
+            return acc
+        }, {} as Partial<IAuthenticationParams>)
 
-    for (const [key, value] of Object.entries(authData)) {
-        if (value !== undefined && value !== null) {
-            if (typeof value === 'string') {
-                const trimmedValue = value.trim();
-                if (trimmedValue !== '') {
-
-                    cleanedAuthData[key as keyof IAuthenticationParams] = trimmedValue;
-                }
-            } else {
-
-                cleanedAuthData[key as keyof IAuthenticationParams] = value;
-            }
-        }
+    if (Object.keys(filteredData).length === 0) {
+        throw new HttpError(400, 'No data to update');
     }
 
-    await this.authRepository.updateAuthentication(id, cleanedAuthData);
+    await this.authRepository.updateAuthentication(id, filteredData);
 }
 
     /**

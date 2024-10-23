@@ -26,7 +26,7 @@ export interface IAuthenticationParams {
 }
 
 export interface IAuthenticationRepository {
-    createAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
+    createAuthentication(authData: IAuthentication): Promise<IAuthentication>;
     updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
     findById(id: string): Promise<IAuthentication | null>;
     findByToken(token: string): Promise<IAuthentication | null>;
@@ -71,7 +71,7 @@ export interface IAuthenticationController {
 
 
 export interface IAuthStrategy {
-    authenticate(auth: Partial<IAuthentication>): Promise<string>;
+    authenticate(req: IHttpRequest,auth: Partial<IAuthentication>): Promise<string>;
     verify(tokenOrSessionId: string): Promise<object | string>;
     checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object>;
 }
