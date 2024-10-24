@@ -5,10 +5,7 @@ import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces"
 class SessionStrategy implements IAuthStrategy {
 
     async authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string> {
-        if (!req.session){
-            throw new HttpError(500, 'Internal server error');
-        }
-        req.session.auth = auth;
+        req.session = { auth: auth };
         return `Session started for user ${auth.id}`;
     }
 

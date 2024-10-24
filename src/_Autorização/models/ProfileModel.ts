@@ -7,7 +7,6 @@ class Profile implements IProfile {
     id: string;
     name: string;
     description: string | null;
-    grantsList: string[];
     createdAt: Date;
     updatedAt: Date;
 
@@ -17,7 +16,6 @@ class Profile implements IProfile {
 
         this.id = uuidv4()
         this.description = description
-        this.grantsList = [];
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }

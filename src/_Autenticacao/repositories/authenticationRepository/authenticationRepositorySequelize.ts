@@ -1,5 +1,4 @@
 import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../Interfaces/authInterfaces";
-import Authentication from "../../models/authenticationModel";
 import { models } from "../../../sequelize/models";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {

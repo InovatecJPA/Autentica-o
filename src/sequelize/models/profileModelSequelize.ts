@@ -11,11 +11,13 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
     public createdAt!: Date;
     public updatedAt!: Date;
 
-    public addGrant!: (grant: GrantsModelSequelize) => Promise<void>;
-    public addGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
     public getGrants!: () => Promise<GrantsModelSequelize[]>;
-    public removeGrant!: (grant: GrantsModelSequelize) => Promise<void>;
+    public addGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
     public removeGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
+
+    public getAuthentications!: () => Promise<AuthenticationModelSequelize[]>;
+    public addAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
+    public removeAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
 
     public static associations: {
         authentication: Association<ProfileModelSequelize, AuthenticationModelSequelize>;
@@ -23,9 +25,10 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
     }
 
     public static associate (models: any) {
-        this.hasOne(models.AuthenticationModelSequelize, {
+        this.belongsToMany(models.AuthenticationModelSequelize, {
+            through: "authentication_profiles",
             foreignKey: 'profileId',
-            sourceKey: 'id',
+            otherKey: 'authenticationId',
             as: 'authentication'
         })
 

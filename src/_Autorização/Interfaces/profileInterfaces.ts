@@ -1,3 +1,4 @@
+import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces"
 import { IGrants } from "./grantsInterfaces"
 
 export interface IProfile {
@@ -16,26 +17,31 @@ export interface IProfileParams {
 export interface IProfileRepository {
     findAll(): Promise<IProfile[]>
     findById(id: string): Promise<IProfile | null>
+    findByIds(ids: string[]): Promise<IProfile[]>
     findByName(name: string): Promise<IProfile | null>
     createProfile(profileData: IProfile): Promise<IProfile | null>
     updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<IProfile>
     deleteProfile(id: string): Promise<void>
 
-    addGrantToProfile(profileId: IProfile, grantId: IGrants): Promise<void>
-    addGrantsToProfile(profileId: IProfile, grants: IGrants[]): Promise<void>
-    removeGrantFromProfile(profileId: IProfile, grantId: IGrants): Promise<void>
-    removeGrantsFromProfile(profileId: IProfile, grants: IGrants[]): Promise<void>
-    getGrantsByProfileId(profileId: IProfile): Promise <IGrants[]>
+    getAuthenticationsByProfileId(profile: IProfile): Promise<IAuthentication[]>
+    addProfilesToAuthentication(profiles: IProfile[], auth: IAuthentication): Promise<void>
+    removeProfilesFromAuthentication(profiles: IProfile[], auth: IAuthentication): Promise<void>
+
+    getGrantsByProfileId(profile: IProfile): Promise <IGrants[]>
+    addProfileToGrants(profile: IProfile, grants: IGrants[]): Promise<void>
+    removeProfileFromGrants(profile: IProfile, grants: IGrants[]): Promise<void>
 }
 
 export interface IProfileService {
-    findById(id: string): Promise<IProfile | null>
     findAll(): Promise<IProfile[]>
+    findById(id: string): Promise<IProfile | null>
     createProfile(profileData: IProfileParams): Promise<void | null>
     updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<void>
     deleteProfile(id: string): Promise<void>
-    addProfileToUser(userId: string, profileId: string): Promise<void>
-    removeProfileFromUser(userId: string, profileId: string): Promise<void>
-    addGrantsToProfile(grantsId: string[], profileId: string): Promise<void>
-    removeProfileFromGrants(grantId: string, profileId: string): Promise<void>
+    
+    addProfilesToAuthentication(profilesId: string[], userId: string): Promise<void>
+    removeProfilesFromAuthentication(profilesId: string[], authId: string): Promise<void>
+    
+    addProfileToGrants(profileId: string, grantsId: string[]): Promise<void>
+    removeProfileFromGrants(profileId: string, grantsId: string[]): Promise<void>
 }

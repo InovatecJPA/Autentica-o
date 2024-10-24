@@ -9,7 +9,6 @@ export interface IAuthentication {
     active: boolean;
     password_token_reset: string | null;
     password_token_expiry_date: Date | null;
-    profileId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -65,7 +64,7 @@ export interface IAuthenticationController {
     deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-    toggleAuthenticationStatus(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    toggleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 

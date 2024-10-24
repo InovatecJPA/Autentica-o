@@ -1,4 +1,6 @@
+import { IAuthentication } from "../../../_Autenticacao/Interfaces/authInterfaces";
 import { models } from "../../../sequelize/models";
+import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
 import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
 import { IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces";
@@ -10,7 +12,10 @@ class ProfileRepositorySequelize implements IProfileRepository {
 
     async findById(id: string): Promise<IProfile | null> {
         return await models.ProfileModelSequelize.findByPk(id);
-        
+    }
+
+    async findByIds(ids: string[]): Promise<IProfile[]> {
+        return await models.ProfileModelSequelize.findAll({ where: { id: ids } });
     }
 
     async findByName(name: string): Promise<IProfile | null> {
@@ -42,25 +47,35 @@ class ProfileRepositorySequelize implements IProfileRepository {
         await models.ProfileModelSequelize.destroy({ where: { id } });
     }   
 
-    async addGrantToProfile(profile: ProfileModelSequelize, grants: GrantsModelSequelize): Promise<void> {
-        await profile.addGrant(grants);
+    async getAuthenticationsByProfileId(profile: ProfileModelSequelize): Promise<IAuthentication[]> {
+        return await profile.getAuthentications();
     }
 
-    async addGrantsToProfile(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
-        await profile.addGrants(grants);
+    async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {
+        for (const profile of profiles) {
+            await profile.addAuthentication(auth);
+        }
+    }
+    
+    async removeProfilesFromAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {
+        for (const profile of profiles) {
+            await profile.removeAuthentication(auth);
+        }
     }
 
-    async removeGrantFromProfile(profile: ProfileModelSequelize, grants: GrantsModelSequelize): Promise<void> {
-        await profile.removeGrant(grants);
-    }
-
-    async removeGrantsFromProfile(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
-        await profile.removeGrants(grants);
-    }
 
     async getGrantsByProfileId(profile: ProfileModelSequelize): Promise<GrantsModelSequelize[]> {
         return await profile.getGrants();
     }
+
+    async addProfileToGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
+        await profile.addGrants(grants);
+    }
+
+    async removeProfileFromGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
+        await profile.removeGrants(grants);
+    }
+
 }
 
 export default ProfileRepositorySequelize

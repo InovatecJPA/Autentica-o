@@ -9,9 +9,7 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
         const authStrategy = createAuthStrategy();
 
         const authId = await authStrategy.checkAuthentication(req)
-        
-        console.log(authId)
-        
+                
         if (!authId) {
             return res.status(401).json({ message: 'User not authenticated' });
         }

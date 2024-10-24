@@ -5,7 +5,6 @@ import  ProfileModelSequelize  from "./profileModelSequelize";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;
-    public profileId!: string;
     public login!: string | null;
     public passwordHash!: string | null;
     public isExternal!: boolean;
@@ -22,9 +21,10 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
 
 
     public static associate (models: any) {
-        this.belongsTo(models.ProfileModelSequelize, {
-            foreignKey: 'profileId',
-            targetKey: 'id',
+        this.belongsToMany(models.ProfileModelSequelize, {
+            through: "authentication_profiles",
+            foreignKey: 'authenticationId',
+            otherKey: 'profileId',
             as: 'profiles'
         })
     }
@@ -34,13 +34,6 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
             id: {
                 type: DataTypes.STRING,
                 primaryKey: true
-            },
-            profileId: {
-                type: DataTypes.STRING,
-                references: {
-                    model: 'profiles',
-                    key: 'id'
-                }
             },
             login: {
                 type: DataTypes.STRING

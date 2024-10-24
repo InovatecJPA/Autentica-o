@@ -23,6 +23,7 @@ export interface IGrantsRepository{
 
 export interface IGrantsService{
     findAll(): Promise<IGrants[]>
+    findByIds(ids: string[]): Promise<IGrants[]>
     findById(id: string): Promise<IGrants | null> 
     createGrants(grantsData: IGrantsParams): Promise<IGrants | null>
     updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<IGrants | null>

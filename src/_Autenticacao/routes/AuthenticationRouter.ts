@@ -1,5 +1,5 @@
 import {  IAppRouter } from "../../interfaces/appInterface";
-import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import { IAuthenticationController } from "../Interfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
@@ -49,20 +49,21 @@ class AuthenticationRouter {
             this.authenticationController.requestPasswordChange(req, res, next);
         });
 
-        app.post(`${basePath}/validate-password`, authenticate, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/validate-password`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.validatePassword(req, res, next);
         });
     }
 
     private registerRoutesPut(basePath: string, app: IAppRouter): void {
         
-        app.put(`${basePath}/update-password`, authenticate, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.updatePassword(req, res, next);
-        });
-        
         app.put(`${basePath}/toggle-status/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.toggleAuthenticationStatus(req, res, next);
         });
+
+        app.put(`${basePath}/update-password`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.updatePassword(req, res, next);
+        });
+        
         
         app.put(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updateAuthentication(req, res, next);

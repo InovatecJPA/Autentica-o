@@ -5,7 +5,6 @@ import { IAuthenticationParams, IAuthentication } from '../Interfaces/authInterf
 
 class Authentication implements IAuthentication { 
     id: string;
-    profileId: string;
     login!: string | null;
     passwordHash!: string | null;
     isExternal: boolean;
@@ -38,7 +37,6 @@ class Authentication implements IAuthentication {
         this.isExternal = isExternal;
         this.password_token_reset = null;
         this.password_token_expiry_date = null;
-        this.profileId = '1';
         this.active = true ;
         this.createdAt = new Date();
         this.updatedAt = new Date();
