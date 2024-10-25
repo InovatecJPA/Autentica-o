@@ -1,4 +1,7 @@
+import HttpError from "../../utils/customErrors/httpError";
 import { IGrants, IGrantsParams, IGrantsRepository, IGrantsService } from "../Interfaces/grantsInterfaces";
+import { IProfile, IProfileParams } from "../Interfaces/profileInterfaces";
+import Grants from "../models/grantsModel";
 import { createGrantsRepository } from "../repositories/factoryAuthorizationRepository";
 
 class GrantsService implements IGrantsService{
@@ -16,25 +19,61 @@ class GrantsService implements IGrantsService{
         return GrantsService.instance;
     }
     
-    findAll(): Promise<IGrants[]> {
-        throw new Error("Method not implemented.");
+    async findAll(): Promise<IGrants[]> {
+        return await this.grantsRepository.findAll();
     }
-    findByIds(ids: string[]): Promise<IGrants[]> {
-        throw new Error("Method not implemented.");
+    async findByIds(ids: string[]): Promise<IGrants[]> {
+        return await this.grantsRepository.findByIds(ids);
     }
-    findById(id: string): Promise<IGrants | null> {
-        throw new Error("Method not implemented.");
+    async findById(id: string): Promise<IGrants | null> {
+        return await this.grantsRepository.findById(id);
     }
-    createGrants(grantsData: IGrantsParams): Promise<IGrants | null> {
-        throw new Error("Method not implemented.");
+
+    async createGrants(grantsData: IGrantsParams): Promise<void> {
+        const grantExist = await this.grantsRepository.findByMethodAndPath(grantsData.method, grantsData.path);
+        if (grantExist) {
+            throw new HttpError(409, 'Grant already exists');
+        }
+
+        const grant = new Grants(grantsData)
+
+        await this.grantsRepository.createGrants(grant);
     }
-    updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<IGrants | null> {
-        throw new Error("Method not implemented.");
+
+    async updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<void> {
+        const existingGrants = await this.grantsRepository.findById(id);
+
+        if (!existingGrants) {
+            throw new HttpError(404, 'Grants not found');
+        }
+
+        const filteredData = Object.entries(updateData)
+            .filter(([_, value]) => value !== null && value !== undefined && 
+                !(typeof value === 'string' && value.trim() === ''))
+            .reduce((acc, [key, value]) => {
+                acc[key as keyof IGrantsParams] = value as any;
+                return acc;
+            }, {} as Partial<IGrantsParams>);
+
+        if (Object.keys(filteredData).length === 0) {
+            throw new HttpError(400, 'No valid fields provided for update');
+        }
+
+        await this.grantsRepository.updateGrants(id, filteredData);
+    
     }
-    deleteGrants(id: string): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async deleteGrants(id: string): Promise<void> {
+        await this.grantsRepository.deleteGrants(id);
     }
     
+    async getProfilesByGrantsId(grantId: string): Promise<IProfile[]> {
+        const grants = await this.grantsRepository.findById(grantId);
+        if (!grants) {
+            throw new HttpError(404, 'Grants not found');
+        }
+        return await this.grantsRepository.getProfilesByGrantsId(grants);
+    }
 }
 
 export default GrantsService.getInstance();

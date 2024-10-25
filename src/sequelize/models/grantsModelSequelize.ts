@@ -12,6 +12,8 @@ class GrantsModelSequelize extends Model<IGrants> implements IGrants {
     createdAt!: Date;
     updatedAt!: Date;
     
+    public getProfiles!: () => Promise<ProfileModelSequelize[]>
+
     public static associations: { 
         profiles: Association<GrantsModelSequelize, ProfileModelSequelize> 
     };

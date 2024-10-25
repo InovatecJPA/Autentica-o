@@ -4,6 +4,7 @@ import AuthenticationModelSequelize from "../../../sequelize/models/authenticati
 import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
 import { IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces";
+import { Op, QueryTypes } from "sequelize";
 
 class ProfileRepositorySequelize implements IProfileRepository {
     async findAll(): Promise<IProfile[]> {
@@ -61,6 +62,46 @@ class ProfileRepositorySequelize implements IProfileRepository {
         for (const profile of profiles) {
             await profile.removeAuthentication(auth);
         }
+    }
+
+    async getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
+        const profileAssociations = await models.ProfileModelSequelize.sequelize?.query(
+            `SELECT profileId FROM authentication_profiles WHERE authenticationId = :authenticationId`,
+            {
+                replacements: { authenticationId },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        const profileIds = profileAssociations?.map((assoc: any) => assoc.profileId) || [];
+
+        if (profileIds.length > 0) {
+            return await models.ProfileModelSequelize.findAll({
+                where: { id: { [Op.in]: profileIds } }
+            });
+        }
+
+        return []; 
+    }
+
+    async getProfilesByGrantsId(grantsId: string[]): Promise<IProfile[]> {
+        const profileAssociations = await models.ProfileModelSequelize.sequelize?.query(
+            `SELECT profileId FROM grants_profiles WHERE grantsId = :grantsId`,
+            {
+                replacements: { grantsId },
+                type: QueryTypes.SELECT
+            }
+        );
+
+        const profileIds = profileAssociations?.map((assoc: any) => assoc.profileId) || [];
+
+        if (profileIds.length > 0) {
+            return await models.ProfileModelSequelize.findAll({
+                where: { id: { [Op.in]: profileIds } }
+            });
+        }
+
+        return [];
     }
 
 

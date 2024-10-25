@@ -10,7 +10,7 @@ class JwtStrategy implements IAuthStrategy {
      * @returns {Promise<string>} Retorna o token JWT.
      */
     async authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string> {
-        return jwt.sign({ id: auth.id, profileId: auth.profileId }, process.env.JWT_SECRET || '123', { expiresIn: '1h' });
+        return jwt.sign({ id: auth.id }, process.env.JWT_SECRET || '123', { expiresIn: '1h' });
     }
 
     async verify(token: string): Promise<JwtPayload> {
@@ -30,7 +30,7 @@ class JwtStrategy implements IAuthStrategy {
     }
 
 
-    async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<{id: string, profileId: string}>{
+    async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<{id: string}>{
         if(req.headers.authorization) {
             const authHeader = req.headers.authorization.split(' ');
 
@@ -41,7 +41,7 @@ class JwtStrategy implements IAuthStrategy {
             const token = authHeader[1];
             const token_decoded = jwt.verify(token, process.env.JWT_SECRET || "123");
 
-            return token_decoded as {id: string, profileId: string};
+            return token_decoded as {id: string };
         } else {
             throw new HttpError(401, 'Invalid token');
         }

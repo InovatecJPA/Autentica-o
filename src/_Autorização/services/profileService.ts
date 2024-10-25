@@ -153,6 +153,11 @@ class ProfileService implements IProfileService {
 
         return this.profileRepository.removeProfilesFromAuthentication(profiles, auth); 
     }
+
+    getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
+        return this.profileRepository.getProfilesByAuthenticationId(authenticationId);
+    }
+
 }
 
 export default ProfileService.getInstance();
