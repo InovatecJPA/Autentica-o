@@ -7,6 +7,7 @@ import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterfa
 import AuthenticationRouter from './_Autenticacao/routes/AuthenticationRouter';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
+import ProfileRouter from './_Autorização/routes/profileRouter';
 
   
 class App {
@@ -42,6 +43,7 @@ class App {
 
     private routes() {
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
+        ProfileRouter.registerRoutes("/v1/profile", this.app.router);
 
         this.app.use(this.app.router.getRouter());
     }

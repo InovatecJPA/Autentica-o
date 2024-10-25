@@ -1,12 +1,12 @@
 import {  IAppRouter } from "../../interfaces/appInterface";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
-import { IAuthenticationController } from "../Interfaces/authInterfaces";
+import { IAuthenticationController, IAuthenticationRouter } from "../Interfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
 
 
 
-class AuthenticationRouter {
+class AuthenticationRouter implements IAuthenticationRouter {
     private static instance: AuthenticationRouter;
     private authenticationController: IAuthenticationController;
 
@@ -25,6 +25,7 @@ class AuthenticationRouter {
     private registerMiddleware(app: IAppRouter): void {
         app.use(authenticate)
     }
+
 
     private registerRoutesGet(basePath: string, app: IAppRouter): void {
         app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {

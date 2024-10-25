@@ -1,3 +1,4 @@
+import { IAppRouter } from "../../interfaces/appInterface";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 
 export interface IAuthentication {
@@ -68,6 +69,9 @@ export interface IAuthenticationController {
     updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
+export interface IAuthenticationRouter{
+    registerRoutes(basePath: string, app: IAppRouter): void;
+}
 
 export interface IAuthStrategy {
     authenticate(req: IHttpRequest,auth: Partial<IAuthentication>): Promise<string>;

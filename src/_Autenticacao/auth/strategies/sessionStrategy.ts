@@ -18,11 +18,10 @@ class SessionStrategy implements IAuthStrategy {
     }
 
     async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object> {
-        if (!req.session || !req.session.auth || !req.session.auth.id 
-            || !req.session.auth.profileId) {
+        if (!req.session || !req.session.auth || !req.session.auth.id ) {
                 throw new HttpError(401, 'Invalid session');
             }
-        return { id: req.session.auth.id, profileId: req.session.auth.profileId };
+        return { id: req.session.auth.id };
     }
 
 }

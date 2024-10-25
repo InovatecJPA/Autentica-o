@@ -22,4 +22,6 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
     }
 }
 
-export {authenticate}
+export {
+    authenticate
+}
