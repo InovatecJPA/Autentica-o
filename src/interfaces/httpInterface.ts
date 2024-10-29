@@ -9,6 +9,8 @@ export interface IHttpRequest {
 }
 
 export interface IHttpAuthenticatedRequest extends IHttpRequest {
+    method: string;
+    path: any;
     session: {
         auth: Partial<IAuthentication>
     }

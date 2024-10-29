@@ -1,8 +1,8 @@
-import { authenticate } from "passport";
 import { IAppRouter } from "../../interfaces/appInterface";
 import grantsController from "../controllers/grantsController";
 import { IGrants, IGrantsController, IGrantsRouter } from "../Interfaces/grantsInterfaces";
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
+import { authenticate } from "../../_Autenticacao/middlewares/authenticate";
 
 class GrantsRouter implements IGrantsRouter{
     private grantsController: IGrantsController;

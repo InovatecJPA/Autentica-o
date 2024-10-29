@@ -9,6 +9,7 @@ export interface IGrants{
     description: string | null
     createdAt: Date
     updatedAt: Date
+    grants_profiles?: IProfile[]
 }
 
 export interface IGrantsParams{

@@ -8,6 +8,7 @@ import AuthenticationRouter from './_Autenticacao/routes/AuthenticationRouter';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import ProfileRouter from './_Autorização/routes/profileRouter';
+import grantsRouter from './_Autorização/routes/grantsRouter';
 
   
 class App {
@@ -44,21 +45,20 @@ class App {
     private routes() {
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
+        grantsRouter.registerRoutes("/v1/grants", this.app.router);
 
+    
         this.app.use(this.app.router.getRouter());
     }
 
     private errorHandler() {
         this.app.use((err: any, req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            if (!res.headersSent) {
-                if (err instanceof HttpError) {
-                    res.status(err.status).json({ message: err.message });
-                } else {
-                    res.status(500).json({ message: err.message });
-                }
+            if (err instanceof HttpError) {
+                res.status(err.status).json({ message: err.message });
             } else {
-                next();
+                res.status(500).json({ message: err.message });
             }
+
         });
     }
 
