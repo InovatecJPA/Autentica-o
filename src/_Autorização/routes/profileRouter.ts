@@ -27,7 +27,7 @@ class ProfileRouter implements IProfileRouter{
     private registerRoutesGet(basePath: string, app: IAppRouter): void {
         this.registerMiddleware(app);
 
-        app.get(`${basePath}/list`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.findAll(req, res, next);
         })
 

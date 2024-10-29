@@ -56,6 +56,22 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    async findMe(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const id = req.session.auth.id;
+
+            const user = await this.authService.findById(id!);
+
+            if(!user) {
+                throw new HttpError(404, 'User not found');
+            }
+
+            res.status(200).json(user);
+        } catch (error: any) {
+            next(error)
+        }
+    }
+
 
     /**
      * Finds an authentication by id.

@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize"
-import sequelize from "../../config/sequelize"
+import sequelize from "../../config/config"
 import AuthenticationModelSequelize from "./authenticationModelSequelize"
 import GrantsModelSequelize from "./grantsModelSequelize"
 import ProfileModelSequelize from "./profileModelSequelize"
