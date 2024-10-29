@@ -49,7 +49,7 @@ class ProfileRepositorySequelize implements IProfileRepository {
     }   
 
     async getAuthenticationsByProfileId(profile: ProfileModelSequelize): Promise<IAuthentication[]> {
-        return await profile.getAuthentications();
+        return await profile.getAuthentication();
     }
 
     async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {
@@ -66,7 +66,7 @@ class ProfileRepositorySequelize implements IProfileRepository {
 
     async getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
         const profileAssociations = await models.ProfileModelSequelize.sequelize?.query(
-            `SELECT profileId FROM authentication_profiles WHERE authenticationId = :authenticationId`,
+            `SELECT "profileId" FROM authentication_profiles WHERE "authenticationId" = :authenticationId`,
             {
                 replacements: { authenticationId },
                 type: QueryTypes.SELECT
@@ -106,7 +106,15 @@ class ProfileRepositorySequelize implements IProfileRepository {
 
 
     async getGrantsByProfileId(profile: ProfileModelSequelize): Promise<GrantsModelSequelize[]> {
-        return await profile.getGrants();
+        const grants =  await profile.getGrants({
+            attributes: ['id', 'method', 'path','description'],
+            through: { attributes: [] }
+        });
+
+        return grants.map(grant => {
+            const { grants_profiles, ...grantData } = grant.toJSON();
+            return grantData as GrantsModelSequelize;
+        });
     }
 
     async addProfileToGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {

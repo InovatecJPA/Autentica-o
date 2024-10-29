@@ -124,7 +124,7 @@ class ProfileController implements IProfileController {
                 throw new HttpError(400, "Id is required");
             }
              if(!Array.isArray(profilesId) || profilesId.length < 1){
-                throw new HttpError(400, "AuthenticationId is required");
+                throw new HttpError(400, "ProfilesId is required");
             }
             await this.profileService.addProfilesToAuthentication(profilesId, authId);
             
@@ -157,7 +157,7 @@ class ProfileController implements IProfileController {
             if(!id){
                 throw new HttpError(400, "Id is required");
             }
-            const grants = this.profileService.getGrantsByProfileId(id);
+            const grants = await this.profileService.getGrantsByProfileId(id);
             res.status(200).send(grants);
 
         } catch (error: any) {

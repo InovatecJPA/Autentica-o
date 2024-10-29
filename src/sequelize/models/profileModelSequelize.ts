@@ -11,11 +11,11 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
     public createdAt!: Date;
     public updatedAt!: Date;
 
-    public getGrants!: () => Promise<GrantsModelSequelize[]>;
+    public getGrants!: (options : object) => Promise<GrantsModelSequelize[]>;
     public addGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
     public removeGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
 
-    public getAuthentications!: () => Promise<AuthenticationModelSequelize[]>;
+    public getAuthentication!: () => Promise<AuthenticationModelSequelize[]>;
     public addAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
     public removeAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
 

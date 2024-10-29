@@ -3,6 +3,7 @@ import { IAppRouter } from "../../interfaces/appInterface";
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import profileController from "../controllers/profileController";
 import { IProfileController, IProfileRouter } from "../Interfaces/profileInterfaces";
+import authorize from "../middlewares/authorize";
 
 class ProfileRouter implements IProfileRouter{
     private static instance: ProfileRouter
@@ -24,7 +25,9 @@ class ProfileRouter implements IProfileRouter{
     }
 
     private registerRoutesGet(basePath: string, app: IAppRouter): void {
-        app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        this.registerMiddleware(app);
+
+        app.get(`${basePath}/list`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.findAll(req, res, next);
         })
 
