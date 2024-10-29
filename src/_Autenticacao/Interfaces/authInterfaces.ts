@@ -58,9 +58,11 @@ export interface IAuthenticationService  {
 export interface IAuthenticationController {
     findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     findById(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    findMe(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     requestPasswordChange(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;

@@ -32,6 +32,10 @@ class AuthenticationRouter implements IAuthenticationRouter {
             this.authenticationController.findAll(req, res, next);
         })
 
+        app.get(`${basePath}/me`, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.findMe(req, res, next);
+        })
+
         app.get(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findById(req, res, next);
         })
@@ -65,6 +69,9 @@ class AuthenticationRouter implements IAuthenticationRouter {
             this.authenticationController.updatePassword(req, res, next);
         });
         
+        app.put(`${basePath}/me`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.updateMyAuthentication(req, res, next);
+        });
         
         app.put(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updateAuthentication(req, res, next);
