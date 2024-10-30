@@ -36,7 +36,16 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
 
         const profiles = await profileService.getProfilesByAuthenticationId(userId);
 
+        if (profiles.length > 0 && profiles.some(profile => profile.name === 'Admin')){
+            return next();
+        }
+
         const grantPromises = profiles.map(async (profile) => {
+
+            if (profile.name === 'Admin') {
+                return true;
+            }
+
             const grants = await profileService.getGrantsByProfileId(profile.id);
             return grants.some(grant => {
                 return isPathMatch(grant.path, path) && grant.method === method;

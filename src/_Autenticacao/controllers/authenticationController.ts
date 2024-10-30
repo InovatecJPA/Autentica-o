@@ -3,8 +3,8 @@ import { IAuthenticationParams, IAuthenticationController, IAuthenticationServic
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
 import HttpError from "../../utils/customErrors/httpError";
-import { nextTick } from "process";
- 
+import {sendPasswordResetEmail} from "../../utils/mail/Email"
+
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
@@ -205,7 +205,7 @@ class AuthenticationController implements IAuthenticationController{
      *          occurs.
      * @throws {Error} If an error occurs while creating the password token.
      */
-    async requestPasswordChange(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    async requestPasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { login } = req.body;
             
@@ -219,17 +219,16 @@ class AuthenticationController implements IAuthenticationController{
                throw new HttpError(404, 'Authentication not found');
             }
 
-            this.authService.setPasswordTokenAndExpiryDate(auth!.id);
-            // Implementar funcionalidade
-            // Criar serviço de email
-            // this.mailerService.sendPasswordResetEmail(auth!.login);
+            const token = await this.authService.setPasswordTokenAndExpiryDate(auth!.id);
+
+            await sendPasswordResetEmail(login, token);
             res.status(200).json({ message: 'Password token created successfully' });
         }catch(error: any){
             next(error)
         }
     }
 
-    async updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    async updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { token } = req.params;
             const { password } = req.body;
