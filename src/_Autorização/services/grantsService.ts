@@ -4,6 +4,12 @@ import { IProfile, IProfileParams } from "../Interfaces/profileInterfaces";
 import Grants from "../models/grantsModel";
 import { createGrantsRepository } from "../repositories/factoryAuthorizationRepository";
 
+/**
+ * @inheritdoc
+ * 
+ * @class GrantsService
+ * @implements {IGrantsService}
+ */
 class GrantsService implements IGrantsService{
     private static instance: GrantsService;
     private grantsRepository: IGrantsRepository;

@@ -3,6 +3,10 @@ import authenticationRepositorySequelize from "./authenticationRepository/authen
 import dotenv from 'dotenv';
 dotenv.config();
 
+/**
+ * Define qual o tipo de repositório que sera utilizado com base no .env
+ * @returns {IAuthenticationRepository}
+ */
 function createAuthenticationRepository(): IAuthenticationRepository {
     if (process.env.AUTHENTICATION_REPOSITORY === "sequelize") {
         return new authenticationRepositorySequelize();

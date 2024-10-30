@@ -7,10 +7,21 @@ class ProfileController implements IProfileController {
     private profileService: IProfileService;
     private static instance: IProfileController;
 
+    /**
+     * Private constructor for the ProfileController.
+     * It is private because only the getInstance method should be able to create an instance of this class.
+     * @param profileService The profile service to use.
+     */
     private constructor(profileService: IProfileService) {
         this.profileService = profileService;
     }
 
+
+    /**
+     * Gets an instance of the ProfileController.
+     * If the instance doesn't exist, it creates one with the given profileService.
+     * @returns The instance of the ProfileController.
+     */
     public static getInstance(): IProfileController {
         if(!ProfileController.instance){
             ProfileController.instance = new ProfileController(profileService);
@@ -18,6 +29,17 @@ class ProfileController implements IProfileController {
         return ProfileController.instance;
     }
 
+/**
+ * Retrieves all profiles and sends them in the response.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object.
+ * @param {IHttpResponse} res - The HTTP response object.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws an error if an issue occurs while retrieving profiles.
+ */
     async findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const profiles = await this.profileService.findAll();
@@ -27,12 +49,23 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
+    /**
+     * Retrieves a profile by its id and sends it in the response.
+     * 
+     * @param {IHttpRequest} req - The HTTP request object.
+     * @param {IHttpResponse} res - The HTTP response object.
+     * @param {IHttpNext} next - The next middleware function in the stack.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     * 
+     * @throws {HttpError} Throws an error if an issue occurs while retrieving a profile.
+     */
     async findById(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         const { id } = req.params;
         try{
             const profile = await this.profileService.findById(id);
             if(!profile){
-                throw new Error("Profile not found");
+                throw new HttpError(404, "Profile not found");
             }
             res.status(200).send(profile);
         }catch(error: any){
@@ -40,6 +73,17 @@ class ProfileController implements IProfileController {
         }
     }
 
+    /**
+     * Creates a new profile.
+     * 
+     * @param {IHttpRequest} req - The HTTP request object.
+     * @param {IHttpResponse} res - The HTTP response object.
+     * @param {IHttpNext} next - The next middleware function in the stack.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     * 
+     * @throws {HttpError} Throws an error if an issue occurs while creating a profile.
+     */
     async createProfile(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { name, description } = req.body;
@@ -60,6 +104,17 @@ class ProfileController implements IProfileController {
         }
     }
 
+    /**
+     * Updates a profile.
+     * 
+     * @param {IHttpRequest} req - The HTTP request object.
+     * @param {IHttpResponse} res - The HTTP response object.
+     * @param {IHttpNext} next - The next middleware function in the stack.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     * 
+     * @throws {HttpError} Throws an error if an issue occurs while updating a profile.
+     */
     async updateProfile(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { id } = req.params;
@@ -86,6 +141,17 @@ class ProfileController implements IProfileController {
         }    
     }
 
+    /**
+     * Deletes a profile.
+     * 
+     * @param {IHttpRequest} req - The HTTP request object.
+     * @param {IHttpResponse} res - The HTTP response object.
+     * @param {IHttpNext} next - The next middleware function in the stack.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     * 
+     * @throws {HttpError} Throws an error if an issue occurs while deleting a profile.
+     */
     async deleteProfile(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
@@ -100,6 +166,17 @@ class ProfileController implements IProfileController {
         }
     }
     
+/**
+ * Retrieves all authentications associated with a profile by its id and sends them in the response.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object containing the profile id in the params.
+ * @param {IHttpResponse} res - The HTTP response object to send the authentications.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws a 400 error if the id is not provided or a 404 error if the profile is not found.
+ */
     async getAuthenticationsByProfileId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { id } = req.params;
@@ -115,6 +192,17 @@ class ProfileController implements IProfileController {
         } 
     }
 
+/**
+ * Adds one or more profiles to an authentication by its id and sends a success message in the response.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object containing the authentication id in the params and the profiles id in the body.
+ * @param {IHttpResponse} res - The HTTP response object to send the success message.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws a 400 error if the id or profilesId is not provided or a 404 error if the authentication or profiles are not found.
+ */
     async addProfilesToAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { authId } = req.params;
@@ -133,6 +221,17 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
+/**
+ * Removes one or more profiles from an authentication by its id and sends a success message in the response.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object containing the authentication id in the params and the profiles id in the body.
+ * @param {IHttpResponse} res - The HTTP response object to send the success message.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws a 400 error if the id or profilesId is not provided or a 404 error if the authentication or profiles are not found.
+ */
     async removeProfilesFromAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { auth_id } = req.params;
@@ -151,6 +250,17 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
+/**
+ * Retrieves all grants associated with a profile by its id and sends them in the response.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object containing the profile id in the params.
+ * @param {IHttpResponse} res - The HTTP response object to send the grants.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws a 400 error if the id is not provided or a 404 error if the profile is not found.
+ */
     async getGrantsByProfileId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
@@ -164,6 +274,17 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
+/**
+ * Adds a profile to a grant by its id and sends a success message.
+ * 
+ * @param {IHttpRequest} req - The HTTP request object containing the profile id in the params and the grants id in the body.
+ * @param {IHttpResponse} res - The HTTP response object to send the success message.
+ * @param {IHttpNext} next - The next middleware function in the stack.
+ * 
+ * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * 
+ * @throws {HttpError} Throws a 400 error if the id or grants are not provided or a 404 error if the profile or grant is not found.
+ */
     async addProfileToGrants(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
@@ -183,6 +304,17 @@ class ProfileController implements IProfileController {
         }
     }
 
+        /**
+         * Removes a profile from a grant by its id and sends a success message.
+         * 
+         * @param {IHttpRequest} req - The HTTP request object containing the profile id in the params and the grants id in the body.
+         * @param {IHttpResponse} res - The HTTP response object to send the success message.
+         * @param {IHttpNext} next - The next middleware function in the stack.
+         * 
+         * @returns {Promise<void>} A promise that resolves when the operation is complete.
+         * 
+         * @throws {HttpError} Throws a 400 error if the id or grants are not provided or a 404 error if the profile or grant is not found.
+         */
     async removeProfileFromGrants(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
@@ -200,6 +332,17 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
+        /**
+         * Finds all profiles associated with an authentication id.
+         * 
+         * @param {IHttpRequest} req - The request from the client. The authId must be in the params.
+         * @param {IHttpResponse} res - The response to the client.
+         * @param {IHttpNext} next - The next function to call in the pipeline.
+         * 
+         * @returns {Promise<void>} A promise that resolves when the profiles are found and sends them to the client, or rejects with an HttpError if the profiles are not found.
+         * 
+         * @throws {HttpError} Throws a 400 error if the authId is not provided or a 404 error if the profiles are not found.
+         */
     async getProfilesByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { authId } = req.params;

@@ -3,51 +3,51 @@ import { models } from "../../../sequelize/models";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     /**
-     * Encontra uma autenticao pelo seu id.
-     * @param {string} id
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findById(id: string): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({where: {id: id}});
     }
 
+    /**
+     * @inheritdoc
+     */
     async findByToken(token: string): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({where: {password_token_reset: token}});
     }
     
     /**
-     * Encontra todas as autenticacoes no banco de dados.
-     * @returns {Promise<IAuthentication[] | null>}
+     * @inheritdoc
      */
     async findAll(): Promise<IAuthentication[] | null> {
         return await models.AuthenticationModelSequelize.findAll();
     }
 
     /**
-     * Encontra uma autenticao pelo seu login.
-     * @param {string} login
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findByLogin(login: string): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({where: {login: login}});
     }
 
     /**
-     * Encontra uma autenticao pelo seu externalId.
-     * @param {string} externalId
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findByExternalId(externalId: string): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({where: {externalId: externalId}});
     }
 
 
-
+    /**
+     * @inheritdoc
+     */
     async createAuthentication(auth: IAuthentication): Promise<IAuthentication> {
         return await models.AuthenticationModelSequelize.create(auth);
     }
 
-
+    /**
+     * @inheritdoc
+     */
     async updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
         const filteredUpdateData = Object.fromEntries(
             Object.entries(updateData).filter(([_, value]) => value !== null)
@@ -66,9 +66,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     }
     
     /**
-     * Deleta uma autenticao do banco de dados.
-     * @param {string} id
-     * @returns {Promise<void>}
+     * @inheritdoc
      */
     async deleteAuthentication(id: string): Promise<void> {
         await models.AuthenticationModelSequelize.destroy({where: {id: id}});

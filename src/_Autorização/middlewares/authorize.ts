@@ -3,6 +3,17 @@ import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from "../../inter
 import HttpError from "../../utils/customErrors/httpError";
 import profileService from "../services/profileService";
 
+/**
+ * Verifica se o caminho de permiss o coincide com o caminho da requisi o
+ * @param grantPath - Caminho da permiss o no formato '/permissao/:id'
+ * @param requestPath - Caminho da requisi o
+ * @returns true caso o caminho da permiss o coincida com o caminho da requisi o, false caso contr rio
+ * @example
+ * isPathMatch('/permissao/:id', '/permissao/1') // true
+ * isPathMatch('/permissao/:id', '/permissao/2') // true
+ * isPathMatch('/permissao/:id', '/permissao/abc') // false
+ * isPathMatch('/permissao/:id', '/permissao') // false
+ */
 function isPathMatch(grantPath: string, requestPath: string): boolean {
     const grantSegments = grantPath.split('/');
     const requestSegments = requestPath.split('/');
@@ -17,6 +28,19 @@ function isPathMatch(grantPath: string, requestPath: string): boolean {
 }
 
 
+
+/**
+ * Verifica se o usu rio autenticado tem permiss o para acessar o recurso
+ * @param req - Requisi o HTTP
+ * @param res - Resposta HTTP
+ * @param next - Fun o de next que permite a continuidade da execu o
+ * @throws {HttpError} Caso o usu rio n o tenha permiss o, lan a um erro com status 403
+ * @example
+ * // Verifica se o usu rio tem permiss o para acessar o recurso
+ * router.get('/recurso', authorize, (req, res) => {
+ *   res.send('Recurso acessado com sucesso');
+ * });
+ */
 async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) {
     try {
         const userId = req.session.auth.id!;
@@ -24,11 +48,11 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
         const user = await authenticationService.findById(userId)
 
         if (!user) {
-            throw new Error('User not found');
+            throw new HttpError(404, 'User not found');
         }
 
         if (!user.active) {
-            throw new Error('User not activated');
+            throw new HttpError(403, 'User not activated');
         }
         
         const path = req.path;

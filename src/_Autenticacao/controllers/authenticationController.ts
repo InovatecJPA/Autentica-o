@@ -36,11 +36,7 @@ class AuthenticationController implements IAuthenticationController{
     }
 
     /**
-     * Finds all the authentications.
-     * @param req The request object.
-     * @param res The response object.
-     * @returns A promise that resolves with the list of authentications, or a 404 status code if no authentications are found.
-     * @throws {Error} If an error occurs whil e finding the authentications.
+     * @inheritdoc
      */
     async findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
@@ -56,6 +52,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async findMe(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const id = req.session.auth.id;
@@ -74,10 +73,7 @@ class AuthenticationController implements IAuthenticationController{
 
 
     /**
-     * Finds an authentication by id.
-     * @param req The request object.
-     * @param res The response object.
-     * @returns A promise that resolves with the authentication if it exists, or a 404 status code if it doesn't.
+     * @inheritdoc
      */
     async findById(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
@@ -100,11 +96,7 @@ class AuthenticationController implements IAuthenticationController{
     }
 
     /**
-     * Creates a new authentication in the database.
-     * @param req The request object. The authentication data should be in the body of the request.
-     * @param res The response object.
-     * @returns A promise that resolves with a 201 status code if the authentication is created successfully, or a 500 status code if an error occurs.
-     * @throws {Error} If an error occurs while creating the authentication.
+     * @inheritdoc
      */
     async createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
@@ -137,6 +129,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
 
@@ -164,6 +159,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const {id} = req.params;
@@ -191,16 +189,7 @@ class AuthenticationController implements IAuthenticationController{
     }
 
     /**
-     * Requests a password change for a given authentication, generating a
-     * password token and expiry date.
-     * @param req The request object. The login of the authentication to change
-     *            the password for should be in the body of the request.
-     * @param res The response object.
-     * @returns A promise that resolves with a 200 status code if the password
-     *          token was created successfully, or a 404 status code if the
-     *          authentication was not found, or a 500 status code if an error
-     *          occurs.
-     * @throws {Error} If an error occurs while creating the password token.
+     * @inheritdoc
      */
     async requestPasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
@@ -225,6 +214,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * Fase de testes
+     */
     async updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { token } = req.params;
@@ -255,14 +247,7 @@ class AuthenticationController implements IAuthenticationController{
     }
     
     /**
-     * Deletes an authentication.
-     * @param req The request object. The id of the authentication to delete
-     *            should be in the params of the request.
-     * @param res The response object.
-     * @returns A promise that resolves with a 200 status code if the
-     *          authentication was deleted successfully, or a 500 status code if
-     *          an error occurs.
-     * @throws {Error} If an error occurs while deleting the authentication.
+     * @inheritdoc
      */
     async deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
@@ -279,6 +264,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { login, password, isExternal, externalId  } = req.body;
@@ -321,6 +309,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { oldPassword, newPassword} = req.body;
@@ -345,6 +336,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async toggleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             
@@ -367,6 +361,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     async validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const {passwordHash} = req.body;
