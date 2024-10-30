@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import HttpError from './utils/customErrors/httpError';
 import { IApp } from './interfaces/appInterface';
 import createAppFactory from './AppFactory/appFactory';
@@ -9,7 +7,11 @@ import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import ProfileRouter from './_Autorização/routes/profileRouter';
 import grantsRouter from './_Autorização/routes/grantsRouter';
+import swaggerRouter from './utils/swagger/swaggerConfig';
 
+import dotenv from 'dotenv';
+import authorize from './_Autorização/middlewares/authorize';
+dotenv.config();
   
 class App {
     public app: IApp;
@@ -61,11 +63,12 @@ class App {
     }
 
     private routes() {
+        swaggerRouter(this.app.router);
+
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
         grantsRouter.registerRoutes("/v1/grants", this.app.router);
 
-    
         this.app.use(this.app.router.getRouter());
     }
 
@@ -90,6 +93,7 @@ class App {
 
     public start(port: number): void {
         this.app.start(port);
+        console.log(`${process.env.BASE_URL}/docs`)
     }
 }
 
