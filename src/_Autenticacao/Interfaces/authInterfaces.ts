@@ -19,7 +19,6 @@ export interface IAuthenticationParams {
     passwordHash: string | null;
     externalId: string | null;
     isExternal: boolean;
-    profileId: string | null;
     active?: boolean;
     password_token_reset?: string;
     password_token_expiry_date?: Date;
