@@ -115,7 +115,6 @@ class AuthenticationController implements IAuthenticationController{
                 passwordHash: password,
                 externalId,
                 isExternal,
-                profileId : null
             }
 
             if(isExternal){
@@ -142,13 +141,13 @@ class AuthenticationController implements IAuthenticationController{
         try{
 
             const id = req.session?.auth?.id;
-            const {login, isExternal, externalId, profileId} = req.body;
+            const {login, isExternal, externalId} = req.body;
             
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
             
-            if(!login && (isExternal && !externalId) && !profileId){
+            if(!login && (isExternal && !externalId) ){
                 throw new HttpError(400, 'Login, isExternal or externalId is required');
             }
             
@@ -156,7 +155,6 @@ class AuthenticationController implements IAuthenticationController{
                 login,
                 isExternal,
                 externalId,
-                profileId
             }
             
             await this.authService.updateAuthentication(id, authData);
@@ -169,13 +167,13 @@ class AuthenticationController implements IAuthenticationController{
     async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const {id} = req.params;
-            const {login, isExternal, externalId, profileId } = req.body;
+            const {login, isExternal, externalId } = req.body;
 
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
 
-            if(!login && (isExternal && !externalId) && profileId){
+            if(!login && (isExternal && !externalId)){
                 throw new HttpError(400, 'Login, isExternal or externalId is required');
             }
 
@@ -183,7 +181,6 @@ class AuthenticationController implements IAuthenticationController{
                 login,
                 isExternal,
                 externalId,
-                profileId
             }
 
             await this.authService.updateAuthentication(id, authData);
