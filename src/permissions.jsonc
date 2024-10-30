@@ -1,180 +1,38 @@
 [
     {
         "method": "GET",
-        "path": "/v1/auth/list",
-        "description": "Listar todas as autenticação",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/auth/:id",
-        "description": "Buscar autenticação pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
         "path": "/v1/auth/me",
         "description": "Obter permissões associadas a uma autenticação",
-        "profiles": ["Admin", "UserComum"]
+        "profiles": [ "UserComum"]
     },
     {
         "method": "POST",
         "path": "/v1/auth/create",
         "description": "Criar autenticação",
-        "profiles": ["Admin", "UserComum"]
+        "profiles": ["UserComum"]
     },
     {
         "method": "POST",
         "path": "/v1/auth/login",
         "description": "Autenticação de login",
-        "profiles": ["Admin", "UserComum"]
+        "profiles": ["UserComum"]
     },
     {
         "method": "POST",
         "path": "/v1/auth/validate-password",
         "description": "Validar senha",
-        "profiles": ["Admin", "UserComum"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/auth/:id",
-        "description": "Atualizar autenticação pelo ID",
-        "profiles": ["Admin"]
+        "profiles": ["UserComum"]
     },
     {
         "method": "PUT",
         "path": "/v1/auth/me",
         "description": "Atualizar autenticação atual",
-        "profiles": ["Admin", "UserComum"]
+        "profiles": ["UserComum"]
     },
     {
         "method": "PUT",
         "path": "/v1/auth/update-password",
         "description": "Atualizar senha",
-        "profiles": ["Admin", "UserComum"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/auth/toggle-status/:id",
-        "description": "Ativar/desativar autenticação pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "DELETE",
-        "path": "/v1/auth/:id",    
-        "description": "Deletar autenticação pelo ID",
-        "profiles": ["Admin"]
-    },
-
-
-    {
-        "method": "GET",
-        "path": "/v1/grant/list",
-        "description": "Listar todos os permissões",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/grant/:id",
-        "description": "Buscar permissão pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/grant/:id/profiles",
-        "description": "Obter perfis associados a uma permissão",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "POST",
-        "path": "/v1/grant/create",
-        "description": "Criar permissão",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/grant/:id",
-        "description": "Atualizar permissão pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "DELETE",
-        "path": "/v1/grant/:id",
-        "description": "Deletar permissão pelo ID",
-        "profiles": ["Admin"]
-    },
-
-
-    {
-        "method": "GET",
-        "path": "/v1/profile/list",
-        "description": "Listar todos os perfis",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/profile/:id",
-        "description": "Buscar perfil pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/profile/:id/grants",
-        "description": "Obter permissões de um perfil pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/profile/:id/authentications",
-        "description": "Obter autenticações de um perfil pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "GET",
-        "path": "/v1/profile/:authId/authentications/list",
-        "description": "Obter perfis associados a uma autenticação",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "POST",
-        "path": "/v1/profile/create",
-        "description": "Criar um novo perfil",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/profile/:id",
-        "description": "Atualizar perfil pelo ID",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/profile/:id/add-grants",
-        "description": "Adicionar permissões a um perfil",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/profile/:authId/add-profiles",
-        "description": "Associar perfis a uma autenticação",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/profile/:id/remove-grants",
-        "description": "Remover permissões de um perfil",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "PUT",
-        "path": "/v1/profile/:authId/remove-profiles",
-        "description": "Remover perfis de uma autenticação",
-        "profiles": ["Admin"]
-    },
-    {
-        "method": "DELETE",
-        "path": "/v1/profile/:id",
-        "description": "Deletar perfil pelo ID",
-        "profiles": ["Admin"]
+        "profiles": ["UserComum"]
     }
 ]

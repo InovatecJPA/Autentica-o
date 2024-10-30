@@ -224,13 +224,15 @@ async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>)
     }
 
 
-    async setPasswordTokenAndExpiryDate(id: string): Promise<void> {
+    async setPasswordTokenAndExpiryDate(id: string): Promise<string> {
         const token = nanoid();
 
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getHours() + 1);
 
         await this.authRepository.updateAuthentication(id, {password_token_reset: token, password_token_expiry_date: expiryDate});
+    
+        return token;
     }
 
 }

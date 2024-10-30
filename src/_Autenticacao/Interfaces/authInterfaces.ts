@@ -50,7 +50,7 @@ export interface IAuthenticationService  {
     updatePassword(id: string, passwordHash: string): Promise<void>;
     deactivateAccountAuthentication(id: string): Promise<void>;
     activateAccountAuthentication(id: string): Promise<void>;
-    setPasswordTokenAndExpiryDate(id: string): Promise<void>;
+    setPasswordTokenAndExpiryDate(id: string): Promise<string>;
     deleteAuthentication(id: string): Promise<void>;
     createExternalAuthentication(authData: IAuthenticationParams): Promise<void>;
 }
@@ -63,12 +63,12 @@ export interface IAuthenticationController {
     authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-    requestPasswordChange(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    requestPasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     toggleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-    updatePasswordEmail(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 export interface IAuthenticationRouter{

@@ -51,7 +51,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
         });
     
         app.post(`${basePath}/forgot-password`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.requestPasswordChange(req, res, next);
+            this.authenticationController.requestPasswordReset(req, res, next);
         });
 
         app.post(`${basePath}/validate-password`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
@@ -69,6 +69,10 @@ class AuthenticationRouter implements IAuthenticationRouter {
             this.authenticationController.updatePassword(req, res, next);
         });
         
+        app.put(`${basePath}/reset-password`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.updatePasswordReset(req, res, next);
+        });
+
         app.put(`${basePath}/me`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updateMyAuthentication(req, res, next);
         });

@@ -1,3 +1,0 @@
-##Testar rotas de profile e grants
-
-###Implementar Middleware com verificação de permissão
