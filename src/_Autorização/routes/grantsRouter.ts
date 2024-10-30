@@ -19,10 +19,6 @@ class GrantsRouter implements IGrantsRouter{
         return GrantsRouter.instance;
     }
 
-    private registerMiddleware(app: IAppRouter): void {
-        app.use(authenticate)
-    }
-
     private registerRoutesGet(basePath: string, app: IAppRouter): void {
         app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.findAll(req, res, next);
@@ -56,7 +52,6 @@ class GrantsRouter implements IGrantsRouter{
     }
     
     public registerRoutes(basePath: string, app: IAppRouter): void {
-        // this.registerMiddleware(app);
         this.registerRoutesGet(basePath, app);
         this.registerRoutesPost(basePath, app);
         this.registerRoutesPut(basePath, app);

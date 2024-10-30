@@ -28,10 +28,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
     }
 
 
-    private registerMiddleware(app: IAppRouter): void {
-        app.use(authenticate)
-    }
-
 
     private registerRoutesGet(basePath: string, app: IAppRouter): void {
         app.get(`${basePath}/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
@@ -137,8 +133,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
      */
     public registerRoutes(basePath: string, app: IAppRouter): void {
         
-        // Para aplicar o middleware em toda a rota
-        // this.registerMiddleware(app);
 
         this.registerRoutesGet(basePath, app);
         
