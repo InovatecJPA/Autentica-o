@@ -15,6 +15,10 @@ class App {
     public app: IApp;
     private static instance: App;
     
+    /**
+     * Creates a new instance of the App class.
+     * It initializes the application by registering all the middlewares, routes and error handlers.
+     */
     constructor(){
         this.app = createAppFactory();
         this.middlewares();
@@ -22,6 +26,13 @@ class App {
         this.errorHandler();
     }
     
+    /**
+     * Returns a singleton instance of the App class.
+     * If the instance does not exist, it creates a new one.
+     * Ensures that only one instance of the App class is created.
+     *
+     * @returns {App} The single instance of the App class.
+     */
     public static getInstance(): App {
         if (!App.instance) {
             App.instance = new App();
@@ -29,6 +40,13 @@ class App {
         return App.instance;
     }
 
+/**
+ * Configures and applies middleware to the application.
+ * 
+ * - Uses body-parser to parse incoming request bodies in JSON format.
+ * - If the environment variable AUTH_STRATEGY is set to 'session', applies
+ *   cookie-session middleware for session management with specified options.
+ */
     private middlewares() {
         this.app.use(bodyParser.json());
         
@@ -51,6 +69,14 @@ class App {
         this.app.use(this.app.router.getRouter());
     }
 
+    /**
+     * Registers a global error handler for the application.
+     * 
+     * If the error is an instance of HttpError, it is handled by returning a JSON response with the status and message of the error.
+     * If the error is not an instance of HttpError, it is handled by returning a JSON response with a status of 500 and the error message.
+     * 
+     * This error handler is applied to the application after all routes have been registered.
+     */
     private errorHandler() {
         this.app.use((err: any, req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             if (err instanceof HttpError) {
@@ -63,7 +89,6 @@ class App {
     }
 
     public start(port: number): void {
-        
         this.app.start(port);
     }
 }

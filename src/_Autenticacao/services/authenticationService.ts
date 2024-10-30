@@ -34,50 +34,42 @@ class AuthenticationService implements IAuthenticationService {
     }   
     
     /**
-     * Encontra uma autenticao pelo seu id.
-     * @param {string} id
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findById(id: string): Promise<IAuthentication | null> {
         return await this.authRepository.findById(id);
     }
 
     /**
-     * Encontra uma autenticao pelo seu login.
-     * @param {string} login
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findByLogin(login: string): Promise<IAuthentication | null> {
         return await this.authRepository.findByLogin(login);
     }
 
     /**
-     * Encontra uma autenticao pelo seu externalId.
-     * @param {string} externalId
-     * @returns {Promise<IAuthentication | null>}
+     * @inheritdoc
      */
     async findByExternalId(externalId: string): Promise<IAuthentication | null> {
         return await this.authRepository.findByExternalId(externalId);
     }
 
+    /**
+     * @inheritdoc
+     */
     async findByToken(token: string): Promise<IAuthentication | null> {
         return await this.authRepository.findByToken(token);
     }
 
     /**
-     * Encontra todas as autenticacoes no banco de dados.
-     * @returns {Promise<IAuthentication[] | null>}
+     * @inheritdoc
      */
     async findAll(): Promise<IAuthentication[] | null> {
         return await this.authRepository.findAll();
     }
 
     /**
-     * Salva autenticao no banco de dados.
-     * Caso ja exista uma autenticao com o mesmo login, atualiza a mesma.
-     * Caso contrario, salva uma nova autenticao.
-     * @param {{login?: string | null, passwordHash?: string | null, externalId: string | null, isExternal: boolean}} authData
-     * @returns {Promise<void>}
+     * @inheritdoc
      */
     async createStandartAuthentication(authData: IAuthenticationParams): Promise<void> {
         let auth = await this.authRepository.findByLogin(authData.login!);
@@ -95,6 +87,9 @@ class AuthenticationService implements IAuthenticationService {
         await this.authRepository.createAuthentication(auth);
     }
 
+    /**
+     * @inheritdoc
+     */
     async createExternalAuthentication(authData: IAuthenticationParams): Promise<void> {
         let auth = await this.authRepository.findByExternalId(authData.externalId!);
         
@@ -106,32 +101,32 @@ class AuthenticationService implements IAuthenticationService {
         await this.authRepository.createAuthentication(auth);
     }
 
-    
-async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
-    const auth = await this.authRepository.findById(id);
-    if (!auth) {
-        throw new HttpError(404, 'Authentication not found');
-    }
-    
-    const filteredData = Object.entries(authData)
-        .filter(([_, value]) => value !== null && value !== undefined && 
-            !(typeof value === 'string' && value.trim() === ''))
-        .reduce((acc, [key, value]) => {
-            acc[key as keyof IAuthenticationParams] = value as any
-            return acc
-        }, {} as Partial<IAuthenticationParams>)
+    /**
+     * @inheritdoc
+     */
+    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
+        const auth = await this.authRepository.findById(id);
+        if (!auth) {
+            throw new HttpError(404, 'Authentication not found');
+        }
+        
+        const filteredData = Object.entries(authData)
+            .filter(([_, value]) => value !== null && value !== undefined && 
+                !(typeof value === 'string' && value.trim() === ''))
+            .reduce((acc, [key, value]) => {
+                acc[key as keyof IAuthenticationParams] = value as any
+                return acc
+            }, {} as Partial<IAuthenticationParams>)
 
-    if (Object.keys(filteredData).length === 0) {
-        throw new HttpError(400, 'No data to update');
-    }
+        if (Object.keys(filteredData).length === 0) {
+            throw new HttpError(400, 'No data to update');
+        }
 
-    await this.authRepository.updateAuthentication(id, filteredData);
-}
+        await this.authRepository.updateAuthentication(id, filteredData);
+    }
 
     /**
-     * Deleta uma autenticao do banco de dados.
-     * @param {string} id
-     * @returns {Promise<void>}
+     * @inheritdoc
      */
     async deleteAuthentication(id: string): Promise<void> {
         await this.authRepository.deleteAuthentication(id);
@@ -151,15 +146,12 @@ async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>)
 
 
     /**
-     * Verifica se o token de redefini o de senha  vlido para uma autenticao.
-     * @param {string} id - O id da autenticao.
-     * @param {string} token - O token de redefini o de senha.
-     * @returns {Promise<boolean>} Retorna true se o token for vlido, false caso contr rio.
+     * @inheritdoc
      */
     async isPasswordTokenValid(id: string, token: string): Promise<boolean> {
         const auth: IAuthentication | null = await this.authRepository.findById(id);
         if (!auth) {
-            throw new Error('Authentication not found');
+            throw new HttpError(404, 'Authentication not found');
         }
         if (!auth.password_token_reset || !auth.password_token_expiry_date || auth.password_token_expiry_date < new Date()) {
             return false;
@@ -168,25 +160,18 @@ async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>)
     }
      
     /**
-     * Verifica se a senha de uma autenticao  vlida.
-     * @param {string} id - O id da autenticao.
-     * @param {string} passwordHash - A senha Hash.
-     * @returns {Promise<void>} Retorna uma promessa que resolve se a senha for vlida e reject caso contr rio.
-     * @throws {Error} Caso a autenticao n o seja encontrada.
+     * @inheritdoc
      */
     async validatePassword(id: string, passwordHash: string): Promise<boolean> {
         const auth = await this.authRepository.findById(id);
         if (!auth || !auth.passwordHash) {
-            throw new Error('Authentication not found');
+            throw new HttpError(404, 'Authentication not found');
         }
         return bcrypt.compare(passwordHash, auth.passwordHash);
     }
 
     /**
-     * Realiza a autenticao de um usu rio.
-     * @param {string} login - O login do usu rio.
-     * @param {string} passwordHash - A senha Hash do usu rio.
-     * @returns {Promise<IAuthentication | null>} Retorna a autenticao se a senha for vlida e null caso contr rio.
+     * @inheritdoc
      */
     async authenticate(login: string, passwordHash: string): Promise<IAuthentication | null> {
         const auth: IAuthentication | null = await this.authRepository.findByLogin(login);
@@ -206,24 +191,22 @@ async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>)
     };   
         
     /**
-     * Desativa uma autenticao de uma conta.
-     * @param {string} id - O id da autenticao.
-     * @returns {Promise<void>} Retorna uma promessa que resolve caso a opera o seja bem sucedida.
+     * @inheritdoc
      */
     async deactivateAccountAuthentication(id: string): Promise<void> {
         await this.authRepository.updateAuthentication(id, {active: false});
     }
 
     /**
-     * Ativa uma autenticao de uma conta.
-     * @param {string} id - O id da autenticao.
-     * @returns {Promise<void>} Retorna uma promessa que resolve caso a opera o seja bem sucedida.
+     * @inheritdoc
      */
     async activateAccountAuthentication(id: string): Promise<void> {
         await this.authRepository.updateAuthentication(id, {active: true});
     }
 
-
+    /**
+     * @inheritdoc
+     */
     async setPasswordTokenAndExpiryDate(id: string): Promise<string> {
         const token = nanoid();
 

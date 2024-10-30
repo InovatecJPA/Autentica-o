@@ -1,5 +1,5 @@
 import app from "./app";
-import sequelize from "./config/sequelize";
+// import sequelize from "./config/sequelize";
 
 // sequelize.sync({force: true});
 

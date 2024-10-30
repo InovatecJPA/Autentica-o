@@ -30,6 +30,12 @@ class JwtStrategy implements IAuthStrategy {
     }
 
 
+    /**
+     * Verifica se o token JWT  vlido, e retorna o id do usurio autenticado.
+     * @param {IHttpAuthenticatedRequest} req - A requisi o.
+     * @returns {Promise<{id: string}>} Retorna um objeto com o id do usurio autenticado.
+     * @throws {HttpError} Caso o token seja inv lido.
+     */
     async checkAuthentication(req: IHttpAuthenticatedRequest): Promise<{id: string}>{
         if(req.headers.authorization) {
             const authHeader = req.headers.authorization.split(' ');

@@ -7,6 +7,12 @@ import Profile from "../models/ProfileModel";
 import { createProfileRepository } from "../repositories/factoryAuthorizationRepository";
 import grantsService from "./grantsService";
 
+/**
+ * @inheritdoc
+ * 
+ * @class ProfileService
+ * @implements {IProfileService}    
+ */
 class ProfileService implements IProfileService {
     private static instance: ProfileService;
     private profileRepository: IProfileRepository;

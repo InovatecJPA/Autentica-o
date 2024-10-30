@@ -6,6 +6,7 @@
   "scripts": {
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all",
+    "docs": "typedoc --out docs src",
     "start": "node dist/main.js",
     "dev": "tsx watch --env_file .env src/main.ts"
   },
@@ -47,6 +48,7 @@
     "ts-node": "^10.9.2",
     "tsup": "^8.3.0",
     "tsx": "^4.19.1",
+    "typedoc": "^0.26.10",
     "typescript": "^5.6.3"
   }
 }

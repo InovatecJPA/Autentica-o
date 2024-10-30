@@ -5,6 +5,10 @@ import profileController from "../controllers/profileController";
 import { IProfileController, IProfileRouter } from "../Interfaces/profileInterfaces";
 import authorize from "../middlewares/authorize";
 
+
+/**
+ * @inheritdoc
+ */
 class ProfileRouter implements IProfileRouter{
     private static instance: ProfileRouter
     private profileController: IProfileController

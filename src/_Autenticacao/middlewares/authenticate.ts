@@ -4,6 +4,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * Middleware de autentica o
+ * 
+ * Verifica se o usuario esta autenticado e se a autentica o   valida
+ * 
+ * @param {IHttpAuthenticatedRequest} req - Requisi o gen rica de um usu rio autenticado
+ * @param {IHttpResponse} res - Resposta gen rica
+ * @param {IHttpNext} next - Fun o que executa o pr ximo middleware
+ */
 async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext)  {
     try {
         const authStrategy = createAuthStrategy();
