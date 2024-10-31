@@ -635,7 +635,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
 
         /**
          * @swagger
-         * /me:
+         * /:id:
          *   delete:
          *      summary: Atualiza o usuário pelo id
          *      tags:
