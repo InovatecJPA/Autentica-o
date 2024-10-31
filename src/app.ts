@@ -8,11 +8,25 @@ import cookieSession from 'cookie-session';
 import ProfileRouter from './_Autorização/routes/profileRouter';
 import grantsRouter from './_Autorização/routes/grantsRouter';
 import swaggerRouter from './utils/swagger/swaggerConfig';
+import cors, { CorsOptions } from 'cors'
+import authorize from './_Autorização/middlewares/authorize';
 
 import dotenv from 'dotenv';
-import authorize from './_Autorização/middlewares/authorize';
 dotenv.config();
   
+const whiteList = ['*']
+
+const corsOptions: CorsOptions = {
+    origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
+      if (requestOrigin?.indexOf('*') !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'), false)
+      }
+    },
+    credentials: true
+  }
+
 class App {
     public app: IApp;
     private static instance: App;
@@ -51,7 +65,7 @@ class App {
  */
     private middlewares() {
         this.app.use(bodyParser.json());
-        
+        this.app.use(cors(corsOptions));
         if (process.env.AUTH_STRATEGY === 'session') {
             this.app.use(cookieSession({ 
                 secret: process.env.SESSION_SECRET || 'HESTIA',
@@ -93,7 +107,7 @@ class App {
 
     public start(port: number): void {
         this.app.start(port);
-        console.log(`${process.env.BASE_URL}/docs`)
+        console.log(`${process.env.BASE_URL}/api-docs`)
     }
 }
 

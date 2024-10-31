@@ -76,7 +76,7 @@ export interface IAuthenticationRepository {
      * Encontra todas as autenticações no banco de dados
      * @returns {Promise<IAuthentication[] | null>} Lista de autenticações 
      */
-    findAll(): Promise<IAuthentication[] | null>;
+    findAll(): Promise<IAuthentication[]>;
     /**
      * Encontra uma autenticação pelo seu login
      * @param {string} login - Login do usuário
@@ -103,9 +103,9 @@ export interface IAuthenticationRepository {
 export interface IAuthenticationService  {
     /**
      * Encontra todas as autenticacoes no banco de dados.
-     * @returns {Promise<IAuthentication[] | null>}
+     * @returns {Promise<IAuthentication[]>}
      */
-    findAll(): Promise<IAuthentication[] | null>;
+    findAll(): Promise<IAuthentication[]>;
     /**
      * Encontra uma autenticação pelo seu token
      * @param {string} token - Token da autenticação
@@ -133,27 +133,27 @@ export interface IAuthenticationService  {
     /**
      * Cria uma autenticação interna
      * @param {IAuthenticationParams} authData - Dados da autenticação, espera um login, uma senha, isExternal = false e externalId = null
-     * @returns {Promise<void>}
+     * @returns {Promise<IAuthentication | null>}
      */
-    createStandartAuthentication(authData: IAuthenticationParams): Promise<void>;
+    createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
     /**
      * Cria uma autenticação externa
      * @param {IAuthenticationParams} authData - Dados da autenticação, espera um externalId e isExternal = true, login e senha sao null
-     * @returns {Promise<void>}
+     * @returns {Promise<IAuthentication>}
      */
-    createExternalAuthentication(authData: IAuthenticationParams): Promise<void>;
+    createExternalAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
     /**
      * Atualiza uma autenticação
      * @param {string} id - Id da autenticação
      * @param {Partial<IAuthenticationParams>} updateData - Dados para atualizar 
-     * @returns {Promise<void>}
+     * @returns {Promise<IAuthentication>}
      */
-    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<void>;
+    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
     /**
      * Ativa uma autenticação   
      * @param {string} id - Id da autenticação
      * @param {string} token - token que será validado
-     * @returns {Promise<void>}
+     * @returns {Promise<IAuthentication>}
      */
     isPasswordTokenValid(id: string, token: string): Promise<boolean>;
     /**
@@ -174,7 +174,7 @@ export interface IAuthenticationService  {
      * Atualiza a senha de uma autenticação
      * @param {string} id - Id da autenticação
      * @param {string} passwordHash - Senha
-     * @returns {Promise<void>}
+     * @returns {Promise<IAuthentication | null>}
      */
     updatePassword(id: string, passwordHash: string): Promise<void>;
     /**
@@ -298,6 +298,14 @@ export interface IAuthenticationController {
      * @param {IHttpNext} next - Proxima Função
      */
     updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
+    /**
+     * Realiza o logout do usuário autenticado
+     * @param {IHttpAuthenticatedRequest} req - Requisição Genérica de um usuário autenticado
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    logout(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 // INTERFACE DO ROUTER

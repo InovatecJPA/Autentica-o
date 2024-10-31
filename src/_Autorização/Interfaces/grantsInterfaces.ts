@@ -140,18 +140,18 @@ export interface IGrantsService{
      * @param {IGrantsParams} grantsData - The data of the grant
      * @returns {Promise<void>}
      */
-    createGrants(grantsData: IGrantsParams): Promise<void>
+    createGrants(grantsData: IGrantsParams): Promise<IGrants>
     /**
      * Updates a grant
      * @param {string} id - The id of the grant
      * @param {Partial<IGrantsParams>} updateData - The data to update
-     * @returns {Promise<void>}
+     * @returns {Promise<IGrants>}
      */
-    updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<void>
+    updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<IGrants>
     /**
      * Deletes a grant
      * @param {string} id - The id of the grant
-     * @returns {Promise<void>}
+     * @returns {Promise<IGrants>}
      */
     deleteGrants(id: string): Promise<void>
 

@@ -157,7 +157,7 @@ export interface IProfileService {
      * @param profileData - The profile data to create.
      * @returns A promise that resolves when the profile is created, or null if creation fails.
      */
-    createProfile(profileData: IProfileParams): Promise<void | null>;
+    createProfile(profileData: IProfileParams): Promise<IProfile>;
 
     /**
      * Updates an existing profile.
@@ -165,7 +165,7 @@ export interface IProfileService {
      * @param updateData - The data to update the profile with.
      * @returns A promise that resolves when the profile is updated.
      */
-    updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<void>;
+    updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<IProfile>;
 
     /**
      * Deletes a profile by its ID.

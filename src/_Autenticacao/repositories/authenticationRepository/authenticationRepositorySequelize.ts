@@ -6,35 +6,49 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @inheritdoc
      */
     async findById(id: string): Promise<IAuthentication | null> {
-        return await models.AuthenticationModelSequelize.findOne({where: {id: id}});
+        return await models.AuthenticationModelSequelize.findOne({
+            where: {id: id},
+            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
 
     /**
      * @inheritdoc
      */
     async findByToken(token: string): Promise<IAuthentication | null> {
-        return await models.AuthenticationModelSequelize.findOne({where: {password_token_reset: token}});
+        return await models.AuthenticationModelSequelize.findOne({
+            where: {password_token_reset: token},
+            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
     
     /**
      * @inheritdoc
      */
-    async findAll(): Promise<IAuthentication[] | null> {
-        return await models.AuthenticationModelSequelize.findAll();
+    async findAll(): Promise<IAuthentication[]> {
+        return await models.AuthenticationModelSequelize.findAll({
+            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
 
     /**
      * @inheritdoc
      */
     async findByLogin(login: string): Promise<IAuthentication | null> {
-        return await models.AuthenticationModelSequelize.findOne({where: {login: login}});
+        return await models.AuthenticationModelSequelize.findOne({
+            where: {login: login},
+            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
 
     /**
      * @inheritdoc
      */
     async findByExternalId(externalId: string): Promise<IAuthentication | null> {
-        return await models.AuthenticationModelSequelize.findOne({where: {externalId: externalId}});
+        return await models.AuthenticationModelSequelize.findOne({
+            where: {externalId: externalId},
+            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
 
 
@@ -42,7 +56,9 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
      * @inheritdoc
      */
     async createAuthentication(auth: IAuthentication): Promise<IAuthentication> {
-        return await models.AuthenticationModelSequelize.create(auth);
+        const { passwordHash, password_token_reset, ...newAuth} = await models.AuthenticationModelSequelize.create(auth);
+        return {...newAuth, passwordHash: null, password_token_reset: null};
+        
     }
 
     /**
@@ -62,7 +78,8 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
             throw new Error('Authentication not found');
         }
 
-        return updatedRows[0];
+        const { passwordHash, password_token_reset, ...updatedAuth} = updatedRows[0];
+        return {...updatedAuth, passwordHash: null, password_token_reset: null};
     }
     
     /**
