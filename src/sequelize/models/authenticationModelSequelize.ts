@@ -21,7 +21,10 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
 
     public static associate (models: any) {
         this.belongsToMany(models.ProfileModelSequelize, {
-            through: "authentication_profiles",
+            through: {
+                model: "authentication_profiles",
+                unique: true
+            },
             foreignKey: 'authenticationId',
             otherKey: 'profileId',
             as: 'profiles'

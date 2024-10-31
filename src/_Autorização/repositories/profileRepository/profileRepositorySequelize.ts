@@ -49,7 +49,9 @@ class ProfileRepositorySequelize implements IProfileRepository {
     }   
 
     async getAuthenticationsByProfileId(profile: ProfileModelSequelize): Promise<IAuthentication[]> {
-        return await profile.getAuthentication();
+        return await profile.getAuthentication({
+            attributes: {exclude: ['passwordHash', 'password_token_reset']}
+        });
     }
 
     async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {

@@ -36,6 +36,13 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
+    async findAll(): Promise<IAuthentication[]> {
+        return await this.authRepository.findAll();
+    }
+    
+    /**
+     * @inheritdoc
+     */
     async findById(id: string): Promise<IAuthentication | null> {
         return await this.authRepository.findById(id);
     }
@@ -64,15 +71,8 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-    async findAll(): Promise<IAuthentication[] | null> {
-        return await this.authRepository.findAll();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async createStandartAuthentication(authData: IAuthenticationParams): Promise<void> {
-        let auth = await this.authRepository.findByLogin(authData.login!);
+    async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
+        let newAuth: IAuthentication, auth = await this.authRepository.findByLogin(authData.login!);
         
         if (auth) {
             throw new HttpError(409, 'Authentication already exists');
@@ -83,28 +83,37 @@ class AuthenticationService implements IAuthenticationService {
         authData.passwordHash = password 
 
         auth = new Authentication(authData);
-
-        await this.authRepository.createAuthentication(auth);
+        try {
+            newAuth = await this.authRepository.createAuthentication(auth);
+        } catch (error: any) {
+            throw new HttpError(400, error.message);
+        }
+        return newAuth;
     }
 
     /**
      * @inheritdoc
      */
-    async createExternalAuthentication(authData: IAuthenticationParams): Promise<void> {
-        let auth = await this.authRepository.findByExternalId(authData.externalId!);
+    async createExternalAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
+        let newAuth: IAuthentication,auth = await this.authRepository.findByExternalId(authData.externalId!);
         
         if (auth) {
             throw new HttpError(409, 'Authentication already exists');
         }
         
         auth = new Authentication(authData);
-        await this.authRepository.createAuthentication(auth);
+        try {
+            newAuth = await this.authRepository.createAuthentication(auth);
+        } catch (error: any) {
+            throw new HttpError(400, error.message);
+        }
+        return newAuth;
     }
 
     /**
      * @inheritdoc
      */
-    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<void> {
+    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
         const auth = await this.authRepository.findById(id);
         if (!auth) {
             throw new HttpError(404, 'Authentication not found');
@@ -122,7 +131,8 @@ class AuthenticationService implements IAuthenticationService {
             throw new HttpError(400, 'No data to update');
         }
 
-        await this.authRepository.updateAuthentication(id, filteredData);
+        return await this.authRepository.updateAuthentication(id, filteredData);
+        
     }
 
     /**

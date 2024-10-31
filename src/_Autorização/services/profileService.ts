@@ -40,7 +40,7 @@ class ProfileService implements IProfileService {
         return await this.profileRepository.findById(id);
     }
 
-    async createProfile(profileData: IProfileParams): Promise<void> {
+    async createProfile(profileData: IProfileParams): Promise<IProfile> {
         let profile = await this.profileRepository.findByName(profileData.name);
 
         if (profile) {
@@ -51,17 +51,23 @@ class ProfileService implements IProfileService {
         
         const { id, name, description, createdAt, updatedAt } = profile
         
-        await this.profileRepository.createProfile({
+        const newProfile = await this.profileRepository.createProfile({
             id,
             name,
             description, 
             createdAt, 
             updatedAt
         });
+
+        if (!newProfile) {
+            throw new HttpError(400, 'Failed to create profile');
+        }
+
+        return newProfile;
     }
 
 
-    async updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<void> {
+    async updateProfile(id: string, updateData: Partial<IProfileParams>): Promise<IProfile> {
         const existingProfile = await this.profileRepository.findById(id);
 
         if (!existingProfile) {
@@ -80,7 +86,13 @@ class ProfileService implements IProfileService {
             throw new HttpError(400, 'No valid fields provided for update');
         }
 
-        await this.profileRepository.updateProfile(id, filteredData);
+        const updatedProfile = await this.profileRepository.updateProfile(id, filteredData);
+
+        if (!updatedProfile) {
+            throw new HttpError(400, 'Failed to update profile');
+        }
+
+        return updatedProfile;
     }
     
     async deleteProfile(id: string): Promise<void> {

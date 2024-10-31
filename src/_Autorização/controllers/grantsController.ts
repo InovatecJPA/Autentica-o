@@ -45,7 +45,7 @@ class GrantsController implements IGrantsController {
                 throw new HttpError(404, "Grants not found");
             }
 
-            res.status(200).send(grants);
+            res.status(200).json(grants);
         }catch (error: any) {
             next(error);
         }
@@ -66,7 +66,7 @@ class GrantsController implements IGrantsController {
                 throw new HttpError(404, "Grant not found");
             }
 
-            res.status(200).send(grant);
+            res.status(200).json(grant);
         } catch (error: any) {
             next(error);
         }
@@ -93,9 +93,13 @@ class GrantsController implements IGrantsController {
                 description
             }
 
-            await this.grantsService.createGrants(grant);
+            const newGrants = await this.grantsService.createGrants(grant);
 
-            res.status(201).send("Grant created");
+            if(!newGrants){
+                throw new HttpError(400, "Grant already exists");
+            }
+
+            res.status(201).json(newGrants);
         } catch (error: any) {
             next(error);
         }
@@ -127,9 +131,13 @@ class GrantsController implements IGrantsController {
                 description
             }
         
-            await this.grantsService.updateGrants(id, grant);
+            const updatedGrants = await this.grantsService.updateGrants(id, grant);
         
-            res.status(200).send("Grant updated");
+            if(!updatedGrants){
+                throw new HttpError(400, "Failed to update grants");
+            }
+
+            res.status(200).json(updatedGrants);
         } catch(error: any){
             next(error)
         }
@@ -149,7 +157,7 @@ class GrantsController implements IGrantsController {
                 throw new HttpError(400, "Id is required");
             }
             await this.grantsService.deleteGrants(id);
-            res.status(200).send("Grant deleted");
+            res.status(204)
         } catch (error: any) {
             next(error);
         }
@@ -169,7 +177,7 @@ class GrantsController implements IGrantsController {
                 throw new HttpError(400, "Id is required");
             }
             const grants = await this.grantsService.getProfilesByGrantsId(id);
-            res.status(200).send(grants);
+            res.status(200).json(grants);
         } catch (error: any) {
             next(error);
         }

@@ -22,7 +22,7 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
         if (!authId) {
             return res.status(401).json({ message: 'User not authenticated' });
         }
-
+        console.log(authId)
         req.session = { auth: authId };
 
         next();

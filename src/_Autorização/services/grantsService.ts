@@ -35,7 +35,7 @@ class GrantsService implements IGrantsService{
         return await this.grantsRepository.findById(id);
     }
 
-    async createGrants(grantsData: IGrantsParams): Promise<void> {
+    async createGrants(grantsData: IGrantsParams): Promise<IGrants> {
         const grantExist = await this.grantsRepository.findByMethodAndPath(grantsData.method, grantsData.path);
         if (grantExist) {
             throw new HttpError(409, 'Grant already exists');
@@ -43,10 +43,16 @@ class GrantsService implements IGrantsService{
 
         const grant = new Grants(grantsData)
 
-        await this.grantsRepository.createGrants(grant);
+        const newGrants = await this.grantsRepository.createGrants(grant);
+    
+        if (!newGrants) {
+            throw new HttpError(400, 'Grant already exists');
+        }
+        
+        return newGrants
     }
 
-    async updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<void> {
+    async updateGrants(id: string, updateData: Partial<IGrantsParams>): Promise<IGrants> {
         const existingGrants = await this.grantsRepository.findById(id);
 
         if (!existingGrants) {
@@ -65,8 +71,13 @@ class GrantsService implements IGrantsService{
             throw new HttpError(400, 'No valid fields provided for update');
         }
 
-        await this.grantsRepository.updateGrants(id, filteredData);
+        const updatedGrants = await this.grantsRepository.updateGrants(id, filteredData);
     
+        if (!updatedGrants) {
+            throw new HttpError(400, 'Failed to update grants');
+        }
+
+        return updatedGrants
     }
 
     async deleteGrants(id: string): Promise<void> {

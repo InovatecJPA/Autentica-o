@@ -12,6 +12,7 @@ export interface IHttpAuthenticatedRequest extends IHttpRequest {
     method: string;
     path: any;
     session: {
+        destroy(arg0: (error: any) => void): unknown;
         auth: Partial<IAuthentication>
     }
 }
