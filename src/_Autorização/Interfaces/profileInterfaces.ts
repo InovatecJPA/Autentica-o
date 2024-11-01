@@ -21,6 +21,13 @@ export interface IProfileParams {
     description: string | null;
 }
 
+export interface IGrantProfile {
+    grantId: string;
+    profileId: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 /**
  * Repository interface for managing profiles.
  */
@@ -103,6 +110,8 @@ export interface IProfileRepository {
      * @returns A promise that resolves to an array of grants.
      */
     getGrantsByProfileId(profile: IProfile): Promise<IGrants[]>;
+
+    getGrantsByProfiles(profiles: IProfile[]): Promise<IGrants[]>
 
     /**
      * Adds a profile to multiple grants.
@@ -204,6 +213,7 @@ export interface IProfileService {
      */
     getGrantsByProfileId(profileId: string): Promise<IGrants[]>;
 
+    getGrantsByProfilesId(profilesId: string[]): Promise<IGrants[]>;
     /**
      * Adds a profile to multiple grants.
      * @param profileId - The profile ID to add.
@@ -312,6 +322,7 @@ export interface IProfileController {
      * @returns A promise that resolves when the operation is complete.
      */
     getGrantsByProfileId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
 
     /**
      * Adds a profile to multiple grants.

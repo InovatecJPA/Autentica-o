@@ -172,8 +172,14 @@ class ProfileService implements IProfileService {
         return this.profileRepository.removeProfilesFromAuthentication(profiles, auth); 
     }
 
-    getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
+    async getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
         return this.profileRepository.getProfilesByAuthenticationId(authenticationId);
+    }
+
+    async getGrantsByProfilesId(profilesId: string[]): Promise<IGrants[]> {
+        const profiles = await this.profileRepository.findByIds(profilesId);
+
+        return await this.profileRepository.getGrantsByProfiles(profiles);  
     }
 
 }

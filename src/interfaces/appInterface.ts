@@ -8,7 +8,7 @@ export interface IApp {
 }
 
 export interface IAppRouter{
-    use(middleware: any): void
+    use(...args: any[]): void
     getRouter(): IAppRouter
     get(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void
     post(path: string, ...handlers: Array<(req:any, res:any, next:any) => void >): void

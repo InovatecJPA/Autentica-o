@@ -3,7 +3,8 @@ import { models } from "../../../sequelize/models";
 import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
 import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
-import { IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces";
+import { IGrants } from "../../Interfaces/grantsInterfaces";
+import { IGrantProfile, IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces";
 import { Op, QueryTypes } from "sequelize";
 
 class ProfileRepositorySequelize implements IProfileRepository {
@@ -118,6 +119,32 @@ class ProfileRepositorySequelize implements IProfileRepository {
             return grantData as GrantsModelSequelize;
         });
     }
+
+    async getGrantsByProfiles(profiles: IProfile[]): Promise<IGrants[]> {
+        const profileIds = profiles.map(profile => profile.id);
+    
+        const profilesWithGrants = await models.ProfileModelSequelize.findAll({
+            where: {
+                id: profileIds
+            },
+            include: [{
+                model: models.GrantsModelSequelize,
+                as: 'grants',
+                through: { attributes: [] } // Exclui atributos da tabela intermediária
+            }]
+        });
+    
+        // Obter todos os grants e achatar o array
+        const grants = profilesWithGrants.flatMap(profile => profile.grants);
+    
+        const uniqueGrantsMap = new Map<string, IGrants>();
+        grants.forEach(grant => {
+            uniqueGrantsMap.set(grant.id, grant);
+        });
+    
+        return Array.from(uniqueGrantsMap.values());
+    }
+    
 
     async addProfileToGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
         await profile.addGrants(grants);

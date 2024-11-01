@@ -14,18 +14,18 @@ import authorize from './_Autorização/middlewares/authorize';
 import dotenv from 'dotenv';
 dotenv.config();
   
-const whiteList = ['*']
+const whiteList = ['http://127.0.0.1:3000'];
 
 const corsOptions: CorsOptions = {
-    origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
-      if (requestOrigin?.indexOf('*') !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'), false)
-      }
-    },
-    credentials: true
-  }
+  origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
+    if (!requestOrigin || whiteList.includes(requestOrigin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'), false);
+    }
+  },
+  credentials: true
+};
 
 class App {
     public app: IApp;
@@ -64,8 +64,8 @@ class App {
  *   cookie-session middleware for session management with specified options.
  */
     private middlewares() {
-        this.app.use(bodyParser.json());
         this.app.use(cors(corsOptions));
+        this.app.use(bodyParser.json());
         if (process.env.AUTH_STRATEGY === 'session') {
             this.app.use(cookieSession({ 
                 secret: process.env.SESSION_SECRET || 'HESTIA',
@@ -83,6 +83,8 @@ class App {
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
         grantsRouter.registerRoutes("/v1/grants", this.app.router);
 
+
+        
         this.app.use(this.app.router.getRouter());
     }
 

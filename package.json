@@ -27,6 +27,7 @@
     "nanoid": "^5.0.7",
     "nodemailer": "^6.9.16",
     "passport": "^0.7.0",
+    "path-to-regexp": "^8.2.0",
     "pg": "^8.13.0",
     "redis": "^4.7.0",
     "redisstore": "^0.0.1",
