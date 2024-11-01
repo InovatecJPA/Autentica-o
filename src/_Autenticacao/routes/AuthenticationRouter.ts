@@ -246,6 +246,18 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      externalId:
          *                        type: string
          *                        example: "1111ui2s546"
+         *            examples:
+         *              internalAuth:
+         *                summary: Exemplo de autenticação interna
+         *                value:
+         *                  login: "admin@example.com"
+         *                  password: "123456"
+         *                  isExternal: false
+         *              externalAuth:
+         *                summary: Exemplo de autenticação externa
+         *                value:
+         *                  isExternal: true
+         *                  externalId: "1111ui2s546"
          *      responses:
          *         201:
          *           description: Autenticação criada com sucesso

@@ -24,6 +24,8 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
         grants: Association<ProfileModelSequelize, GrantsModelSequelize>;
     }
 
+    public grants!: GrantsModelSequelize[];
+
     public static associate (models: any) {
         this.belongsToMany(models.AuthenticationModelSequelize, {
             through: {

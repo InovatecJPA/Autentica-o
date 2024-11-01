@@ -1,3 +1,4 @@
+import { match } from 'path-to-regexp';
 import authenticationService from "../../_Autenticacao/services/authenticationService";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from "../../interfaces/httpInterface";
 import HttpError from "../../utils/customErrors/httpError";
@@ -43,42 +44,44 @@ function isPathMatch(grantPath: string, requestPath: string): boolean {
  */
 async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) {
     try {
+    
         const userId = req.session.auth.id!;
+
+        if (!userId) {
+            throw new HttpError(401, 'Unauthorized');
+        }
 
         const user = await authenticationService.findById(userId)
 
-        if (!user) {
-            throw new HttpError(404, 'User not found');
-        }
-
-        if (!user.active) {
-            throw new HttpError(403, 'User not activated');
+        if (!user || !user.active) {
+            throw new HttpError(403, 'User not authorized');
         }
         
-        const path = req.path;
-        const method = req.method;
+        const requestPath = req.path;
+        const requestMethod = req.method.toUpperCase();
 
         const profiles = await profileService.getProfilesByAuthenticationId(userId);
 
-        if (profiles.length > 0 && profiles.some(profile => profile.name === 'Admin')){
+        if (profiles.some(profile => profile.name.toLowerCase() === 'admin')) {
             return next();
         }
 
-        const grantPromises = profiles.map(async (profile) => {
+        const profileIds = profiles.map(profile => profile.id);
+        const grants = await profileService.getGrantsByProfilesId(profileIds);
 
-            if (profile.name === 'Admin') {
-                return true;
+        const hasAccess = grants.some(grant => {
+            const grantMethod = grant.method.toUpperCase();
+
+            if (grantMethod !== requestMethod) {
+                return false;
             }
 
-            const grants = await profileService.getGrantsByProfileId(profile.id);
-            return grants.some(grant => {
-                return isPathMatch(grant.path, path) && grant.method === method;
-            });
+            const isMatch = match(grant.path, { decode: decodeURIComponent });
+            const matched = isMatch(requestPath);
+            return matched !== false;
         });
-        
-        const accessGranted = (await Promise.all(grantPromises)).some(granted => granted);
 
-        if (!accessGranted) {
+        if (!hasAccess) {
             throw new HttpError(403, 'Forbidden Access');
         }
 
