@@ -11,13 +11,15 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
     public createdAt!: Date;
     public updatedAt!: Date;
 
-    public getGrants!: (options : object) => Promise<GrantsModelSequelize[]>;
+    public getGrants!: (options?: object) => Promise<GrantsModelSequelize[]>;
     public addGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
     public removeGrants!: (grants: GrantsModelSequelize[]) => Promise<void>;
 
-    public getAuthentication!: (options: object) => Promise<AuthenticationModelSequelize[]>;
-    public addAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
-    public removeAuthentication!: (auth: AuthenticationModelSequelize) => Promise<void>;
+
+
+    public getAuthentications!: (options?: object) => Promise<AuthenticationModelSequelize[]>;
+    public addAuthentications!: (auth: AuthenticationModelSequelize, options?: object) => Promise<void>;
+    public removeAuthentications!: (auth: AuthenticationModelSequelize) => Promise<void>;
 
     public static associations: {
         authentication: Association<ProfileModelSequelize, AuthenticationModelSequelize>;
@@ -28,13 +30,14 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
 
     public static associate (models: any) {
         this.belongsToMany(models.AuthenticationModelSequelize, {
-            through: {
-                model: "authentication_profiles",
-                unique: true
-            },
+            // through: {
+            //     model: "authentication_profiles",
+            //     unique: true
+            // },
+            through: "authentication_profiles",
             foreignKey: 'profileId',
             otherKey: 'authenticationId',
-            as: 'authentication'
+            as: 'authentications'
         })
 
         this.belongsToMany(models.GrantsModelSequelize, {

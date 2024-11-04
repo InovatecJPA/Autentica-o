@@ -5,6 +5,9 @@ import { nanoid } from "nanoid";
 import HttpError from "../../utils/customErrors/httpError";
 import Authentication from "../models/authenticationModel";
 
+import dotenv from "dotenv";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
+dotenv.config();
 
 class AuthenticationService implements IAuthenticationService {
     private static instance: AuthenticationService;
@@ -71,7 +74,8 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-    async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
+async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {    
+    try {
         let newAuth: IAuthentication, auth = await this.authRepository.findByLogin(authData.login!);
         
         if (auth) {
@@ -80,16 +84,17 @@ class AuthenticationService implements IAuthenticationService {
 
         const salt = bcrypt.genSaltSync(10);
         const password = await bcrypt.hash(authData.passwordHash!, salt);
-        authData.passwordHash = password 
+        authData.passwordHash = password;
 
         auth = new Authentication(authData);
-        try {
-            newAuth = await this.authRepository.createAuthentication(auth);
-        } catch (error: any) {
-            throw new HttpError(400, error.message);
-        }
+        
+        newAuth = await this.authRepository.createAuthentication(auth);
+
         return newAuth;
+    } catch (error: any) {
+        throw new HttpError(400, error.message);
     }
+}
 
     /**
      * @inheritdoc
@@ -107,6 +112,7 @@ class AuthenticationService implements IAuthenticationService {
         } catch (error: any) {
             throw new HttpError(400, error.message);
         }
+
         return newAuth;
     }
 
@@ -228,6 +234,19 @@ class AuthenticationService implements IAuthenticationService {
         return token;
     }
 
-}
+    async getProfilesByAuthenticationId(id: string): Promise<IProfile[]> {
+        const authentication = await this.findById(id);
+            
+        if (!authentication) {
+            throw new HttpError(404, 'Authentication not found');
+        }
 
+        const profiles = await this.authRepository.getProfilesByAuthentication(authentication);
+        if (!profiles) {
+            throw new HttpError(404, 'Profiles not found');
+        }
+
+        return profiles;
+    }
+}
 export default AuthenticationService.getInstance();

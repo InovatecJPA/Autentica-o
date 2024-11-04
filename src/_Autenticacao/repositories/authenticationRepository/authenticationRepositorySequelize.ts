@@ -1,7 +1,17 @@
 import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../Interfaces/authInterfaces";
 import { models } from "../../../sequelize/models";
+import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
+import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces";
+import { Sequelize, Transaction } from "sequelize";
+import sequelize from "../../../config/sequelize";
+import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {
+    
+    async startTransaction(): Promise<Transaction> {
+        return await sequelize.transaction(); // Inicia e retorna uma nova transação
+    }
+    
     /**
      * @inheritdoc
      */
@@ -34,20 +44,22 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     /**
      * @inheritdoc
      */
-    async findByLogin(login: string): Promise<IAuthentication | null> {
+    async findByLogin(login: string, options?: object): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({
             where: {login: login},
-            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+            attributes : {exclude: ['passwordHash', 'password_token_reset']},
+            ...options
         });
     }
 
     /**
      * @inheritdoc
      */
-    async findByExternalId(externalId: string): Promise<IAuthentication | null> {
+    async findByExternalId(externalId: string, options?: object): Promise<IAuthentication | null> {
         return await models.AuthenticationModelSequelize.findOne({
             where: {externalId: externalId},
-            attributes : {exclude: ['passwordHash', 'password_token_reset']}
+            attributes : {exclude: ['passwordHash', 'password_token_reset']},
+            ...options
         });
     }
 
@@ -55,9 +67,11 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     /**
      * @inheritdoc
      */
-    async createAuthentication(auth: IAuthentication): Promise<IAuthentication> {
-        const { passwordHash, password_token_reset, ...newAuth} = await models.AuthenticationModelSequelize.create(auth);
-        return {...newAuth, passwordHash: null, password_token_reset: null};
+    async createAuthentication(auth: AuthenticationModelSequelize, options?: object): Promise<IAuthentication> {
+        const { passwordHash, password_token_reset, ...newAuth} = 
+            await models.AuthenticationModelSequelize.create(auth, options);
+
+        return {...newAuth.dataValues, passwordHash: null, password_token_reset: null};
         
     }
 
@@ -89,6 +103,15 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
         await models.AuthenticationModelSequelize.destroy({where: {id: id}});
     }
 
+    async getProfilesByAuthentication(auth: AuthenticationModelSequelize): Promise<IProfile[]> {
+        return await auth.getProfiles();
+    }
+
+    async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize,  options?: object): Promise<void> {
+        for (const profile of profiles){
+            await auth.addProfiles(profile);
+        }
+    }
 }
 
 export default AuthenticationRepositorySequelize;

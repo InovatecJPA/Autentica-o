@@ -337,29 +337,7 @@ class ProfileController implements IProfileController {
             next(error);
         }
     }
-        /**
-         * Finds all profiles associated with an authentication id.
-         * 
-         * @param {IHttpRequest} req - The request from the client. The authId must be in the params.
-         * @param {IHttpResponse} res - The response to the client.
-         * @param {IHttpNext} next - The next function to call in the pipeline.
-         * 
-         * @returns {Promise<void>} A promise that resolves when the profiles are found and sends them to the client, or rejects with an HttpError if the profiles are not found.
-         * 
-         * @throws {HttpError} Throws a 400 error if the authId is not provided or a 404 error if the profiles are not found.
-         */
-    async getProfilesByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try {
-            const { authId } = req.params;
-            if(!authId){
-                throw new HttpError(400, "authId is required");
-            }
-            const profiles = await this.profileService.getProfilesByAuthenticationId(authId);
-            res.status(200).json(profiles);
-        } catch (error: any) {
-            next(error);
-        }
-    }
+
 }
 
 export default ProfileController.getInstance();

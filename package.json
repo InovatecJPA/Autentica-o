@@ -6,7 +6,7 @@
   "scripts": {
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all",
-    "docs": "typedoc --out docs src",
+    "docs": "npx typedoc --entryPointStrategy expand --out docs src",
     "start": "node dist/main.js",
     "dev": "tsx watch --env_file .env src/main.ts"
   },

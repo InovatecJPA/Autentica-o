@@ -1,6 +1,7 @@
 import { Token } from "nodemailer/lib/xoauth2";
 import { IAppRouter } from "../../interfaces/appInterface";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
 
 /**
  * Interface de autenticação para definir os dados necessários para
@@ -48,11 +49,15 @@ export interface IAuthenticationParams {
  */
 export interface IAuthenticationRepository {
     /**
+     * Começa uma transação no database
+     */
+    startTransaction(): Promise<any>;
+    /**
      * Cria uma autenticação
      * @param {IAuthentication} authData - Dados da autenticação
      * @returns {Promise<IAuthentication>} Usuário criado
      */
-    createAuthentication(authData: IAuthentication): Promise<IAuthentication>;
+    createAuthentication(authData: IAuthentication, options?: object): Promise<IAuthentication>;
     /**
      * Atualiza uma autenticação
      * @param {string} id - Id da autenticação 
@@ -82,19 +87,26 @@ export interface IAuthenticationRepository {
      * @param {string} login - Login do usuário
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada
      */
-    findByLogin(login: string): Promise<IAuthentication | null>;
+    findByLogin(login: string, options?: object): Promise<IAuthentication | null>;
     /**
      * Encontra uma autenticação pelo seu externalId
      * @param {string} externalId - Id externo do usuário
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada
      */
-    findByExternalId(externalId: string): Promise<IAuthentication | null>;
+    findByExternalId(externalId: string, options?: object): Promise<IAuthentication | null>;
     /**
      * Deleta uma autenticação do banco de dados
      * @param {string} id - Id da autenticação
      * @returns {Promise<void>}
      */
     deleteAuthentication(id: string): Promise<void>;
+
+    /**
+     * Retorna os perfis associados a uma autenticação
+     * @param {IAuthentication} auth - Autenticação
+     * @returns {Promise<IProfile[]>} Perfis associados a autenticação
+     */
+    getProfilesByAuthentication(auth: IAuthentication): Promise<IProfile[]>
 }
 
 /**
@@ -201,6 +213,14 @@ export interface IAuthenticationService  {
      * @returns {Promise<void>}
      */
     deleteAuthentication(id: string): Promise<void>;
+
+    /**
+     * Retorna os perfis associados a uma autenticação
+     * @param {string} id - Id da autenticação
+     * @returns {Promise<IProfile[] | null>}
+     */
+    getProfilesByAuthenticationId(id: string): Promise<IProfile[] | null>;
+
 }
 
 /**
@@ -306,6 +326,14 @@ export interface IAuthenticationController {
      * @param {IHttpNext} next - Proxima Função
      */
     logout(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
+    /**
+     * Recupera os perfis associados a uma autenticação
+     * @param {IHttpRequest} req - Requisição Genérica
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    getProfilesByAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 // INTERFACE DO ROUTER

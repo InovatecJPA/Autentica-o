@@ -1,6 +1,7 @@
 import { Model, DataTypes, Association, Sequelize } from "sequelize";
 import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
 import  ProfileModelSequelize  from "./profileModelSequelize";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;
@@ -14,6 +15,9 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
     public createdAt!: Date;
     public updatedAt!: Date;
 
+    public getProfiles!: () => Promise<ProfileModelSequelize[]>
+    public addProfiles!: (profiles: IProfile, options?: object) => Promise<void>
+
     public static associations: {
         profiles: Association<AuthenticationModelSequelize, ProfileModelSequelize>;
     };
@@ -21,10 +25,11 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
 
     public static associate (models: any) {
         this.belongsToMany(models.ProfileModelSequelize, {
-            through: {
-                model: "authentication_profiles",
-                unique: true
-            },
+            // through: {
+            //     model: "authentication_profiles",
+            //     unique: true
+            // },
+            through: "authentication_profiles",
             foreignKey: 'authenticationId',
             otherKey: 'profileId',
             as: 'profiles'

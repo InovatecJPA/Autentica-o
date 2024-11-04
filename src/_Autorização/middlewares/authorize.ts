@@ -60,7 +60,7 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
         const requestPath = req.path;
         const requestMethod = req.method.toUpperCase();
 
-        const profiles = await profileService.getProfilesByAuthenticationId(userId);
+        const profiles = await authenticationService.getProfilesByAuthenticationId(userId);
 
         if (profiles.some(profile => profile.name.toLowerCase() === 'admin')) {
             return next();
