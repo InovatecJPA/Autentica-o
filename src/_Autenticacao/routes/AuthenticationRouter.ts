@@ -206,6 +206,38 @@ class AuthenticationRouter implements IAuthenticationRouter {
         app.get(`${basePath}/:id`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findById(req, res, next);
         })
+
+        /** 
+         * @swagger
+         * /:id/profiles:
+         *  get:
+         *      summary: Pegar os perfis com base no usuário
+         *      tags: 
+         *          - [Autenticações]
+         *      servers:
+         *          - url: http:localhost:3000/v1/auth
+         *      parameters:
+         *        - in: path
+         *          name: id
+         *          schema:
+         *            type: string
+         *          required: true
+         *          description: ID do usuário
+         *      responses:
+         *         200:
+         *           description: Retorna os perfis do usuário
+         *         401:
+         *           description: Erro de autenticação
+         *         403:
+         *           description: Permissão negada
+         *         404:
+         *           description: Usuário não encontrado
+         *         500:
+         *           description: Erro interno do servidor 
+         */
+        app.get(`${basePath}/:id/profiles`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.getProfilesByAuthentication(req, res, next);
+        })
     }
 
 

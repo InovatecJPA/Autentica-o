@@ -4,11 +4,18 @@ import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } fro
 import AuthenticationService from "../services/authenticationService";
 import HttpError from "../../utils/customErrors/httpError";
 import {sendPasswordResetEmail} from "../../utils/mail/Email"
+import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces";
+import profileService from "../../_Autorização/services/profileService";
+
+import dotenv from 'dotenv'
+import cookieSession from "cookie-session";
+dotenv.config()
 
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
     private authStrategy: IAuthStrategy;
+    private profileService: IProfileService;
  
     /**
      * The private constructor for the AuthenticationController.
@@ -18,6 +25,7 @@ class AuthenticationController implements IAuthenticationController{
     private constructor(authService: IAuthenticationService) {
         this.authService = authService;
         this.authStrategy = createAuthStrategy();
+        this.profileService = profileService;
     }
 
 
@@ -99,8 +107,8 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        let auth: IAuthentication | undefined
         try {
-            let auth: IAuthentication
             const { login, password, externalId, isExternal }  = req.body;
 
             const authData: IAuthenticationParams = {
@@ -109,8 +117,7 @@ class AuthenticationController implements IAuthenticationController{
                 externalId,
                 isExternal,
             }
-            
-            
+                        
             if(isExternal){
                 if(!externalId){
                     throw new HttpError(400, 'External Id is required');
@@ -129,8 +136,17 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, 'Authentication not created');
             }
 
+            const profile_id = process.env.USER_COMUM_PROFILE!
+
+            await this.profileService.addProfilesToAuthentication([profile_id], auth.id);
+
+
             res.status(201).json(auth);
         } catch (error: any) {
+            if (auth && auth.id) {
+                await this.authService.deleteAuthentication(auth.id)
+            }
+
             next(error)
         }
     }
@@ -416,6 +432,22 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-}
+    
+    async getProfilesByAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const { id } = req.params;
 
+            const profiles = await this.authService.getProfilesByAuthenticationId(id);
+
+            if (!profiles || profiles.length === 0) {
+                throw new HttpError(404, 'Profiles not found');
+            }
+
+            res.status(200).json(profiles);
+        } catch(error: any){
+            next(error)
+        }
+    }
+}
+    
 export default AuthenticationController.getInstance(AuthenticationService);

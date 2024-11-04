@@ -94,7 +94,7 @@ export interface IProfileRepository {
      * @param auth - The authentication to add profiles to.
      * @returns A promise that resolves when the operation is complete.
      */
-    addProfilesToAuthentication(profiles: IProfile[], auth: IAuthentication): Promise<void>;
+    addProfilesToAuthentication(profiles: IProfile[], auth: IAuthentication, options?: object): Promise<void>;
 
     /**
      * Removes profiles from an authentication.
@@ -129,19 +129,6 @@ export interface IProfileRepository {
      */
     removeProfileFromGrants(profile: IProfile, grants: IGrants[]): Promise<void>;
 
-    /**
-     * Retrieves profiles associated with an authentication ID.
-     * @param authenticationId - The authentication ID to get profiles for.
-     * @returns A promise that resolves to an array of profiles.
-     */
-    getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]>;
-
-    /**
-     * Retrieves profiles associated with a grants ID.
-     * @param grantsId - The grants ID to get profiles for.
-     * @returns A promise that resolves to an array of profiles.
-     */
-    getProfilesByGrantsId(grantsId: string[]): Promise<IProfile[]>;
 }
 
 /**
@@ -196,7 +183,7 @@ export interface IProfileService {
      * @param userId - The user ID for the authentication.
      * @returns A promise that resolves when the operation is complete.
      */
-    addProfilesToAuthentication(profilesId: string[], userId: string): Promise<void>;
+    addProfilesToAuthentication(profilesId: string[], userId: string, options?: object): Promise<void>;
 
     /**
      * Removes profiles from an authentication.
@@ -230,12 +217,6 @@ export interface IProfileService {
      */
     removeProfileFromGrants(profileId: string, grantsId: string[]): Promise<void>;
 
-    /**
-     * Retrieves profiles associated with an authentication ID.
-     * @param authenticationId - The authentication ID to get profiles for.
-     * @returns A promise that resolves to an array of profiles.
-     */
-    getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]>;
 }
 
 /**
@@ -342,14 +323,6 @@ export interface IProfileController {
      */
     removeProfileFromGrants(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 
-    /**
-     * Retrieves profiles associated with an authentication ID.
-     * @param req - The HTTP request object.
-     * @param res - The HTTP response object.
-     * @param next - The next middleware function in the stack.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    getProfilesByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 /**

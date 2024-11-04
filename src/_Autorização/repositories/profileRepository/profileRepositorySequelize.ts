@@ -50,62 +50,24 @@ class ProfileRepositorySequelize implements IProfileRepository {
     }   
 
     async getAuthenticationsByProfileId(profile: ProfileModelSequelize): Promise<IAuthentication[]> {
-        return await profile.getAuthentication({
+        return await profile.getAuthentications({
             attributes: {exclude: ['passwordHash', 'password_token_reset']}
         });
     }
 
-    async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {
+
+    async addProfilesToAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize, options?:object): Promise<void> {
         for (const profile of profiles) {
-            await profile.addAuthentication(auth);
+            await profile.addAuthentications(auth, options);
         }
     }
     
     async removeProfilesFromAuthentication(profiles: ProfileModelSequelize[], auth: AuthenticationModelSequelize): Promise<void> {
         for (const profile of profiles) {
-            await profile.removeAuthentication(auth);
+            await profile.removeAuthentications(auth);
         }
     }
 
-    async getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
-        const profileAssociations = await models.ProfileModelSequelize.sequelize?.query(
-            `SELECT "profileId" FROM authentication_profiles WHERE "authenticationId" = :authenticationId`,
-            {
-                replacements: { authenticationId },
-                type: QueryTypes.SELECT
-            }
-        );
-
-        const profileIds = profileAssociations?.map((assoc: any) => assoc.profileId) || [];
-
-        if (profileIds.length > 0) {
-            return await models.ProfileModelSequelize.findAll({
-                where: { id: { [Op.in]: profileIds } }
-            });
-        }
-
-        return []; 
-    }
-
-    async getProfilesByGrantsId(grantsId: string[]): Promise<IProfile[]> {
-        const profileAssociations = await models.ProfileModelSequelize.sequelize?.query(
-            `SELECT profileId FROM grants_profiles WHERE grantsId = :grantsId`,
-            {
-                replacements: { grantsId },
-                type: QueryTypes.SELECT
-            }
-        );
-
-        const profileIds = profileAssociations?.map((assoc: any) => assoc.profileId) || [];
-
-        if (profileIds.length > 0) {
-            return await models.ProfileModelSequelize.findAll({
-                where: { id: { [Op.in]: profileIds } }
-            });
-        }
-
-        return [];
-    }
 
 
     async getGrantsByProfileId(profile: ProfileModelSequelize): Promise<GrantsModelSequelize[]> {
@@ -134,7 +96,6 @@ class ProfileRepositorySequelize implements IProfileRepository {
             }]
         });
     
-        // Obter todos os grants e achatar o array
         const grants = profilesWithGrants.flatMap(profile => profile.grants);
     
         const uniqueGrantsMap = new Map<string, IGrants>();

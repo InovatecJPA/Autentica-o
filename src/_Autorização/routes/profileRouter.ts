@@ -239,58 +239,6 @@ class ProfileRouter implements IProfileRouter{
         app.get(`${basePath}/:id/authentications`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.getAuthenticationsByProfileId(req, res, next);
         })
-
-        /**
-         * @swagger
-         * /profile/:authId/authentications/list:
-         *   get:
-         *     summary: Retorna os perfis associados a uma autenticação
-         *     tags:
-         *       - [Profile]
-         *     parameters:
-         *       - in: path
-         *         name: authId
-         *         required: true
-         *         schema:
-         *           type: string
-         *         description: ID da autenticação
-         *     responses:
-         *       200:
-         *         description: Retorna os perfis associados a uma autenticação
-         *         content:
-         *           application/json:
-         *                 schema:
-         *                  type: array
-         *                  items:
-         *                    type: object
-         *                    properties:
-         *                      id:
-         *                        type: string
-         *                        example: "1111-2222-3333-4444"
-         *                      name:
-         *                        type: string
-         *                        example: "Admin"
-         *                      description:
-         *                        type: string
-         *                        example: "Admin"
-         *                      createdAt:  
-         *                        type: string
-         *                        example: "2022-01-01T00:00:00.000Z"
-         *                      updatedAt:
-         *                        type: string
-         *                        example: "2022-01-01T00:00:00.000Z"
-         *       401:
-         *         description: Erro de autenticação
-         *       403:
-         *         description: Permissão negada
-         *       404:
-         *         description: Perfil não encontrado
-         *       500:
-         *         description: Erro interno do servidor
-         */
-        app.get(`${basePath}/:authId/authentications/list`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.profileController.getProfilesByAuthenticationId(req, res, next);
-        })
     }
  
 

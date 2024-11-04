@@ -145,18 +145,18 @@ class ProfileService implements IProfileService {
         return await this.profileRepository.getAuthenticationsByProfileId(profile);
     }
 
-    async addProfilesToAuthentication(profilesId: string[], authId: string): Promise<void> {
+    async addProfilesToAuthentication(profilesId: string[], authId: string, options?: object): Promise<void> {
         const profiles = await this.profileRepository.findByIds(profilesId);
         if (profiles.length !== profilesId.length) {
             throw new HttpError(404, 'Profile not found');
         }
 
-        const auth = await this.authenticationService.findById(authId);
+        const auth = await authenticationService.findById(authId);
         if (!auth) {
             throw new HttpError(404, 'User not found');
         }   
 
-        await this.profileRepository.addProfilesToAuthentication(profiles, auth);
+        await this.profileRepository.addProfilesToAuthentication(profiles, auth, options);
     }
 
     async removeProfilesFromAuthentication(profilesId: string[], authId: string): Promise<void> {
@@ -172,9 +172,6 @@ class ProfileService implements IProfileService {
         return this.profileRepository.removeProfilesFromAuthentication(profiles, auth); 
     }
 
-    async getProfilesByAuthenticationId(authenticationId: string): Promise<IProfile[]> {
-        return this.profileRepository.getProfilesByAuthenticationId(authenticationId);
-    }
 
     async getGrantsByProfilesId(profilesId: string[]): Promise<IGrants[]> {
         const profiles = await this.profileRepository.findByIds(profilesId);
