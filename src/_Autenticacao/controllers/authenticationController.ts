@@ -157,18 +157,17 @@ class AuthenticationController implements IAuthenticationController{
     async updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const id = req.session?.auth?.id;
-            const {login, isExternal, externalId} = req.body;
+            const {isExternal, externalId} = req.body;
             
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
             
-            if(!login && (isExternal && !externalId) ){
-                throw new HttpError(400, 'Login, isExternal or externalId is required');
+            if( (isExternal && !externalId) ){
+                throw new HttpError(400, 'IsExternal or externalId is required');
             }
             
             const authData: Partial<IAuthenticationParams> = {
-                login,
                 isExternal,
                 externalId,
             }

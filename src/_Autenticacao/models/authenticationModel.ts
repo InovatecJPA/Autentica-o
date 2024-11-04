@@ -5,7 +5,7 @@ import { IAuthenticationParams, IAuthentication } from '../Interfaces/authInterf
 
 class Authentication implements IAuthentication { 
     id: string;
-    login!: string | null;
+    login!: string;
     passwordHash!: string | null;
     isExternal: boolean;
     externalId!: string | null;
@@ -17,11 +17,11 @@ class Authentication implements IAuthentication {
     
     /**
      * Construtor da classe Authentication.
-     * @param {{login: string | null, passwordHash: string | null, externalId: string | null, isExternal: boolean}} params
+     * @param {{login: string, passwordHash: string | null, externalId: string | null, isExternal: boolean}} params
      * @throws {Error} Caso o login ou passwordHash sejam nulos e isExternal seja false
      * @throws {Error} Caso o externalId seja nulo e isExternal seja true
      */
-    constructor({login = null, passwordHash = null, externalId = null, isExternal} : IAuthenticationParams){
+    constructor({login, passwordHash = null, externalId = null, isExternal} : IAuthenticationParams){
         
         if (isExternal){
             this.validateExternalId(externalId!);
