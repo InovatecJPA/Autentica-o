@@ -5,7 +5,7 @@ import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;
-    public login!: string | null;
+    public login!: string;
     public passwordHash!: string | null;
     public isExternal!: boolean;
     public externalId!: string | null;

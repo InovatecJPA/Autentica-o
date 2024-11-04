@@ -13,7 +13,7 @@ export interface IAuthentication {
      * Maneira de login do usuário, será definido pelo tipo de projeto (email, cpf e afins)
      * Será nulo caso o usuário seja uma autenticação externa 
      */
-    login: string | null;
+    login: string;
     /**
      * Será nulo caso o usuário seja uma autenticação externa
      * Pode ser alterado após o primeiro login
@@ -35,7 +35,7 @@ export interface IAuthentication {
  * Interface para os parâmetros de criação e atualização de uma autenticação
  */
 export interface IAuthenticationParams {
-    login: string | null;
+    login: string;
     passwordHash: string | null;
     externalId: string | null;
     isExternal: boolean;
