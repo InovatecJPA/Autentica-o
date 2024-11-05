@@ -8,3 +8,5 @@
     openssl genrsa -out key.pem 2048
     openssl req -new -key key.pem -out csr.pem
     openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
+
+https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000/auth/google/callback&prompt=consent&response_type=code&client_id=508991337091-2dnovh9vco6hvqs6b57vejo33gak5hct.apps.googleusercontent.com&scope=email profile

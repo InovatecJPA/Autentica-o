@@ -46,7 +46,6 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
     try {
     
         const userId = req.session.auth.id!;
-
         if (!userId) {
             throw new HttpError(401, 'Unauthorized');
         }

@@ -71,6 +71,14 @@ export interface IAuthenticationRepository {
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada 
      */
     findById(id: string): Promise<IAuthentication | null>;
+
+    /**
+     * Encontra uma autenticação pelo seu id
+     * @param {string} id - Id da autenticação
+     * @returns {Promise<IAuthentication | null>} Autenticação encontrada 
+     */
+    findByIdWithPassword(id: string): Promise<IAuthentication | null>;
+
     /**
      * Encontra uma autenticação pelo seu token
      * @param {string} token - Token da autenticação

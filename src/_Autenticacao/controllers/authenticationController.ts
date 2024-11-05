@@ -226,9 +226,14 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             const token = await this.authService.setPasswordTokenAndExpiryDate(auth!.id);
+            
+            const sent = await sendPasswordResetEmail(login, token)
 
-            await sendPasswordResetEmail(login, token);
-            res.status(204)
+            if (!sent) {
+                throw new HttpError(500, 'Error sending email');
+            }
+
+            res.status(204).send({})
         }catch(error: any){
             next(error)
         }
@@ -248,9 +253,9 @@ class AuthenticationController implements IAuthenticationController{
             if(!password){
                 throw new HttpError(400, 'Password is required');
             }
-
+            console.log(token, password);
             const user = await this.authService.findByToken(token);
-
+            console.log(user);
             if(!user){
                 throw new HttpError(404, 'Authentication not found');
             }
@@ -260,7 +265,7 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             await this.authService.updatePassword(user.id, password);
-            res.status(204)
+            res.status(204).json({})
         } catch(error: any){
             next(error)
         }
@@ -311,8 +316,9 @@ class AuthenticationController implements IAuthenticationController{
                 if (!login || !password) {
                     throw new HttpError(400, 'Login and password are required');
                 }
-                
+
                 auth = await this.authService.authenticate(login, password);
+
                 if (!auth) {
                     throw new HttpError(404, 'Authentication not found');
                 }

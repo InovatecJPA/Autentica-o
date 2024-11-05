@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 import transporter from './transporterMail';
 dotenv.config();
 
-async function sendPasswordResetEmail(email: string, token: string): Promise<void> {
-    const resetLink = `${process.env.BASE_URL}/reset-password?token=${token}`;
+async function sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
+    const resetLink = `${process.env.BASE_URL}/reset-password/${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_SENDER,
@@ -16,7 +16,13 @@ async function sendPasswordResetEmail(email: string, token: string): Promise<voi
         `,
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions).then((info) => {
+        console.log('Email enviado: ' + info.response);
+    }).catch((error) => {
+        console.log(error);
+        throw new Error('Erro ao enviar email');
+    })
+    return true
 }
 
 export { 

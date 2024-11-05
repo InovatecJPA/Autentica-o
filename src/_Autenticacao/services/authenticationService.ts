@@ -179,7 +179,8 @@ async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAu
      * @inheritdoc
      */
     async validatePassword(id: string, passwordHash: string): Promise<boolean> {
-        const auth = await this.authRepository.findById(id);
+        const auth = await this.authRepository.findByIdWithPassword(id);
+        console.log(auth)
         if (!auth || !auth.passwordHash) {
             throw new HttpError(404, 'Authentication not found');
         }
@@ -200,10 +201,10 @@ async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAu
             throw new HttpError(403, 'Usuário inativo');
         }
 
-        if (await this.validatePassword(auth.id, passwordHash)) {
-            return auth;
+        if (!await this.validatePassword(auth.id, passwordHash)) {
+            throw new HttpError(401, 'Login ou senha inválidos');
         }
-        return null;
+        return auth || null;
     };   
         
     /**

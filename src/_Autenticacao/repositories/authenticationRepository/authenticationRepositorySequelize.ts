@@ -22,6 +22,12 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
         });
     }
 
+    async findByIdWithPassword(id: string): Promise<IAuthentication | null> {
+        return await models.AuthenticationModelSequelize.findOne({
+            where: {id: id}
+        })
+    }
+
     /**
      * @inheritdoc
      */

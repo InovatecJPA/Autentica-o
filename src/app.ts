@@ -94,12 +94,14 @@ class App {
 
     private routes() {
         swaggerRouter(this.app.router);
-
+        
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
         grantsRouter.registerRoutes("/v1/grants", this.app.router);
 
-
+        // this.app.router.getRouter().use('/auth/google/callback',(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        //     console.log(req);
+        // });
         
         this.app.use(this.app.router.getRouter());
     }
@@ -130,3 +132,7 @@ class App {
 }
 
 export default App.getInstance();
+function next() {
+    throw new Error('Function not implemented.');
+}
+
