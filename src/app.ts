@@ -29,6 +29,25 @@ const corsOptions: CorsOptions = {
   credentials: true
 };
 
+function useSession(){
+    if (process.env.PROJETO_FASE === 'development') {
+        return cookieSession({
+            secret: process.env.SESSION_SECRET || 'HESTIA',
+            name: 'authSession',
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true
+        })
+    }
+    if (process.env.PROJETO_FASE === 'production') {
+        return cookieSession({
+            secret: process.env.SESSION_SECRET || 'HESTIA',
+            name: 'authSession',
+            maxAge: 24 * 60 * 60 * 1000,
+            secure: true
+        })
+    }
+}
+
 class App {
     public app: IApp;
     private static instance: App;
@@ -69,13 +88,7 @@ class App {
         this.app.use(cors(corsOptions));
         this.app.use(bodyParser.json());
         if (process.env.AUTH_STRATEGY === 'session') {
-            this.app.use(cookieSession({ 
-                secret: process.env.SESSION_SECRET || 'HESTIA',
-                name: 'authSession',
-                maxAge: 24 * 60 * 60 * 1000,
-                secure: true,
-                sameSite: 'none'
-            }))
+            useSession()
         }
     }
 
