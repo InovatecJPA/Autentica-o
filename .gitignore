@@ -7,3 +7,6 @@ dist
 /docs
 \docs
 docs
+certs
+/certs
+\certs

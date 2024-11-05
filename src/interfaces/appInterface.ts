@@ -5,6 +5,7 @@ export interface IApp {
     use(middleware: any): void
     useRoute(path: string, middleware: any): void
     start(port: number): void
+    getExpressApp(): import("http").RequestListener<typeof import("http").IncomingMessage, typeof import("http").ServerResponse> | undefined
 }
 
 export interface IAppRouter{

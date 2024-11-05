@@ -9,12 +9,13 @@ import ProfileRouter from './_Autorização/routes/profileRouter';
 import grantsRouter from './_Autorização/routes/grantsRouter';
 import swaggerRouter from './utils/swagger/swaggerConfig';
 import cors, { CorsOptions } from 'cors'
-import authorize from './_Autorização/middlewares/authorize';
 
 import dotenv from 'dotenv';
 dotenv.config();
   
-const whiteList = ['http://127.0.0.1:3000'];
+// const whiteList = ['http://127.0.0.1:3000'];
+
+const whiteList = ['https://127.0.0.1:3000']
 
 const corsOptions: CorsOptions = {
   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
@@ -24,6 +25,7 @@ const corsOptions: CorsOptions = {
       callback(new Error('Not allowed by CORS'), false);
     }
   },
+  
   credentials: true
 };
 
@@ -71,7 +73,8 @@ class App {
                 secret: process.env.SESSION_SECRET || 'HESTIA',
                 name: 'authSession',
                 maxAge: 24 * 60 * 60 * 1000,
-                secure: false
+                secure: true,
+                sameSite: 'none'
             }))
         }
     }
