@@ -1,0 +1,89 @@
+[33m1c9fd0e[m[33m ([m[1;36mHEAD -> [m[1;32mbravim[m[33m)[m Começo de implementação da autenticação de externo
+[33m73e74b4[m 15 -- Funcional sem autenticação
+[33mcbcc926[m 15 -- Funcional sem autenticação externa
+[33me20bfd8[m[33m ([m[1;31morigin/bravim[m[33m)[m Merge branch 'bravim' of https://github.com/Inovatecjp/Autentica-o into bravim
+[33m621ae91[m 14
+[33m6ae15cc[m 14
+[33ma0f4c12[m 14
+[33ma76b87c[m 14
+[33m015a70d[m 14
+[33m8779a6c[m 14
+[33mcdb395e[m 14
+[33mfcd7419[m certificado
+[33m066fdf4[m certificado
+[33mf89eeb1[m 13
+[33m0ea730f[m 13
+[33m78383ff[m 12
+[33m5ec9d9d[m 12
+[33m96e5cf3[m 12
+[33m42969b3[m 12
+[33mbc70504[m 11
+[33m5e9e877[m 11
+[33ma6c05bf[m Finalizando documentação
+[33mdcbb654[m Finalizando documentação
+[33m9e05299[m Finalizando documentação
+[33m06ffe64[m Finalizando documentação
+[33m705efc2[m 10
+[33m0523d67[m 10
+[33md8e66fa[m Add documentação e ajuste retorno de objetos
+[33m982086a[m Add documentação e ajuste retorno de objetos
+[33m9f3540f[m Documentação e iniciação do swagger
+[33mc561563[m Documentação e iniciação do swagger
+[33m4c405b4[m Documentaçãi
+[33m8fc2ea6[m Documentaçãi
+[33m05f1b7c[m documentação tentativa
+[33m267b5a1[m documentação tentativa
+[33md4da45e[m remover profileId
+[33mff3fac9[m remover profileId
+[33m13a1ced[m Add email, e remake controller
+[33m600021c[m Add email, e remake controller
+[33m00deebb[m finalizado v1
+[33m4948408[m finalizado v1
+[33m258b76c[m finalizado v1
+[33meef6ffc[m finalizado v1
+[33m1fca362[m tudo funcionando, faltando migration
+[33m201119d[m tudo funcionando, faltando migration
+[33ma36bcf2[m 12
+[33m423cb9d[m 12
+[33md0655e6[m 11
+[33m6b7ff9d[m 11
+[33m2e69358[m grants and profile
+[33meb10ed3[m grants and profile
+[33md383faf[m reestruturação das pastas
+[33m4d89668[m reestruturação das pastas
+[33mc8f0345[m tentando implementar autorização
+[33m5c763f8[m tentando implementar autorização
+[33mc93cf3a[m realmente finalizado autenticação
+[33mec444e3[m realmente finalizado autenticação
+[33m117e689[m finalizado autenticação
+[33m32344e9[m finalizado autenticação
+[33mb43ec00[m 9
+[33m3984f5a[m 9
+[33ma0808c0[m 9
+[33m17f2634[m 9
+[33m8207e98[m 8
+[33m3f944be[m 8
+[33m4c85a2a[m 7
+[33m2ba0c03[m 7
+[33m070dc25[m 6
+[33m2dd3e61[m 6
+[33m67c9806[m 5
+[33m4ed6605[m 5
+[33m3ad5852[m 4
+[33me8eddbc[m 4
+[33meabd16f[m Tentativa Adapter
+[33m3f775a2[m Tentativa Adapter
+[33m355e4bf[m 4
+[33m8febe23[m 4
+[33m5ba4939[m 4
+[33mb2a9f5a[m 4
+[33mbb06372[m 3
+[33mfb41ee5[m 3
+[33m41c875d[m 2
+[33mac06e37[m 2
+[33m722e128[m 1
+[33m7c1725f[m 1
+[33m74ef114[m 1
+[33m76452fd[m 1
+[33m0f3d3e7[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m first commit
+[33m157e06e[m first commit
