@@ -1,4 +1,3 @@
-import { Token } from "nodemailer/lib/xoauth2";
 import { IAppRouter } from "../../interfaces/appInterface";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
@@ -9,21 +8,8 @@ import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
  */
 export interface IAuthentication {
     id: string;
-    /**
-     * Maneira de login do usuário, será definido pelo tipo de projeto (email, cpf e afins)
-     * Será nulo caso o usuário seja uma autenticação externa 
-     */
     login: string;
-    /**
-     * Será nulo caso o usuário seja uma autenticação externa
-     * Pode ser alterado após o primeiro login
-     */
-    passwordHash: string | null;
-    isExternal: boolean;
-    externalId: string | null;
-    /**
-     * Flag que indica se a autenticação está ativa ou não, para permitir o login do usuário
-     */
+    passwordHash: string;
     active: boolean;
     password_token_reset: string | null;
     password_token_expiry_date: Date | null;
@@ -31,18 +17,6 @@ export interface IAuthentication {
     updatedAt: Date;
 }
 
-/**
- * Interface para os parâmetros de criação e atualização de uma autenticação
- */
-export interface IAuthenticationParams {
-    login: string;
-    passwordHash: string | null;
-    externalId: string | null;
-    isExternal: boolean;
-    active?: boolean;
-    password_token_reset?: string;
-    password_token_expiry_date?: Date;
-}
 
 /**
  * Interface para o repositório de autenticação
@@ -61,10 +35,10 @@ export interface IAuthenticationRepository {
     /**
      * Atualiza uma autenticação
      * @param {string} id - Id da autenticação 
-     * @param {Partial<IAuthenticationParams>} updateData - Dados para atualizar 
+     * @param {PartialIAuthentication} updateData - Dados para atualizar 
      * @returns {Promise<IAuthentication>} Autenticação atualizada 
     */
-    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
+    updateAuthentication(id: string, updateData: Partial<IAuthentication>): Promise<IAuthentication>;
     /**
      * Encontra uma autenticação pelo seu id
      * @param {string} id - Id da autenticação
@@ -96,12 +70,7 @@ export interface IAuthenticationRepository {
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada
      */
     findByLogin(login: string, options?: object): Promise<IAuthentication | null>;
-    /**
-     * Encontra uma autenticação pelo seu externalId
-     * @param {string} externalId - Id externo do usuário
-     * @returns {Promise<IAuthentication | null>} Autenticação encontrada
-     */
-    findByExternalId(externalId: string, options?: object): Promise<IAuthentication | null>;
+
     /**
      * Deleta uma autenticação do banco de dados
      * @param {string} id - Id da autenticação
@@ -145,30 +114,18 @@ export interface IAuthenticationService  {
      */
     findByLogin(login: string): Promise<IAuthentication | null>;
     /**
-     * Encontra uma autenticação pelo seu externalId
-     * @param {string} externalId - Id externo do usuário
-     * @returns {Promise<IAuthentication | null>} Autenticação encontrada
-     */
-    findByExternalId(externalId: string): Promise<IAuthentication | null>;
-    /**
      * Cria uma autenticação interna
-     * @param {IAuthenticationParams} authData - Dados da autenticação, espera um login, uma senha, isExternal = false e externalId = null
+     * @param {IAuthentication} authData - Dados da autenticação, espera um login, uma senha, isExternal = false e externalId = null
      * @returns {Promise<IAuthentication | null>}
      */
-    createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
-    /**
-     * Cria uma autenticação externa
-     * @param {IAuthenticationParams} authData - Dados da autenticação, espera um externalId e isExternal = true, login e senha sao null
-     * @returns {Promise<IAuthentication>}
-     */
-    createExternalAuthentication(authData: IAuthenticationParams): Promise<IAuthentication>;
+    createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication>;
     /**
      * Atualiza uma autenticação
      * @param {string} id - Id da autenticação
-     * @param {Partial<IAuthenticationParams>} updateData - Dados para atualizar 
+     * @param {Partial<IAuthentication>} updateData - Dados para atualizar 
      * @returns {Promise<IAuthentication>}
      */
-    updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication>;
+    updateAuthentication(id: string, updateData: Partial<IAuthentication>): Promise<IAuthentication>;
     /**
      * Ativa uma autenticação   
      * @param {string} id - Id da autenticação
@@ -230,6 +187,30 @@ export interface IAuthenticationService  {
     getProfilesByAuthenticationId(id: string): Promise<IProfile[] | null>;
 
 }
+
+
+export interface IExternalAuthentication {
+    authentication_id: string;
+    external_id: string;
+    provider: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface IExternalAuthenticationRepository {
+    findAll(): Promise<IExternalAuthentication[] | null>;
+    findByAuthenticationId(authentication_id: string): Promise<IExternalAuthentication[]>;
+    findByExternalId(external_id: string): Promise<IExternalAuthentication | null>;
+    findByProvider(provider: string): Promise<IExternalAuthentication[]>;
+    createExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<IExternalAuthentication>;
+    updateExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<IExternalAuthentication>;
+    deleteExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<void>;
+}
+
+export interface IAuthenticationService {
+    
+}
+
 
 /**
  * Interface para o controlador de autenticação

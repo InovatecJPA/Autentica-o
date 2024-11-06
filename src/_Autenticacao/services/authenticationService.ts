@@ -1,5 +1,5 @@
-import createAuthenticationRepository from "../repositories/factoryAuthenticationRepository";
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository, IAuthenticationService } from "../Interfaces/authInterfaces";
+import {createAuthenticationRepository} from "../repositories/factoryAuthenticationRepository";
+import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import HttpError from "../../utils/customErrors/httpError";
@@ -56,14 +56,6 @@ class AuthenticationService implements IAuthenticationService {
     async findByLogin(login: string): Promise<IAuthentication | null> {
         return await this.authRepository.findByLogin(login);
     }
-
-    /**
-     * @inheritdoc
-     */
-    async findByExternalId(externalId: string): Promise<IAuthentication | null> {
-        return await this.authRepository.findByExternalId(externalId);
-    }
-
     /**
      * @inheritdoc
      */
@@ -74,52 +66,32 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {    
-    try {
-        let newAuth: IAuthentication, auth = await this.authRepository.findByLogin(authData.login!);
-        
-        if (auth) {
-            throw new HttpError(409, 'Authentication already exists');
-        }
-
-        const salt = bcrypt.genSaltSync(10);
-        const password = await bcrypt.hash(authData.passwordHash!, salt);
-        authData.passwordHash = password;
-
-        auth = new Authentication(authData);
-        
-        newAuth = await this.authRepository.createAuthentication(auth);
-
-        return newAuth;
-    } catch (error: any) {
-        throw new HttpError(400, error.message);
-    }
-}
-
-    /**
-     * @inheritdoc
-     */
-    async createExternalAuthentication(authData: IAuthenticationParams): Promise<IAuthentication> {
-        let newAuth: IAuthentication,auth = await this.authRepository.findByExternalId(authData.externalId!);
-        
-        if (auth) {
-            throw new HttpError(409, 'Authentication already exists');
-        }
-        
-        auth = new Authentication(authData);
+    async createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication> {    
         try {
+            let newAuth: IAuthentication, auth = await this.authRepository.findByLogin(authData.login!);
+            
+            if (auth) {
+                throw new HttpError(409, 'Authentication already exists');
+            }
+
+            const salt = bcrypt.genSaltSync(10);
+            const password = await bcrypt.hash(authData.passwordHash!, salt);
+            authData.passwordHash = password;
+
+            auth = new Authentication(authData);
+            
             newAuth = await this.authRepository.createAuthentication(auth);
+
+            return newAuth;
         } catch (error: any) {
             throw new HttpError(400, error.message);
         }
-
-        return newAuth;
     }
 
     /**
      * @inheritdoc
      */
-    async updateAuthentication(id: string, authData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
+    async updateAuthentication(id: string, authData: IAuthentication): Promise<IAuthentication> {
         const auth = await this.authRepository.findById(id);
         if (!auth) {
             throw new HttpError(404, 'Authentication not found');
@@ -129,9 +101,9 @@ async createStandartAuthentication(authData: IAuthenticationParams): Promise<IAu
             .filter(([_, value]) => value !== null && value !== undefined && 
                 !(typeof value === 'string' && value.trim() === ''))
             .reduce((acc, [key, value]) => {
-                acc[key as keyof IAuthenticationParams] = value as any
+                acc[key as keyof IAuthentication] = value as any
                 return acc
-            }, {} as Partial<IAuthenticationParams>)
+            }, {} as Partial<IAuthentication>)
 
         if (Object.keys(filteredData).length === 0) {
             throw new HttpError(400, 'No data to update');

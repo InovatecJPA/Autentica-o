@@ -111,7 +111,7 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const { login, password, externalId, isExternal }  = req.body;
 
-            const authData: IAuthenticationParams = {
+            const authData: IAuthentication = {
                 login,
                 passwordHash: password,
                 externalId,
@@ -140,8 +140,8 @@ class AuthenticationController implements IAuthenticationController{
 
             await this.profileService.addProfilesToAuthentication([profile_id], auth.id);
 
-
-            res.status(201).json(auth);
+            const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = auth;
+            res.status(201).json({ auth: authSemSenha });
         } catch (error: any) {
             if (auth && auth.id) {
                 await this.authService.deleteAuthentication(auth.id)
@@ -167,13 +167,15 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, 'IsExternal or externalId is required');
             }
             
-            const authData: Partial<IAuthenticationParams> = {
+            const authData: Partial<IAuthentication> = {
                 isExternal,
                 externalId,
             }
             
             const updatedAuth = await this.authService.updateAuthentication(id, authData);
-            res.status(200).json(updatedAuth);
+
+            const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = updatedAuth;
+            res.status(200).json(authSemSenha);
         } catch(error: any){
             next(error)
         }

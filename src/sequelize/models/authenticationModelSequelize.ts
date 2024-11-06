@@ -2,13 +2,12 @@ import { Model, DataTypes, Association, Sequelize } from "sequelize";
 import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
 import  ProfileModelSequelize  from "./profileModelSequelize";
 import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
+import ExternalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;
     public login!: string;
-    public passwordHash!: string | null;
-    public isExternal!: boolean;
-    public externalId!: string | null;
+    public passwordHash!: string;
     public active!: boolean;
     public password_token_reset!: string | null;
     public password_token_expiry_date!: Date | null;
@@ -20,19 +19,21 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
 
     public static associations: {
         profiles: Association<AuthenticationModelSequelize, ProfileModelSequelize>;
+        externalAuthentications: Association<AuthenticationModelSequelize, ExternalAuthenticationModelSequelize>;
     };
 
 
     public static associate (models: any) {
         this.belongsToMany(models.ProfileModelSequelize, {
-            // through: {
-            //     model: "authentication_profiles",
-            //     unique: true
-            // },
             through: "authentication_profiles",
             foreignKey: 'authenticationId',
             otherKey: 'profileId',
             as: 'profiles'
+        })
+
+        this.hasMany(models.ExternalAuthenticationModelSequelize, {
+            foreignKey: 'authentication_id',
+            as: 'externalAuthentications'
         })
     }
 
@@ -46,12 +47,6 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
                 type: DataTypes.STRING
             },
             passwordHash: {
-                type: DataTypes.STRING
-            },
-            isExternal: {
-                type: DataTypes.BOOLEAN
-            },
-            externalId: {
                 type: DataTypes.STRING
             },
             active: {

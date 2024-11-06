@@ -3,9 +3,11 @@ import sequelize from "../../config/sequelize"
 import AuthenticationModelSequelize from "./authenticationModelSequelize"
 import GrantsModelSequelize from "./grantsModelSequelize"
 import ProfileModelSequelize from "./profileModelSequelize"
+import ExternalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize"
 
 const models = {
     AuthenticationModelSequelize,
+    ExternalAuthenticationModelSequelize,
     ProfileModelSequelize,
     GrantsModelSequelize
 }

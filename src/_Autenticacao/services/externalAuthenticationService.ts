@@ -1,0 +1,3 @@
+class ExternalAuthenticationService implements IExternalAuthenticationService {
+
+}

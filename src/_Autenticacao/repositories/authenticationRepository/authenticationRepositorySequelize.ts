@@ -1,8 +1,8 @@
-import { IAuthenticationParams, IAuthentication, IAuthenticationRepository } from "../../Interfaces/authInterfaces";
+import { IAuthentication, IAuthenticationRepository } from "../../Interfaces/authInterfaces";
 import { models } from "../../../sequelize/models";
 import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
 import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces";
-import { Sequelize, Transaction } from "sequelize";
+import { Transaction } from "sequelize";
 import sequelize from "../../../config/sequelize";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
 
@@ -58,17 +58,6 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
         });
     }
 
-    /**
-     * @inheritdoc
-     */
-    async findByExternalId(externalId: string, options?: object): Promise<IAuthentication | null> {
-        return await models.AuthenticationModelSequelize.findOne({
-            where: {externalId: externalId},
-            attributes : {exclude: ['passwordHash', 'password_token_reset']},
-            ...options
-        });
-    }
-
 
     /**
      * @inheritdoc
@@ -77,14 +66,14 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
         const { passwordHash, password_token_reset, ...newAuth} = 
             await models.AuthenticationModelSequelize.create(auth, options);
 
-        return {...newAuth.dataValues, passwordHash: null, password_token_reset: null};
+        return {...newAuth.dataValues};
         
     }
 
     /**
      * @inheritdoc
      */
-    async updateAuthentication(id: string, updateData: Partial<IAuthenticationParams>): Promise<IAuthentication> {
+    async updateAuthentication(id: string, updateData: Partial<IAuthentication>): Promise<IAuthentication> {
         const filteredUpdateData = Object.fromEntries(
             Object.entries(updateData).filter(([_, value]) => value !== null)
         );
@@ -98,8 +87,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
             throw new Error('Authentication not found');
         }
 
-        const { passwordHash, password_token_reset, ...updatedAuth} = updatedRows[0];
-        return {...updatedAuth, passwordHash: null, password_token_reset: null};
+        return updatedRows[0];
     }
     
     /**
