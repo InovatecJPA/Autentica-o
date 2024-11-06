@@ -48,8 +48,6 @@ class ExpressRouter implements IAppRouter {
         return this.router as unknown as IAppRouter;
     }
 
-
-
 }
 
 export default ExpressRouter;

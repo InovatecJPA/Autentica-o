@@ -4,7 +4,7 @@ import { IApp, IAppAdapter, IAppRouter } from '../../interfaces/appInterface';
 import ExpressRouter from './ExpressRouter';
 
 export class ExpressApp implements IApp {
-  router: IAppRouter
+  public router: IAppRouter
   private app: Application;
 
   constructor() {

@@ -6,9 +6,10 @@ import AuthenticationRouter from './_Autenticacao/routes/AuthenticationRouter';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import ProfileRouter from './_Autorização/routes/profileRouter';
-import grantsRouter from './_Autorização/routes/grantsRouter';
+import GrantsRouter from './_Autorização/routes/grantsRouter';
 import swaggerRouter from './utils/swagger/swaggerConfig';
 import cors, { CorsOptions } from 'cors'
+import jsonwebtoken from 'jsonwebtoken';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -97,13 +98,15 @@ class App {
         
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
-        grantsRouter.registerRoutes("/v1/grants", this.app.router);
+        GrantsRouter.registerRoutes("/v1/grants", this.app.router);
 
-        // this.app.router.getRouter().use('/auth/google/callback',(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-        //     console.log(req);
-        // });
+        this.app.router.getRouter().use('/auth/google/callback',(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            console.log(req, "-------------------------------------------------------\n\n\n", res);
+ 
+            next()
+        });
         
-        this.app.use(this.app.router.getRouter());
+        this.app.use(this.app.router.getRouter())
     }
 
     /**
@@ -132,7 +135,5 @@ class App {
 }
 
 export default App.getInstance();
-function next() {
-    throw new Error('Function not implemented.');
-}
+
 
