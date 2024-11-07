@@ -77,12 +77,12 @@ class ExternalAuthenticationService implements IExternalAuthenticationService {
         return await this.externalAuthRepository.deleteExternalAuthentication(externalAuth);
     }
 
-    async addExternalToAuthentication(authId: string, externalId: string, provider: string): Promise<IExternalAuthentication> {
-        const externalAuth = await this.externalAuthRepository.findByExternalIdAndProvider(externalId, provider);
+    async addExternalToAuthentication({authentication_id, external_id, provider}: Partial<IExternalAuthentication>): Promise<IExternalAuthentication> {
+        const externalAuth = await this.externalAuthRepository.findByExternalIdAndProvider(external_id!, provider!);
         if (externalAuth) {
             throw new HttpError(409, "Usuário externo já existe");
         }
-        const newExternalAuth = await this.createExternalAuthentication({ external_id: externalId, authentication_id: authId, provider });
+        const newExternalAuth = await this.createExternalAuthentication({ external_id, authentication_id, provider });
         if (!newExternalAuth) {
             throw new Error('ExternalAuthentication not created');
         }

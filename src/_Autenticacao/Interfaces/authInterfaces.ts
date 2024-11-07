@@ -218,7 +218,7 @@ export interface IExternalAuthenticationService {
     createExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
     updateExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
     deleteExternalAuthentication(id: string): Promise<void>;
-    addExternalToAuthentication(authId: string, externalId: string, provider: string): Promise<IExternalAuthentication>;
+    addExternalToAuthentication({}:Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
 }
 
 
@@ -342,6 +342,22 @@ export interface IAuthenticationController {
      * @param {IHttpNext} next - Proxima Função
      */
     getProfilesByAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
+    /**
+     * Cria uma autenticação externa
+     * @param {IHttpRequest} req - Requisição Genérica
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
+    /**
+     * Adiciona uma autenticação externa a uma autenticação
+     * @param {IHttpAuthenticatedRequest} req - Requisição Genérica de um usuário autenticado
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 }
 
 // INTERFACE DO ROUTER

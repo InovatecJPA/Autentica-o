@@ -506,9 +506,9 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-    async addExternalAuthToAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    async addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
-            const { id } = req.params
+            const  id = req.session.auth.id
             const {provider, code} = req.body;
 
             if(!id || !provider || !code){
@@ -532,7 +532,7 @@ class AuthenticationController implements IAuthenticationController{
                 provider
             }
 
-            const externalAuthentication = await this.externalAuthService.addExternalToAuthentication(id, userInfo.id, provider)
+            const externalAuthentication = await this.externalAuthService.addExternalToAuthentication(newAuth)
 
             if(!externalAuthentication){
                 throw new HttpError(400, "Erro ao criar autenticação")

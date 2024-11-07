@@ -467,6 +467,42 @@ class AuthenticationRouter implements IAuthenticationRouter {
         
         /**
          * @swagger
+         * /register/external:
+         *   post:
+         *      summary: Registra uma autenticação externa
+         *      tags:
+         *          - [Autenticações]
+         *      servers:
+         *          - url: http://localhost:3000/v1/auth
+         *      requestBody:
+         *        required: true
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                  code:
+         *                    type: string
+         *                  provider:
+         *                    type: string
+         *      responses:
+         *         201:
+         *           description: Autenticação criada com sucesso
+         *         400:
+         *           description: Erro de validação
+         *         500:
+         *           description: Erro interno do servidor
+         */
+        app.post(`${basePath}/register/external`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.createExternalAuthentication(req, res, next);
+        })
+
+        app.post(`${basePath}/me/add-external`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.addExternalAuthToAuthentication(req, res, next);
+        })
+
+        /**
+         * @swagger
          * /forgot-password:
          *   post:
          *      summary: Solicita um e-mail de redefinição de senha
