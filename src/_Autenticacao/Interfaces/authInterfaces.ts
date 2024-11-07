@@ -118,7 +118,7 @@ export interface IAuthenticationService  {
      * @param {IAuthentication} authData - Dados da autenticação, espera um login, uma senha, isExternal = false e externalId = null
      * @returns {Promise<IAuthentication | null>}
      */
-    createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication>;
+    createStandartAuthentication(authData: Partial<IAuthentication>): Promise<IAuthentication>;
     /**
      * Atualiza uma autenticação
      * @param {string} id - Id da autenticação
@@ -192,23 +192,33 @@ export interface IAuthenticationService  {
 export interface IExternalAuthentication {
     authentication_id: string;
     external_id: string;
+    email: string;
     provider: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 export interface IExternalAuthenticationRepository {
-    findAll(): Promise<IExternalAuthentication[] | null>;
-    findByAuthenticationId(authentication_id: string): Promise<IExternalAuthentication[]>;
+    findAll(): Promise<IExternalAuthentication[]>;
+    findAllByProvider(provider: string): Promise<IExternalAuthentication[]>;
+    findAllByAuthenticationId(authentication_id: string): Promise<IExternalAuthentication[]>;
     findByExternalId(external_id: string): Promise<IExternalAuthentication | null>;
-    findByProvider(provider: string): Promise<IExternalAuthentication[]>;
+    findByExternalIdAndProvider(external_id: string, provider: string): Promise<IExternalAuthentication | null>;
     createExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<IExternalAuthentication>;
-    updateExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<IExternalAuthentication>;
+    updateExternalAuthentication(externalAuthentication: IExternalAuthentication, filteredData: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
     deleteExternalAuthentication(externalAuthentication: IExternalAuthentication): Promise<void>;
 }
 
-export interface IAuthenticationService {
-    
+export interface IExternalAuthenticationService {
+    findAll(): Promise<IExternalAuthentication[]>;
+    findAllByAuthenticationId(authentication_id: string): Promise<IExternalAuthentication[]>;
+    findAllByProvider(provider: string): Promise<IExternalAuthentication[]>;
+    findByExternalId(id: string): Promise<IExternalAuthentication | null>;
+    findByExternalIdAndProvider(external_id: string, provider: string): Promise<IExternalAuthentication | null>;
+    createExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
+    updateExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
+    deleteExternalAuthentication(id: string): Promise<void>;
+    addExternalToAuthentication(authId: string, externalId: string, provider: string): Promise<IExternalAuthentication>;
 }
 
 
@@ -223,6 +233,15 @@ export interface IAuthenticationController {
      * @param {IHttpNext} next - Proxima Função
      */
     findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
+    /**
+     * Retorna todas as autenticaçãos externas de uma autenticação
+     * @param {IHttpRequest} req - Requisição Genérica
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    findAllByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+
     /**
      * Encontra uma autenticação pelo id
      * @param {IHttpRequest} req - Requisição Genérica
@@ -250,7 +269,7 @@ export interface IAuthenticationController {
      * @param {IHttpResponse} res - Resposta Genérica
      * @param {IHttpNext} next - Proxima Função
      */
-    authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    standartAuthenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     /**
      * Atualiza uma autenticação
      * @param {IHttpRequest} req - Requisição Genérica
@@ -358,4 +377,12 @@ export interface IAuthStrategy {
     checkAuthentication(req: IHttpAuthenticatedRequest): Promise<object>;
 }
 
+export interface IOAuth2Strategy {
+    getToken(code: string): Promise<string>;   
+    getUserInfo(token: string): Promise<IOAuthUserInfo>;
+}
 
+export interface IOAuthUserInfo{
+    id: string,
+    email: string
+}

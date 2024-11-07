@@ -15,6 +15,6 @@ import app from "./app";
 // // Certifique-se de que 'app.app' é a instância correta do Express
 // https.createServer(sslOptions, app.app.getExpressApp()).listen(3000, () => {
 //   console.log('Servidor HTTPS rodando na porta 3000');
-// });
+// }); 
 
 app.start(3000)

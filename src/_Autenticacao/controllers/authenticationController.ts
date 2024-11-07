@@ -1,19 +1,26 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationParams, IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication} from "../Interfaces/authInterfaces";
+import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication} from "../Interfaces/authInterfaces";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
 import HttpError from "../../utils/customErrors/httpError";
 import {sendPasswordResetEmail} from "../../utils/mail/Email"
 import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces";
 import profileService from "../../_Autorização/services/profileService";
+import ExternalAuthenticationService from "../services/externalAuthenticationService";
 
 import dotenv from 'dotenv'
-import cookieSession from "cookie-session";
+import { createOAuth2Strategy } from "../auth/oAuthFactoty";
+import { randomBytes } from "crypto";
 dotenv.config()
+
+function generatePassword(length: number): string{
+    return randomBytes(length).toString('base64').slice(0, length)
+}
 
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
+    private externalAuthService: IExternalAuthenticationService
     private authStrategy: IAuthStrategy;
     private profileService: IProfileService;
  
@@ -22,8 +29,9 @@ class AuthenticationController implements IAuthenticationController{
      * It is private because only the getInstance method should be able to create an instance of this class.
      * @param authService The authentication service to use.
      */
-    private constructor(authService: IAuthenticationService) {
+    private constructor(authService: IAuthenticationService, externalAuthService: IExternalAuthenticationService) {
         this.authService = authService;
+        this.externalAuthService = externalAuthService
         this.authStrategy = createAuthStrategy();
         this.profileService = profileService;
     }
@@ -35,9 +43,9 @@ class AuthenticationController implements IAuthenticationController{
      * @param authService The authentication service to use.
      * @returns The instance of the AuthenticationController.
      */
-    static getInstance(authService: IAuthenticationService): AuthenticationController {
+    static getInstance(authService: IAuthenticationService, externalAuthService: IExternalAuthenticationService): AuthenticationController {
         if (!AuthenticationController.instance) {
-            AuthenticationController.instance = new AuthenticationController(authService);
+            AuthenticationController.instance = new AuthenticationController(authService, externalAuthService);
         }               
 
         return AuthenticationController.instance; 
@@ -49,6 +57,26 @@ class AuthenticationController implements IAuthenticationController{
     async findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const authentications = await this.authService.findAll();
+    
+            if (authentications.length < 1) {
+                throw new HttpError(404, 'Authentications not found');
+            }
+                        
+            res.status(200).json(authentications);
+        } catch (error: any) {
+            next(error)
+        }
+    }
+    
+    async findAllByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                throw new HttpError(400, 'Id is required');
+            }
+
+            const authentications = await this.externalAuthService.findAllByAuthenticationId(id);
     
             if (authentications.length < 1) {
                 throw new HttpError(404, 'Authentications not found');
@@ -109,29 +137,19 @@ class AuthenticationController implements IAuthenticationController{
     async createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         let auth: IAuthentication | undefined
         try {
-            const { login, password, externalId, isExternal }  = req.body;
+            const { login, password }  = req.body;
 
-            const authData: IAuthentication = {
+            const authData: Partial<IAuthentication> = {
                 login,
                 passwordHash: password,
-                externalId,
-                isExternal,
             }
                         
-            if(isExternal){
-                if(!externalId){
-                    throw new HttpError(400, 'External Id is required');
-                }
-
-                auth = await this.authService.createExternalAuthentication(authData);
-            }else{ 
-                if(!login || !password){
-                    throw new HttpError(400, 'Login and password are required');
-                }
-
-                auth = await this.authService.createStandartAuthentication(authData);
+            if(!login || !password){
+                throw new HttpError(400, 'Login and password are required');
             }
 
+            auth = await this.authService.createStandartAuthentication(authData);
+        
             if (!auth) {
                 throw new HttpError(400, 'Authentication not created');
             }
@@ -157,19 +175,18 @@ class AuthenticationController implements IAuthenticationController{
     async updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const id = req.session?.auth?.id;
-            const {isExternal, externalId} = req.body;
+            const {login} = req.body;
             
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
             
-            if( (isExternal && !externalId) ){
-                throw new HttpError(400, 'IsExternal or externalId is required');
+            if(!login){
+                throw new HttpError(400, 'Login is required');
             }
             
             const authData: Partial<IAuthentication> = {
-                isExternal,
-                externalId,
+                login,
             }
             
             const updatedAuth = await this.authService.updateAuthentication(id, authData);
@@ -187,20 +204,18 @@ class AuthenticationController implements IAuthenticationController{
     async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const {id} = req.params;
-            const {login, isExternal, externalId } = req.body;
+            const {login} = req.body;
 
             if(!id){
                 throw new HttpError(400, 'Id is required');
             }
 
-            if(!login && (isExternal && !externalId)){
-                throw new HttpError(400, 'Login, isExternal or externalId is required');
+            if(!login ){
+                throw new HttpError(400, 'Login is required');
             }
 
-            const authData: Partial<IAuthenticationParams> = {
+            const authData: Partial<IAuthentication> = {
                 login,
-                isExternal,
-                externalId,
             }
 
             const updatedAuth = await this.authService.updateAuthentication(id, authData);
@@ -294,36 +309,21 @@ class AuthenticationController implements IAuthenticationController{
     /**
      * @inheritdoc
      */
-    async authenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    async standartAuthenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
-            const { login, password, isExternal, externalId  } = req.body;
-            let auth = null
+            const { login, password } = req.body;
 
-            if (isExternal) {
-                if (!externalId) {
-                    throw new HttpError(400, 'External Id is required');
-                } else {
-                    auth = await this.authService.findByExternalId(externalId);
-                    
-                    if (!auth) {
-                        throw new HttpError(404, 'Authentication not found');
-                    }
+            if (!login || !password) {
+                throw new HttpError(400, 'Login and password are required');
+            }
 
-                    if (auth!.active === false) {
-                        throw new HttpError(403, 'Authentication not activated');
-                    }
+            const auth = await this.authService.authenticate(login, password);
 
-                }
-            } else {
-                if (!login || !password) {
-                    throw new HttpError(400, 'Login and password are required');
-                }
-
-                auth = await this.authService.authenticate(login, password);
-
-                if (!auth) {
-                    throw new HttpError(404, 'Authentication not found');
-                }
+            if (!auth) {
+                throw new HttpError(404, 'Authentication not found');
+            }
+            if (!auth.active) {
+                throw new HttpError(401, 'Authentication is not active');
             }
 
             const tokenOrSessionId = await this.authStrategy.authenticate(req, {id: auth!.id}); 
@@ -455,6 +455,94 @@ class AuthenticationController implements IAuthenticationController{
             next(error)
         }
     }
+
+    async createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const {provider, code} = req.body;
+        
+            let externalAuthentication: IExternalAuthentication
+
+            if(!code || !provider){
+                throw new HttpError(400, "Código ou provedor necessários")
+            }
+
+            const OAuth2Strategy = createOAuth2Strategy(provider)
+
+            const accessToken = await OAuth2Strategy.getToken(code)
+
+            if(!accessToken){
+                throw new HttpError(404, "Token de acesso não encontrado")
+            }
+
+            const userInfo = await OAuth2Strategy.getUserInfo(accessToken)
+            
+            let newAuth: Partial<IExternalAuthentication> = {
+                external_id: userInfo.id,
+                email: userInfo.email,
+                provider
+            }
+
+            const authExist = await this.authService.findByLogin(userInfo.email)
+            
+            if(!authExist){
+                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.email, passwordHash: generatePassword(10)})
+                if (!standartAuthentication){
+                    throw new HttpError(400, "Erro ao criar autenticação tradicional")
+                }
+                
+                newAuth.authentication_id = standartAuthentication.id
+            }else {
+                newAuth.authentication_id = authExist.id
+            }
+            externalAuthentication = await this.externalAuthService.createExternalAuthentication(newAuth)
+            
+            if(!externalAuthentication){
+                throw new HttpError(400, "Erro ao criar autenticação")
+            }
+            
+            res.status(201).send(externalAuthentication)
+        } catch(error: any){
+            next(error)
+        }
+    }
+
+    async addExternalAuthToAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const { id } = req.params
+            const {provider, code} = req.body;
+
+            if(!id || !provider || !code){
+                throw new HttpError(400, "Código ou provedor necessários")
+            }
+
+            const OAuth2Strategy = createOAuth2Strategy(provider)
+
+            const accessToken = await OAuth2Strategy.getToken(code)
+
+            if(!accessToken){
+                throw new HttpError(404, "Token de acesso não encontrado")
+            }
+
+            const userInfo = await OAuth2Strategy.getUserInfo(accessToken)
+
+            let newAuth: Partial<IExternalAuthentication> = {
+                external_id: userInfo.id,
+                email: userInfo.email,
+                authentication_id: id,
+                provider
+            }
+
+            const externalAuthentication = await this.externalAuthService.addExternalToAuthentication(id, userInfo.id, provider)
+
+            if(!externalAuthentication){
+                throw new HttpError(400, "Erro ao criar autenticação")
+            }
+
+            res.status(201).send(externalAuthentication)
+        } catch(error: any){
+            next(error)
+        }
+    }
 }
     
-export default AuthenticationController.getInstance(AuthenticationService);
+export default AuthenticationController.getInstance(AuthenticationService, ExternalAuthenticationService);

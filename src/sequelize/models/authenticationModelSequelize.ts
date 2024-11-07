@@ -28,12 +28,14 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
             through: "authentication_profiles",
             foreignKey: 'authenticationId',
             otherKey: 'profileId',
-            as: 'profiles'
+            as: 'profiles',
+            onDelete: 'CASCADE'
         })
 
         this.hasMany(models.ExternalAuthenticationModelSequelize, {
             foreignKey: 'authentication_id',
-            as: 'externalAuthentications'
+            as: 'externalAuthentications',
+            onDelete: 'CASCADE'
         })
     }
 

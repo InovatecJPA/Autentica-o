@@ -3,7 +3,7 @@ import HttpError from "../../../utils/customErrors/httpError";
 import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-class JwtStrategy implements IAuthStrategy {    
+class jwtFactory implements IAuthStrategy {    
     /**
      * Gera um token JWT para uma autenticao.
      * @param {Partial<IAuthentication>} auth - A autenticao.
@@ -54,4 +54,4 @@ class JwtStrategy implements IAuthStrategy {
     }
 }
 
-export default JwtStrategy
+export default jwtFactory

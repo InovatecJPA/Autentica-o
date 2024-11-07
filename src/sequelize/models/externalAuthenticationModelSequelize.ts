@@ -6,6 +6,7 @@ import AuthenticationModelSequelize from "./authenticationModelSequelize";
 class ExternalAuthenticationModelSequelize extends Model<IExternalAuthentication> implements IExternalAuthentication {
     public external_id!: string;
     public authentication_id!: string;
+    public email!: string;
     public provider!: string;
     public createdAt!: Date;
     public updatedAt!: Date;
@@ -30,6 +31,11 @@ class ExternalAuthenticationModelSequelize extends Model<IExternalAuthentication
             authentication_id: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true
             },
             provider: {
                 type: DataTypes.STRING

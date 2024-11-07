@@ -19,11 +19,11 @@ class Authentication implements IAuthentication {
      * @throws {Error} Caso o login ou passwordHash sejam nulos e isExternal seja false
      * @throws {Error} Caso o externalId seja nulo e isExternal seja true
      */
-    constructor({login, passwordHash} : IAuthentication){
+    constructor({login, passwordHash} : Partial<IAuthentication>){
         
-        this.validateLoginCredentials(login!, passwordHash!);
-        this.login = login;
-        this.passwordHash = passwordHash;
+        this.validateLoginCredentials(login, passwordHash);
+        this.login = login!;
+        this.passwordHash = passwordHash!;
         
 
         this.id = uuidv4()
@@ -42,7 +42,7 @@ class Authentication implements IAuthentication {
      * @throws {Error} Caso o login ou passwordHash sejam nulos
      * @private
      */
-    private validateLoginCredentials(login: string, passwordHash: string): void {
+    private validateLoginCredentials(login: string | undefined, passwordHash: string | undefined): void {
         if (!login || !passwordHash) {
             throw new Error('login ou passwordHash são nulos');
         }

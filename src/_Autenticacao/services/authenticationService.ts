@@ -7,6 +7,7 @@ import Authentication from "../models/authenticationModel";
 
 import dotenv from "dotenv";
 import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
+import externalAuthenticationService from "./externalAuthenticationService";
 dotenv.config();
 
 class AuthenticationService implements IAuthenticationService {
@@ -66,11 +67,10 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-    async createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication> {    
+    async createStandartAuthentication(authData: Partial<IAuthentication>): Promise<IAuthentication> {    
         try {
-            let newAuth: IAuthentication, auth = await this.authRepository.findByLogin(authData.login!);
             
-            if (auth) {
+            if (await this.authRepository.findByLogin(authData.login!)) {
                 throw new HttpError(409, 'Authentication already exists');
             }
 
@@ -78,10 +78,12 @@ class AuthenticationService implements IAuthenticationService {
             const password = await bcrypt.hash(authData.passwordHash!, salt);
             authData.passwordHash = password;
 
-            auth = new Authentication(authData);
+            const auth = new Authentication(authData);
             
-            newAuth = await this.authRepository.createAuthentication(auth);
-
+            const newAuth = await this.authRepository.createAuthentication(auth);
+            if(!newAuth) {
+                throw new HttpError(400, 'Authentication not created');
+            }
             return newAuth;
         } catch (error: any) {
             throw new HttpError(400, error.message);
@@ -95,6 +97,10 @@ class AuthenticationService implements IAuthenticationService {
         const auth = await this.authRepository.findById(id);
         if (!auth) {
             throw new HttpError(404, 'Authentication not found');
+        }
+
+        if ( (await externalAuthenticationService.findAllByAuthenticationId(id)).length > 0) {
+            throw new HttpError( 409, "Por favor remova todas as autenticações externas para poder atualizar o cadastro" );
         }
         
         const filteredData = Object.entries(authData)

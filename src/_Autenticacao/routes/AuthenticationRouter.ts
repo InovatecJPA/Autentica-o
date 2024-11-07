@@ -145,6 +145,60 @@ class AuthenticationRouter implements IAuthenticationRouter {
 
         /**
          * @swagger
+         * /externals/:id:
+         *   get:
+         *      summary: Retorna todas as autenticações externas de uma autenticação
+         *      tags:
+         *          - [Autenticações]
+         *      security:
+         *          - BearerAuth: [] # Requer um token JWT
+         *          - sessionAuth: [] # Requer um token de sessão
+         *      servers:
+         *          - url: http://localhost:3000/v1/auth
+         *      parameters:
+         *        - in: path
+         *          name: id
+         *          schema:
+         *            type: string
+         *          required: true
+         *          description: ID da autenticação
+         *      responses:
+         *         200:
+         *           description: Retorna todas as autenticações externas de uma autenticação
+         *           content: 
+         *              application/json:
+         *                 schema:
+         *                  type: array
+         *                  items:
+         *                    type: object
+         *                    properties:
+         *                      external_id:
+         *                        type: string
+         *                        example: "1111ui2s546"
+         *                      provider:
+         *                        type: string
+         *                        example: "google"
+         *                      createdAt:
+         *                        type: string
+         *                        example: "2022-01-01T00:00:00.000Z"
+         *                      updatedAt:
+         *                        type: string
+         *                        example: "2022-01-01T00:00:00.000Z"        
+         *         401:
+         *           description: Erro de autenticação
+         *         403:
+         *           description: Erro de permissão
+         *         404:
+         *           description: Autenticação não encontrada
+         *         500:
+         *           description: Erro interno do servidor
+         */
+        app.get(`${basePath}/externals/:id`, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.findAllByAuthenticationId(req, res, next);
+        })
+
+        /**
+         * @swagger
          * /:id:
          *   get:
          *      summary: Retorna os dados da autenticação pelo ID
@@ -384,7 +438,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *           description: Erro interno do servidor
          */
         app.post(`${basePath}/login`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.authenticate(req, res, next);
+            this.authenticationController.standartAuthenticate(req, res, next);
         });
     
         /**
