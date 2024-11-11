@@ -93,7 +93,7 @@ class AuthenticationController implements IAuthenticationController{
      */
     async findMe(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
-            const id = req.session.auth.id;
+            const id = req.session.auth!.id;
 
             const user = await this.authService.findById(id!);
 
@@ -427,7 +427,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, 'Invalid credentials');
             }
 
-            req.session.destroy((error: any) => {
+            req.session.destroy!((error: any) => {
                 if (error) {
                     next(error);
                     return;
@@ -508,7 +508,7 @@ class AuthenticationController implements IAuthenticationController{
 
     async addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
-            const id = req.session.auth.id
+            const id = req.session.auth!.id
             const {provider, code} = req.body;
 
             if(!id || !provider || !code){

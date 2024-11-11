@@ -4,31 +4,6 @@ import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from "../../inter
 import HttpError from "../../utils/customErrors/httpError";
 import profileService from "../services/profileService";
 
-/**
- * Verifica se o caminho de permiss o coincide com o caminho da requisi o
- * @param grantPath - Caminho da permiss o no formato '/permissao/:id'
- * @param requestPath - Caminho da requisi o
- * @returns true caso o caminho da permiss o coincida com o caminho da requisi o, false caso contr rio
- * @example
- * isPathMatch('/permissao/:id', '/permissao/1') // true
- * isPathMatch('/permissao/:id', '/permissao/2') // true
- * isPathMatch('/permissao/:id', '/permissao/abc') // false
- * isPathMatch('/permissao/:id', '/permissao') // false
- */
-function isPathMatch(grantPath: string, requestPath: string): boolean {
-    const grantSegments = grantPath.split('/');
-    const requestSegments = requestPath.split('/');
-
-    if (grantSegments.length !== requestSegments.length) {
-        return false
-    }
-
-    return grantSegments.every((segment, index) => {
-        return segment.startsWith(':') || segment === requestSegments[index];
-    });
-}
-
-
 
 /**
  * Verifica se o usu rio autenticado tem permiss o para acessar o recurso
@@ -45,7 +20,7 @@ function isPathMatch(grantPath: string, requestPath: string): boolean {
 async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) {
     try {
     
-        const userId = req.session.auth.id!;
+        const userId = req.session.auth!.id!;
         if (!userId) {
             throw new HttpError(401, 'Unauthorized');
         }
