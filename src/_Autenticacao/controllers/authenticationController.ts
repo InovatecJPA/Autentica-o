@@ -270,9 +270,9 @@ class AuthenticationController implements IAuthenticationController{
             if(!password){
                 throw new HttpError(400, 'Password is required');
             }
-            console.log(token, password);
+
             const user = await this.authService.findByToken(token);
-            console.log(user);
+            
             if(!user){
                 throw new HttpError(404, 'Authentication not found');
             }
@@ -316,7 +316,7 @@ class AuthenticationController implements IAuthenticationController{
             if (!login || !password) {
                 throw new HttpError(400, 'Login and password are required');
             }
-
+            
             const auth = await this.authService.authenticate(login, password);
 
             if (!auth) {
@@ -508,7 +508,7 @@ class AuthenticationController implements IAuthenticationController{
 
     async addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
-            const  id = req.session.auth.id
+            const id = req.session.auth.id
             const {provider, code} = req.body;
 
             if(!id || !provider || !code){

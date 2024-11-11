@@ -158,7 +158,7 @@ class AuthenticationService implements IAuthenticationService {
      */
     async validatePassword(id: string, passwordHash: string): Promise<boolean> {
         const auth = await this.authRepository.findByIdWithPassword(id);
-        console.log(auth)
+
         if (!auth || !auth.passwordHash) {
             throw new HttpError(404, 'Authentication not found');
         }

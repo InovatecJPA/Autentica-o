@@ -23,10 +23,15 @@ async function authenticate(req: IHttpAuthenticatedRequest, res: IHttpResponse, 
             return res.status(401).json({ message: 'User not authenticated' });
         }
 
+        if(!req.session) {
+            req.session = {}
+        }
+
         req.session.auth = authId ;
 
         next();
     } catch (error: any) {
+        console.log(error)
         res.status(401).json({ message: 'Authentication failed' });
     }
 }

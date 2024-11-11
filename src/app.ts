@@ -16,7 +16,7 @@ dotenv.config();
   
 // const whiteList = ['http://127.0.0.1:3000'];
 
-const whiteList = ['https://127.0.0.1:3000']
+const whiteList = ['http://127.0.0.1:3000']
 
 const corsOptions: CorsOptions = {
   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
@@ -30,22 +30,22 @@ const corsOptions: CorsOptions = {
   credentials: true
 };
 
-function useSession(){
+function useSession(app: IApp) {
     if (process.env.PROJETO_FASE === 'development') {
-        return cookieSession({
+        app.use(cookieSession({
             secret: process.env.SESSION_SECRET || 'HESTIA',
             name: 'authSession',
             maxAge: 24 * 60 * 60 * 1000,
             httpOnly: true
-        })
+        }))
     }
     if (process.env.PROJETO_FASE === 'production') {
-        return cookieSession({
+        app.use(cookieSession({
             secret: process.env.SESSION_SECRET || 'HESTIA',
             name: 'authSession',
             maxAge: 24 * 60 * 60 * 1000,
             secure: true
-        })
+        }))
     }
 }
 
@@ -89,7 +89,7 @@ class App {
         this.app.use(cors(corsOptions));
         this.app.use(bodyParser.json());
         if (process.env.AUTH_STRATEGY === 'session') {
-            useSession()
+            useSession(this.app)
         }
     }
 
@@ -99,12 +99,6 @@ class App {
         AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
         ProfileRouter.registerRoutes("/v1/profile", this.app.router);
         GrantsRouter.registerRoutes("/v1/grants", this.app.router);
-
-        this.app.router.getRouter().use('/auth/google/callback',(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            console.log(req, "-------------------------------------------------------\n\n\n", res);
- 
-            next()
-        });
         
         this.app.use(this.app.router.getRouter())
     }
