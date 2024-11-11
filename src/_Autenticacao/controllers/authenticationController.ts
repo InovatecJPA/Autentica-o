@@ -20,13 +20,13 @@ function generatePassword(length: number): string{
 async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<{id:string, email:string}>{
     const OAuth2Strategy = createOAuth2Strategy(provider)
 
-            const accessToken = await OAuth2Strategy.getToken(code)
+    const accessToken = await OAuth2Strategy.getToken(code)
 
-            if(!accessToken){
-                throw new HttpError(404, "Token de acesso não encontrado")
-            }
+    if(!accessToken){
+        throw new HttpError(404, "Token de acesso não encontrado")
+    }
 
-            return await OAuth2Strategy.getUserInfo(accessToken)
+    return await OAuth2Strategy.getUserInfo(accessToken)
 }
 
 class AuthenticationController implements IAuthenticationController{
@@ -478,15 +478,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, "Código ou provedor necessários")
             }
 
-            const OAuth2Strategy = createOAuth2Strategy(provider)
-
-            const accessToken = await OAuth2Strategy.getToken(code)
-
-            if(!accessToken){
-                throw new HttpError(404, "Token de acesso não encontrado")
-            }
-
-            const userInfo = await OAuth2Strategy.getUserInfo(accessToken)
+            const userInfo = await getUserInfoByCodeAndProvider(code, provider)
             
             let newAuth: Partial<IExternalAuthentication> = {
                 external_id: userInfo.id,
@@ -527,15 +519,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, "Código ou provedor necessários")
             }
 
-            const OAuth2Strategy = createOAuth2Strategy(provider)
-
-            const accessToken = await OAuth2Strategy.getToken(code)
-
-            if(!accessToken){
-                throw new HttpError(404, "Token de acesso não encontrado")
-            }
-
-            const userInfo = await OAuth2Strategy.getUserInfo(accessToken)
+            const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
             let newAuth: Partial<IExternalAuthentication> = {
                 external_id: userInfo.id,

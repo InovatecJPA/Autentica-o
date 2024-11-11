@@ -16,7 +16,7 @@ dotenv.config();
   
 // const whiteList = ['http://127.0.0.1:3000'];
 
-const whiteList = ['http://127.0.0.1:3000']
+const whiteList = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://localhost:3000/api-docs'];
 
 const corsOptions: CorsOptions = {
   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
@@ -31,6 +31,9 @@ const corsOptions: CorsOptions = {
 };
 
 function useSession(app: IApp) {
+    if (process.env.AUTH_STRATEGY !== 'session') {
+        return
+    }
     if (process.env.PROJETO_FASE === 'development') {
         app.use(cookieSession({
             secret: process.env.SESSION_SECRET || 'HESTIA',
@@ -88,9 +91,7 @@ class App {
     private middlewares() {
         this.app.use(cors(corsOptions));
         this.app.use(bodyParser.json());
-        if (process.env.AUTH_STRATEGY === 'session') {
-            useSession(this.app)
-        }
+        useSession(this.app)
     }
 
     private routes() {
