@@ -9,12 +9,11 @@ export interface IHttpRequest {
 }
 
 export interface IHttpAuthenticatedRequest extends IHttpRequest {
-    req: { auth: object; };
     method: string;
     path: any;
     session: {
-        auth: Partial<IAuthentication>
-        destroy(arg0: (error: any) => void): unknown;
+        auth?: Partial<IAuthentication>
+        destroy?(arg0: (error: any) => void): unknown;
     }
 }
 
