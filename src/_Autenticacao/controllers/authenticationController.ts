@@ -17,6 +17,18 @@ function generatePassword(length: number): string{
     return randomBytes(length).toString('base64').slice(0, length)
 }
 
+async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<{id:string, email:string}>{
+    const OAuth2Strategy = createOAuth2Strategy(provider)
+
+            const accessToken = await OAuth2Strategy.getToken(code)
+
+            if(!accessToken){
+                throw new HttpError(404, "Token de acesso não encontrado")
+            }
+
+            return await OAuth2Strategy.getUserInfo(accessToken)
+}
+
 class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
@@ -215,7 +227,7 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             const authData: Partial<IAuthentication> = {
-                login,
+                login
             }
 
             const updatedAuth = await this.authService.updateAuthentication(id, authData);
@@ -539,6 +551,36 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             res.status(201).send(externalAuthentication)
+        } catch(error: any){
+            next(error)
+        }
+    }
+
+    async authenticateExternal(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        try {
+            const {provider, code} = req.body;
+        
+            if(!code || !provider){
+                throw new HttpError(400, "Código ou provedor necessários")
+            }
+
+            const userInfo = await getUserInfoByCodeAndProvider(code, provider)
+
+            const auth = await this.authService.findByLogin(userInfo.email)
+
+            if(!auth){
+                throw new HttpError(404, "Autenticação nao encontrada")
+            }
+
+            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.id, provider)
+
+            if(!externalAuth){
+                throw new HttpError(404, "Autenticação nao encontrada")
+            }
+
+            req.session.auth = auth
+
+            res.status(200).send(auth)
         } catch(error: any){
             next(error)
         }

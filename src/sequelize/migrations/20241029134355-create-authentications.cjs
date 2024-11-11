@@ -11,12 +11,6 @@ module.exports = {
           passwordHash: {
               type: Sequelize.STRING
           },
-          isExternal: {
-              type: Sequelize.BOOLEAN
-          },
-          externalId: {
-              type: Sequelize.STRING
-          },
           active: {
               type: Sequelize.BOOLEAN
           },

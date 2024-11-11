@@ -59,13 +59,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                        example: "1111-2222-3333-4444"
          *                      login:
          *                        type: string | null
-         *                        example: "admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId :
-         *                        type: string | null
-         *                        example: "1111ui2s546"    
+         *                        example: "admin@example.com"   
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -96,6 +90,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          * /me:
          *   get:
          *      summary: Retorna os dados da autenticação atual 
+         *      description: Esta rota está disponível apenas para usuários autenticados.
          *      tags:
          *          - [Autenticações]
          *      security:
@@ -116,13 +111,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                        example: "1111-2222-3333-4444"
          *                      login:
          *                        type: string | null
-         *                        example: "admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId :
-         *                        type: string | null
-         *                        example: "1111ui2s546"    
+         *                        example: "admin@example.com"  
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -149,6 +138,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          * /externals/:id:
          *   get:
          *      summary: Retorna todas as autenticações externas de uma autenticação
+         *      description: Esta rota está disponível apenas para usuários administradores.
          *      tags:
          *          - [Autenticações]
          *      security:
@@ -203,6 +193,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          * /:id:
          *   get:
          *      summary: Retorna os dados da autenticação pelo ID
+         *      description: Esta rota está disponível apenas para usuários administradores.
          *      tags:
          *          - [Autenticações]
          *      security:
@@ -231,12 +222,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      login:  
          *                        type: string | null
          *                        example: "admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId :    
-         *                        type: string | null
-         *                        example: "1111ui2s546"
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -267,6 +252,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          * /:id/profiles:
          *  get:
          *      summary: Pegar os perfis com base no usuário
+         *      description: Esta rota está disponível apenas para usuários administradores.
          *      tags: 
          *          - [Autenticações]
          *      servers:
@@ -311,8 +297,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *        content:
          *          application/json:
          *            schema:
-         *              oneOf:
-         *                - description: Um usuário registra uma nova autenticação interna
          *                  type: object
          *                  properties:
          *                      login:
@@ -321,30 +305,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      password:
          *                        type: string
          *                        example: "123456"
-         *                      isExternal: 
-         *                        type: boolean
-         *                        example: false
-         *                - description: Um usuário registra uma nova autenticação externa
-         *                  type: object
-         *                  properties:
-         *                      isExternal: 
-         *                        type: boolean
-         *                        example: true
-         *                      externalId:
-         *                        type: string
-         *                        example: "1111ui2s546"
-         *            examples:
-         *              internalAuth:
-         *                summary: Exemplo de autenticação interna
-         *                value:
-         *                  login: "admin@example.com"
-         *                  password: "123456"
-         *                  isExternal: false
-         *              externalAuth:
-         *                summary: Exemplo de autenticação externa
-         *                value:
-         *                  isExternal: true
-         *                  externalId: "1111ui2s546"
          *      responses:
          *         201:
          *           description: Autenticação criada com sucesso
@@ -359,12 +319,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      login:  
          *                        type: string | null
          *                        example: "admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId :    
-         *                        type: string | null
-         *                        example: "1111ui2s546"
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -400,8 +354,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *        content:
          *          application/json:
          *            schema:
-         *              oneOf:
-         *                - description: Autenticação de usuário interna (login e senha)
          *                  type: object
          *                  properties:
          *                      login:
@@ -410,18 +362,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      password:
          *                        type: string
          *                        example: "123456"
-         *                      isExternal: 
-         *                        type: boolean
-         *                        example: false
-         *                - description: Autenticação de usuário externa (externalId)
-         *                  type: object
-         *                  properties:
-         *                      isExternal: 
-         *                        type: boolean
-         *                        example: true
-         *                      externalId:
-         *                        type: string
-         *                        example: "1111ui2s546"
          *      responses:
          *         200:
          *           description: Autenticação criada com sucesso
@@ -498,6 +438,37 @@ class AuthenticationRouter implements IAuthenticationRouter {
             this.authenticationController.createExternalAuthentication(req, res, next);
         })
 
+        /**
+         * @swagger
+         * /me/add-external:
+         *   post:
+         *      summary: Adiciona uma autenticação externa ao usuário autenticado
+         *      tags:
+         *          - [Autenticações]
+         *      security:
+         *        - bearerAuth: []
+         *        - sessionAuth: []
+         *      servers:
+         *          - url: http://localhost:3000/v1/auth
+         *      requestBody:
+         *        required: true
+         *        content:
+         *          application/json:
+         *            schema:
+         *              type: object
+         *              properties:
+         *                  code:
+         *                    type: string
+         *                  provider:
+         *                    type: string
+         *      responses:
+         *         201:
+         *           description: Autenticação criada com sucesso
+         *         400:
+         *           description: Erro de validação
+         *         500:
+         *           description: Erro interno do servidor
+         */
         app.post(`${basePath}/me/add-external`, authenticate, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.addExternalAuthToAuthentication(req, res, next);
         })
@@ -718,12 +689,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                  login:
          *                    type: string
          *                    example: "Admin@example.com"
-         *                  isExternal:
-         *                    type: boolean
-         *                    example: false
-         *                  externalId:
-         *                    type: string
-         *                    example: "11111111111111111111111111111111"
          *      responses:
          *         200:
          *           description: Usuário alterado com sucesso
@@ -738,12 +703,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      login:
          *                        type: string | null
          *                        example: "Admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId:
-         *                        type: string | null
-         *                        example: "11111111111111111111111111111111"
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -801,12 +760,6 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *                      login:
          *                        type: string | null
          *                        example: "Admin@example.com"
-         *                      isExternal:
-         *                        type: boolean
-         *                        example: false
-         *                      externalId:
-         *                        type: string | null
-         *                        example: "11111111111111111111111111111111"
          *                      active:
          *                        type: boolean
          *                        example: true
@@ -830,7 +783,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500: 
          *           description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id`, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updateAuthentication(req, res, next);
         });
     }
@@ -864,15 +817,13 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.delete(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.delete(`${basePath}/:id`, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.deleteAuthentication(req, res, next);
         });
     }
 
 
     public registerRoutes(basePath: string, app: IAppRouter): void {
-        
-
         this.registerRoutesGet(basePath, app);
         
         this.registerRoutesPost(basePath, app);
