@@ -5,7 +5,7 @@ const { all } = require('axios');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('create-external-authentications', {
+    await queryInterface.createTable('external_authentications', {
       external_id: {
         type: Sequelize.STRING,
         primaryKey: true,
@@ -30,14 +30,14 @@ module.exports = {
       },
     });
     
-    await queryInterface.addConstraint('create-external-authentications', {
+    await queryInterface.addConstraint('external_authentications', {
       fields: ['external_id', 'authentication_id'],
       type: 'unique',
       name: 'unique_external_authentication'
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeConstraint('create-external-authentications', 'unique_external_authentication');
-    await queryInterface.dropTable('create-external-authentications');
+    await queryInterface.removeConstraint('external_authentications', 'unique_external_authentication');
+    await queryInterface.dropTable('external_authentications');
   }
 };

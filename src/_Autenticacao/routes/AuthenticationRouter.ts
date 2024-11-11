@@ -36,6 +36,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          * /list:
          *   get:
          *      summary: Retornar a lista de autenticações do sistema
+         *      description: Esta rota está disponível apenas para perfis de administrador.
          *      tags: 
          *          - [Autenticações]
          *      security:
