@@ -1,7 +1,5 @@
 Autenticação Multifator (MFA): Uso de fatores adicionais como códigos SMS, aplicativos autenticadores ou tokens físicos.
 
-Políticas de Senha: Regras para complexidade e validade das senhas.
-
 Renovação de Tokens: Mecanismos para atualizar tokens expirados.
 Revogação de Tokens: Possibilidade de invalidar tokens comprometidos.
 
