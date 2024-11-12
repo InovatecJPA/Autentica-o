@@ -84,10 +84,6 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const { id } = req.params;
 
-            if (!id) {
-                throw new HttpError(400, 'Id is required');
-            }
-
             const authentications = await this.externalAuthService.findAllByAuthenticationId(id);
     
             if (authentications.length < 1) {
@@ -127,10 +123,6 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const { id } = req.params;
 
-            if (!id) {
-                throw new HttpError(400, 'Id is required');
-            }
-
             const auth = await this.authService.findById(id);
             
             if (!auth) {
@@ -154,10 +146,6 @@ class AuthenticationController implements IAuthenticationController{
             const authData: Partial<IAuthentication> = {
                 login,
                 passwordHash: password,
-            }
-                        
-            if(!login || !password){
-                throw new HttpError(400, 'Login and password are required');
             }
 
             auth = await this.authService.createStandartAuthentication(authData);
@@ -189,19 +177,11 @@ class AuthenticationController implements IAuthenticationController{
             const id = req.session?.auth?.id;
             const {login} = req.body;
             
-            if(!id){
-                throw new HttpError(400, 'Id is required');
-            }
-            
-            if(!login){
-                throw new HttpError(400, 'Login is required');
-            }
-            
             const authData: Partial<IAuthentication> = {
                 login,
             }
             
-            const updatedAuth = await this.authService.updateAuthentication(id, authData);
+            const updatedAuth = await this.authService.updateAuthentication(id!, authData);
 
             const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = updatedAuth;
             res.status(200).json(authSemSenha);
@@ -243,10 +223,6 @@ class AuthenticationController implements IAuthenticationController{
     async requestPasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { login } = req.body;
-            
-            if (!login){
-                throw new HttpError(400, 'Login is required');
-            }
 
             const auth = await this.authService.findByLogin(login);
             
@@ -276,13 +252,6 @@ class AuthenticationController implements IAuthenticationController{
             const { token } = req.params;
             const { password } = req.body;
 
-            if(!token){
-                throw new HttpError(400, 'Token is required');
-            }
-            if(!password){
-                throw new HttpError(400, 'Password is required');
-            }
-
             const user = await this.authService.findByToken(token);
             
             if(!user){
@@ -307,10 +276,6 @@ class AuthenticationController implements IAuthenticationController{
         try{
             const { id } = req.params;
 
-            if(!id){
-                throw new HttpError(400, 'Id is required');
-            }
-
             await this.authService.deleteAuthentication(id);
             res.status(204)
         }catch(error: any){
@@ -324,10 +289,6 @@ class AuthenticationController implements IAuthenticationController{
     async standartAuthenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { login, password } = req.body;
-
-            if (!login || !password) {
-                throw new HttpError(400, 'Login and password are required');
-            }
             
             const auth = await this.authService.authenticate(login, password);
 
@@ -357,15 +318,7 @@ class AuthenticationController implements IAuthenticationController{
             const { oldPassword, newPassword} = req.body;
             const id = req.session?.auth?.id;
 
-            if (!oldPassword || !newPassword) {
-                throw new HttpError(400, 'Password is required');
-            }
-
-            if (!id) {
-                throw new HttpError(400, 'Invalid credentials');
-            }
-
-            if (!await this.authService.validatePassword(id, oldPassword)) {
+            if (!await this.authService.validatePassword(id!, oldPassword)) {
                 throw new HttpError(400, 'Invalid password');
             }
 
@@ -408,14 +361,6 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const {password} = req.body;
             const id = req.session?.auth?.id;
-            
-            if (!password) {
-                throw new HttpError(400, 'Password is required');
-            }
-
-            if (!id) {
-                throw new HttpError(400, 'Invalid credentials');
-            }
 
             const valid = await this.authService.validatePassword(id!, password);
             
@@ -473,11 +418,7 @@ class AuthenticationController implements IAuthenticationController{
             const {provider, code} = req.body;
         
             let externalAuthentication: IExternalAuthentication
-
-            if(!code || !provider){
-                throw new HttpError(400, "Código ou provedor necessários")
-            }
-
+            
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
             
             let newAuth: Partial<IExternalAuthentication> = {
@@ -515,10 +456,6 @@ class AuthenticationController implements IAuthenticationController{
             const id = req.session.auth!.id
             const {provider, code} = req.body;
 
-            if(!id || !provider || !code){
-                throw new HttpError(400, "Código ou provedor necessários")
-            }
-
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
             let newAuth: Partial<IExternalAuthentication> = {
@@ -544,10 +481,6 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const {provider, code} = req.body;
         
-            if(!code || !provider){
-                throw new HttpError(400, "Código ou provedor necessários")
-            }
-
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
             const auth = await this.authService.findByLogin(userInfo.email)

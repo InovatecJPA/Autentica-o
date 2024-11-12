@@ -4,6 +4,7 @@ import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } fro
 import { IAuthenticationController, IAuthenticationRouter } from "../Interfaces/authInterfaces";
 import AuthenticationController from "../controllers/authenticationController";
 import {authenticate} from "../middlewares/authenticate";
+import { validateExternalRegisterLogin, validateId, validateStandardRegisterLogin } from "../middlewares/validators";
 
 
 /**
@@ -184,7 +185,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.get(`${basePath}/externals/:id`, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/externals/:id`, authorize, validateId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findAllByAuthenticationId(req, res, next);
         })
 
@@ -243,7 +244,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id`, authorize, validateId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findById(req, res, next);
         })
 
@@ -276,7 +277,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor 
          */
-        app.get(`${basePath}/:id/profiles`, authorize, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id/profiles`, authorize, validateId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.getProfilesByAuthentication(req, res, next);
         })
     }
@@ -336,7 +337,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.post(`${basePath}/register`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/register`, validateStandardRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.createAuthentication(req, res, next);
         });
     
@@ -378,10 +379,44 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.post(`${basePath}/login`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/login`, validateStandardRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.standartAuthenticate(req, res, next);
         });
     
+        /**
+         * @swagger
+         * /login/external:
+         *   post:
+         *      summary: Autenticação de usuário externo
+         *      tags:
+         *          - [Autenticações]
+         *      servers:
+         *          - url: http://localhost:3000/v1/auth
+         *      requestBody:
+         *        required: true
+         *        content:
+         *          application/json:
+         *            schema:
+         *                  type: object
+         *                  properties:
+         *                      code:
+         *                        type: string
+         *                        example: "1111222233334444"
+         *                      provider:
+         *                        type: string
+         *                        example: "google"
+         *      responses:
+         *         200:
+         *           description: Autenticado com sucesso
+         *         400:
+         *           description: Campos invalidos
+         *         500:
+         *           description: Erro do servidor
+         */
+        app.post(`${basePath}/login/external`, validateExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.authenticateExternal(req, res, next);
+        })
+
         /**
          * @swagger
          * /logout:
@@ -434,7 +469,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.post(`${basePath}/register/external`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/register/external`, validateExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.createExternalAuthentication(req, res, next);
         })
 

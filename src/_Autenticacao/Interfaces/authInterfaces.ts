@@ -350,7 +350,14 @@ export interface IAuthenticationController {
      * @param {IHttpNext} next - Proxima Função
      */
     createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-
+    
+    /**
+     * Login com autenticação externa
+     * @param {IHttpRequest} req - Requisição Genérica
+     * @param {IHttpResponse} res - Resposta Genérica
+     * @param {IHttpNext} next - Proxima Função
+     */
+    authenticateExternal(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     /**
      * Adiciona uma autenticação externa a uma autenticação
      * @param {IHttpAuthenticatedRequest} req - Requisição Genérica de um usuário autenticado
