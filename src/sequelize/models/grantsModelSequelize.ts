@@ -1,6 +1,5 @@
 import { Association, DataTypes, Model, Sequelize } from "sequelize";
 import { IGrants } from "../../_Autorização/Interfaces/grantsInterfaces";
-import Grants from "../../_Autorização/models/grantsModel";
 import ProfileModelSequelize  from "./profileModelSequelize";
 
 
