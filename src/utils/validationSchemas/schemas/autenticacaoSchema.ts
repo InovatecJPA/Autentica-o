@@ -1,17 +1,18 @@
 import Joi from "joi";
 
-const idSchema = Joi.object({
-    id: Joi.string().uuid().required().messages({
+const idSchema = Joi.string().uuid().required().messages({
         "any.required": "Id is required",
         "string.uuid": "Id must be a valid uuid"
-    })
-}) 
+})
 
-const standardRegisterLoginSchema = Joi.object({
-    login: Joi.string().required().messages({
-        "any.required": "login is required",
-        "string": "login must be a string"
-    }),
+const emailSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        "any.required": "email is required",
+        "string.email": "email must be a valid email"
+    })
+})
+
+const passwordSchema = Joi.object({
     password: Joi.string().min(6).max(12)
     .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,12}$'))
     .required().messages({
@@ -20,6 +21,19 @@ const standardRegisterLoginSchema = Joi.object({
         'string.max': 'A senha deve ter no máximo 12 caracteres.',
         'string.pattern.base': 'A senha deve ter entre 6 e 12 caracteres e incluir pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
     })
+})
+
+const changePasswordSchema = Joi.object({
+    oldPassword: passwordSchema,
+    newPassword: passwordSchema
+});
+
+const standardRegisterLoginSchema = Joi.object({
+    login: Joi.string().required().messages({
+        "any.required": "login is required",
+        "string": "login must be a string"
+    }),
+    password: passwordSchema.extract('password')
 })
 
 const externalRegisterLoginSchema = Joi.object({
@@ -33,9 +47,17 @@ const externalRegisterLoginSchema = Joi.object({
     })
 })
 
+const updateAuthSchema = Joi.object({
+    login: emailSchema.extract('email').optional(),
+    password: passwordSchema.extract('password').optional()
+}).or('login', 'password')
 
 export {
     idSchema,
     standardRegisterLoginSchema,
-    externalRegisterLoginSchema
+    externalRegisterLoginSchema,
+    emailSchema,
+    passwordSchema,
+    changePasswordSchema,
+    updateAuthSchema,
 }

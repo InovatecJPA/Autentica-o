@@ -4,6 +4,8 @@ import { IGrants, IGrantsController, IGrantsRouter } from "../Interfaces/grantsI
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
 import { authenticate } from "../../_Autenticacao/middlewares/authenticate";
 import authorize from "../middlewares/authorize";
+import { validateParamId } from "../../utils/validationSchemas/paramValidators";
+import { validateBodyGrants, validateBodyUpdateGrants } from "../../utils/validationSchemas/bodyValidators";
 
 class GrantsRouter implements IGrantsRouter{
     private grantsController: IGrantsController;
@@ -131,7 +133,7 @@ class GrantsRouter implements IGrantsRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id`, authorize,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id`, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.findById(req, res, next);
         })
 
@@ -185,7 +187,7 @@ class GrantsRouter implements IGrantsRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id/profiles`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id/profiles`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.getProfilesByGrantsId(req, res, next);
         })
     }
@@ -248,7 +250,7 @@ class GrantsRouter implements IGrantsRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.post(`${basePath}/create`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/create`, validateBodyGrants, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.createGrants(req, res, next);
         })
     }
@@ -310,7 +312,7 @@ class GrantsRouter implements IGrantsRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id`, validateParamId, validateBodyUpdateGrants,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.updateGrants(req, res, next);
         })
     }
@@ -345,7 +347,7 @@ class GrantsRouter implements IGrantsRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.delete(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.delete(`${basePath}/:id`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.grantsController.deleteGrants(req, res, next);
         })
     }

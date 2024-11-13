@@ -1,6 +1,8 @@
 import { authenticate } from "../../_Autenticacao/middlewares/authenticate";
 import { IAppRouter } from "../../interfaces/appInterface";
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
+import {  validateBodyListIds, validateBodyProfile, validateBodyUpdateProfile } from "../../utils/validationSchemas/bodyValidators";
+import { validateParamId } from "../../utils/validationSchemas/paramValidators";
 import profileController from "../controllers/profileController";
 import { IProfileController, IProfileRouter } from "../Interfaces/profileInterfaces";
 import authorize from "../middlewares/authorize";
@@ -120,7 +122,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.findById(req, res, next);
         })
         
@@ -175,7 +177,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id/grants`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id/grants`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.getGrantsByProfileId(req, res, next);
         })
         
@@ -236,7 +238,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id/authentications`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id/authentications`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.getAuthenticationsByProfileId(req, res, next);
         })
     }
@@ -303,7 +305,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.post(`${basePath}/create`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/create`, validateBodyProfile, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.createProfile(req, res, next);
         })
     }
@@ -375,7 +377,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id`, validateParamId, validateBodyUpdateProfile,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.updateProfile(req, res, next);
         })
 
@@ -439,7 +441,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id/add-grants`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id/add-grants`, validateParamId, validateBodyListIds, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.addProfileToGrants(req, res, next);
         })
 
@@ -503,7 +505,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:authId/add-profiles`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:authId/add-profiles`, validateParamId, validateBodyListIds,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.addProfilesToAuthentication(req, res, next);
         })
 
@@ -543,7 +545,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id/remove-grants`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id/remove-grants`, validateParamId, validateBodyListIds,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.removeProfileFromGrants(req, res, next);
         })
 
@@ -583,7 +585,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:authId/remove-profiles`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:authId/remove-profiles`, validateParamId, validateBodyListIds, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.removeProfilesFromAuthentication(req, res, next);
         })
     }
@@ -615,7 +617,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.delete(`${basePath}/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.delete(`${basePath}/:id`, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.deleteProfile(req, res, next);
         })
     }

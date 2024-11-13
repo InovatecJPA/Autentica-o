@@ -16,7 +16,7 @@ dotenv.config();
   
 // const whiteList = ['http://127.0.0.1:3000'];
 
-const whiteList = ['http://127.0.0.1:3000', 'http://localhost:3000', 'http://localhost:3000/api-docs'];
+const whiteList = ['http://127.0.0.1:3000', 'http://localhost:3000'];
 
 const corsOptions: CorsOptions = {
   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {

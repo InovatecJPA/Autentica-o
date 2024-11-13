@@ -309,7 +309,7 @@ class ProfileController implements IProfileController {
         }
     }
 
-        /**
+        /** 
          * Removes a profile from a grant by its id and sends a success message.
          * 
          * @param {IHttpRequest} req - The HTTP request object containing the profile id in the params and the grants id in the body.
