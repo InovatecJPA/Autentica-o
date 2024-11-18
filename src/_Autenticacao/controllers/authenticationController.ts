@@ -159,6 +159,7 @@ class AuthenticationController implements IAuthenticationController{
             await this.profileService.addProfilesToAuthentication([profile_id], auth.id);
 
             const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = auth;
+
             res.status(201).json({ auth: authSemSenha });
         } catch (error: any) {
             if (auth && auth.id) {

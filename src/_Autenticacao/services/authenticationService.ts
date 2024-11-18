@@ -68,8 +68,7 @@ class AuthenticationService implements IAuthenticationService {
      * @inheritdoc
      */
     async createStandartAuthentication(authData: Partial<IAuthentication>): Promise<IAuthentication> {    
-        try {
-            
+                   
             if (await this.authRepository.findByLogin(authData.login!)) {
                 throw new HttpError(409, 'Authentication already exists');
             }
@@ -85,9 +84,6 @@ class AuthenticationService implements IAuthenticationService {
                 throw new HttpError(400, 'Authentication not created');
             }
             return newAuth;
-        } catch (error: any) {
-            throw new HttpError(400, error.message);
-        }
     }
 
     /**

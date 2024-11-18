@@ -3,7 +3,7 @@ import { models } from "../../../sequelize/models";
 import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
 import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces";
 import { Transaction } from "sequelize";
-import sequelize from "../../../config/sequelize";
+import sequelize from "../../../../config/sequelize";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {
