@@ -278,7 +278,8 @@ class AuthenticationController implements IAuthenticationController{
             const { id } = req.params;
 
             await this.authService.deleteAuthentication(id);
-            res.status(204)
+
+            res.status(204).json({});
         }catch(error: any){
             next(error)
         }

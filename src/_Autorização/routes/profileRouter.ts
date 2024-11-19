@@ -505,7 +505,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:authId/add-profiles`, validateParamId, validateBodyListIds,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:authId/add-profiles`, validateBodyListIds,(req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.addProfilesToAuthentication(req, res, next);
         })
 
@@ -585,7 +585,7 @@ class ProfileRouter implements IProfileRouter{
          *       500:
          *         description: Erro interno do servidor
          */
-        app.put(`${basePath}/:authId/remove-profiles`, validateParamId, validateBodyListIds, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:authId/remove-profiles`, validateBodyListIds, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.profileController.removeProfilesFromAuthentication(req, res, next);
         })
     }

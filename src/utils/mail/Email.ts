@@ -33,16 +33,14 @@ async function sendPasswordResetEmail(email: string, token: string): Promise<boo
         </div>
     `,
     };
-
-    transporter.sendMail(mailOptions).then((info) => {
-        console.log('Email enviado: ' + info.response);
-    }).catch((error) => {
-        console.log(error);
-        throw new Error('Erro ao enviar email');
-    })
+    try{
+        await transporter.sendMail(mailOptions)
+    }catch (error: any) {
+        console.error('Error sending email:', error);
+        return false
+    }
     return true
 }
-
 export { 
     sendPasswordResetEmail
 }

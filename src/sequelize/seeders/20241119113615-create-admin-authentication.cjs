@@ -6,11 +6,11 @@ const  uuid4 = require('uuid4');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const hashedPassword = await bcrypt.hash('123456', 10);
+    const hashedPassword = await bcrypt.hash('Inova123@', 10);
 
     await queryInterface.bulkInsert('authentications', [{
       id: uuid4(),
-      login: 'admin',
+      login: 'admin@example.com',
       active: true,
       passwordHash: hashedPassword,
       password_token_reset: null,
@@ -20,7 +20,7 @@ module.exports = {
     }], {});
 
     const [authUser] = await queryInterface.sequelize.query(
-      `SELECT id FROM "authentications" WHERE login = 'admin';`
+      `SELECT id FROM "authentications" WHERE login = 'admin@example.com';`
     );
 
     const authId = authUser[0]?.id; 
