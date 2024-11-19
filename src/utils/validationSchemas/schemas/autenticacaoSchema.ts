@@ -48,7 +48,7 @@ const externalRegisterLoginSchema = Joi.object({
 })
 
 const updateAuthSchema = Joi.object({
-    login: emailSchema.extract('email').optional(),
+    login: emailSchema.extract('login').optional(),
     password: passwordSchema.extract('password').optional()
 }).or('login', 'password')
 
