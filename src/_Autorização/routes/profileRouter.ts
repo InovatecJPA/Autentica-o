@@ -623,7 +623,7 @@ class ProfileRouter implements IProfileRouter{
     }
 
     public registerRoutes(basePath: string, app: IAppRouter): void {
-        app.use(basePath, authorize);
+        app.use(basePath, authenticate, authorize);
 
         this.registerRoutesGet(basePath, app);
         this.registerRoutesPost(basePath, app);

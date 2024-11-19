@@ -83,7 +83,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.get(`${basePath}/list`, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/list`, authenticate, authorize, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findAll(req, res, next);
         })
 
@@ -186,7 +186,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.get(`${basePath}/externals/:id`, authorize, validateParamId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/externals/:id`, authenticate, authorize, validateParamId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findAllByAuthenticationId(req, res, next);
         })
 
@@ -245,7 +245,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.get(`${basePath}/:id`, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id`, authenticate, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.findById(req, res, next);
         })
 
@@ -278,7 +278,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor 
          */
-        app.get(`${basePath}/:id/profiles`, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.get(`${basePath}/:id/profiles`, authenticate, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.getProfilesByAuthentication(req, res, next);
         })
     }
@@ -617,7 +617,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.put(`${basePath}/toggle-status/:id`, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/toggle-status/:id`, authenticate, authorize, validateParamId, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.toggleAuthenticationStatus(req, res, next);
         });
 
@@ -819,7 +819,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500: 
          *           description: Erro interno do servidor
          */
-        app.put(`${basePath}/:id`, authorize, validateParamId, validateBodyUpdateAuth, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/:id`, authenticate, authorize, validateParamId, validateBodyUpdateAuth, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updateAuthentication(req, res, next);
         });
     }
@@ -853,7 +853,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.delete(`${basePath}/:id`, authorize, validateParamId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.delete(`${basePath}/:id`, authenticate, authorize, validateParamId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.deleteAuthentication(req, res, next);
         });
     }
