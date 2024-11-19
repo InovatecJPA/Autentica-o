@@ -6,7 +6,7 @@ const idSchema = Joi.string().uuid().required().messages({
 })
 
 const emailSchema = Joi.object({
-    email: Joi.string().email().required().messages({
+    login: Joi.string().email().required().messages({
         "any.required": "email is required",
         "string.email": "email must be a valid email"
     })
