@@ -306,7 +306,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, 'AuthStrategy Failed');
             }
 
-            res.status(200).json(tokenOrSessionId);
+            res.status(200).json({tokenOrSessionId: tokenOrSessionId});
         }catch(error: any){
             next(error)
         }
