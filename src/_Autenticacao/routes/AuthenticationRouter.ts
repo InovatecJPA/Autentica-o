@@ -665,7 +665,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
         
         /**
          * @swagger
-         * /reset-password/:token:
+         * /reset-password?token:
          *   put:
          *      summary: Reseta a senha do usuário com token fornecido pelo email
          *      tags:
@@ -676,7 +676,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *      servers:
          *          - url: http://localhost:3000/v1/auth
          *      parameters:
-         *      - in: query
+         *        - in: query
          *          name: token
          *          schema:
          *          type: string
