@@ -10,7 +10,7 @@ class jwtFactory implements IAuthStrategy {
      * @returns {Promise<string>} Retorna o token JWT.
      */
     async authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string> {
-        const token = jwt.sign({ id: auth.id }, process.env.JWT_SECRET || '123', { expiresIn: '1h' });
+        const token = jwt.sign({ id: auth.id }, process.env.JWT_SECRET || '123', { expiresIn: '12h' });
         req.session = { auth: token };
         return token
     }
