@@ -12,7 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.BASE_URL || 'http://localhost:3000',
+        url: "${process.env.BASE_URL}:${process.env.PORT}/api-docs",
         description: 'Servidor de Desenvolvimento',
       },
     ],

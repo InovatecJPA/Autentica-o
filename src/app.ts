@@ -125,7 +125,7 @@ class App {
 
     public start(port: number): void {
         this.app.start(port);
-        console.log(`${process.env.BASE_URL}/api-docs`)
+        console.log(`${process.env.BASE_URL}:${port}/api-docs`)
     }
 }
 
