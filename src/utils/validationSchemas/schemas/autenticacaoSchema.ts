@@ -12,16 +12,15 @@ const emailSchema = Joi.object({
     })
 })
 
-const passwordSchema = Joi.object({
-    password: Joi.string().min(6).max(12)
-    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,12}$'))
-    .required().messages({
+const passwordSchema = Joi.string()
+    .min(6)
+    .max(12)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{6,12}$'))    .messages({
         'any.required': 'A senha é obrigatória.',
         'string.min': 'A senha deve ter no mínimo 6 caracteres.',
         'string.max': 'A senha deve ter no máximo 12 caracteres.',
         'string.pattern.base': 'A senha deve ter entre 6 e 12 caracteres e incluir pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
-    })
-})
+    });
 
 const changePasswordSchema = Joi.object({
     oldPassword: passwordSchema,
@@ -33,7 +32,7 @@ const standardRegisterLoginSchema = Joi.object({
         "any.required": "login is required",
         "string": "login must be a string"
     }),
-    password: passwordSchema.extract('password')
+    password: passwordSchema
 })
 
 const externalRegisterLoginSchema = Joi.object({
@@ -49,7 +48,7 @@ const externalRegisterLoginSchema = Joi.object({
 
 const updateAuthSchema = Joi.object({
     login: emailSchema.extract('login').optional(),
-    password: passwordSchema.extract('password').optional()
+    password: passwordSchema.optional(),
 }).or('login', 'password')
 
 export {

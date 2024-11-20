@@ -656,7 +656,10 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.put(`${basePath}/update-password`, authenticate, validateBodyChangePassword, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/update-password`, 
+            authenticate, 
+            validateBodyChangePassword, 
+            (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updatePassword(req, res, next);
         });
         

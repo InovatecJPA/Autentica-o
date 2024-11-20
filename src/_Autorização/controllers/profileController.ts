@@ -164,7 +164,7 @@ class ProfileController implements IProfileController {
                 throw new HttpError(400, "Id is required");
             }
             await this.profileService.deleteProfile(id);
-            res.status(204)
+            res.status(204).json({})
 
         } catch (error: any) {
             next(error);
@@ -221,7 +221,7 @@ class ProfileController implements IProfileController {
             }
             await this.profileService.addProfilesToAuthentication(profilesId, authId);
             
-            res.status(204)
+            res.status(204).json({});
         } catch (error: any) {
             next(error);
         }
@@ -250,7 +250,7 @@ class ProfileController implements IProfileController {
             }
 
             await this.profileService.removeProfilesFromAuthentication(profilesId, auth_id);
-            res.status(204)
+            res.status(204).json({})
         }catch(error: any){
             next(error);
         }
@@ -303,7 +303,7 @@ class ProfileController implements IProfileController {
             }
             await this.profileService.addProfileToGrants(id, grantsId);
             
-            res.status(204)
+            res.status(204).json({})
         } catch (error: any) {
             next(error);
         }
@@ -332,7 +332,7 @@ class ProfileController implements IProfileController {
                 throw new HttpError(400, "Profiles are required");
             }
             await this.profileService.removeProfileFromGrants(id, grantsId);
-            res.status(204)
+            res.status(204).json({})
         } catch (error: any) {
             next(error);
         }

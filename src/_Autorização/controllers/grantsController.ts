@@ -157,7 +157,7 @@ class GrantsController implements IGrantsController {
                 throw new HttpError(400, "Id is required");
             }
             await this.grantsService.deleteGrants(id);
-            res.status(204)
+            res.status(204).json({});
         } catch (error: any) {
             next(error);
         }

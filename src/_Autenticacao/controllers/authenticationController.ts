@@ -306,7 +306,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, 'AuthStrategy Failed');
             }
 
-            res.status(200).json({ tokenOrSessionId });
+            res.status(200).json(tokenOrSessionId);
         }catch(error: any){
             next(error)
         }
@@ -325,7 +325,7 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             await this.authService.updatePassword(id!, newPassword);
-            res.status(204);
+            res.status(204).json({});
         } catch(error: any){
             next(error)
         }
@@ -350,7 +350,7 @@ class AuthenticationController implements IAuthenticationController{
                 await this.authService.deactivateAccountAuthentication(id!);
             }
 
-            res.status(204)
+            res.status(204).json({});
         } catch(error: any){
             next(error)
         }
@@ -391,7 +391,7 @@ class AuthenticationController implements IAuthenticationController{
                     next(error);
                     return;
                 }
-                res.status(204);
+                res.status(204).json({});
             });
         }catch (error: any) {
             next(error)
@@ -447,7 +447,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, "Erro ao criar autenticação")
             }
             
-            res.status(201).send(externalAuthentication)
+            res.status(201).json(externalAuthentication)
         } catch(error: any){
             next(error)
         }
@@ -473,7 +473,7 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(400, "Erro ao criar autenticação")
             }
 
-            res.status(201).send(externalAuthentication)
+            res.status(201).json(externalAuthentication)
         } catch(error: any){
             next(error)
         }
@@ -499,7 +499,7 @@ class AuthenticationController implements IAuthenticationController{
 
             req.session.auth = auth
 
-            res.status(200).send(auth)
+            res.status(200).json(auth)
         } catch(error: any){
             next(error)
         }
