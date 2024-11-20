@@ -258,10 +258,7 @@ class AuthenticationController implements IAuthenticationController{
             if(!user){
                 throw new HttpError(404, 'Authentication not found');
             }
-
-            if(!user.password_token_expiry_date || user.password_token_expiry_date > new Date()){
-                throw new HttpError(403, 'Token expired');
-            }
+            
             if (!await this.authService.isPasswordTokenValid(user.id, token)){;
                 throw new HttpError(403, 'Token is not valid');
             }   
