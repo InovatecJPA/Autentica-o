@@ -3,7 +3,7 @@ import transporter from './transporterMail';
 dotenv.config();
 
 async function sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
-const resetLink = `${process.env.RESET_LINK}/${token}`;
+const resetLink = `${process.env.RESET_LINK}?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_SENDER,

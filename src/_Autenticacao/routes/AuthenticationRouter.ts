@@ -676,10 +676,10 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *      servers:
          *          - url: http://localhost:3000/v1/auth
          *      parameters:
-         *        - in: path
+         *      - in: query
          *          name: token
          *          schema:
-         *            type: string
+         *          type: string
          *          required: true
          *          description: Token enviado pelo email
          *      requestBody:
@@ -702,7 +702,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.put(`${basePath}/reset-password/:token`, validateBodyPassword, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.put(`${basePath}/reset-password`, validateBodyPassword, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.updatePasswordReset(req, res, next);
         });
 

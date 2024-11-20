@@ -250,7 +250,7 @@ class AuthenticationController implements IAuthenticationController{
      */
     async updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
-            const { token } = req.params;
+            const { token } = req.query;
             const { password } = req.body;
 
             const user = await this.authService.findByToken(token);
