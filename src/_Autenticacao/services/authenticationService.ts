@@ -139,7 +139,7 @@ class AuthenticationService implements IAuthenticationService {
      * @inheritdoc
      */
     async isPasswordTokenValid(id: string, token: string): Promise<boolean> {
-        const auth: IAuthentication | null = await this.authRepository.findById(id);
+        const auth: IAuthentication | null = await this.authRepository.findByIdWithPassword(id);
         if (!auth) {
             throw new HttpError(404, 'Authentication not found');
         }
