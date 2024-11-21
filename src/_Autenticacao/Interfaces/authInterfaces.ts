@@ -406,6 +406,8 @@ export interface IOAuth2Strategy {
 }
 
 export interface IOAuthUserInfo{
-    id: string,
-    email: string
+    data:{
+        id: string,
+        email: string
+    }
 }

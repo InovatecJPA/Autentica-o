@@ -27,16 +27,7 @@ class OAuthGoogle implements IOAuth2Strategy {
                 `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`
             ).join("&")
 
-            const config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: {
-                    urlEncoded
-                }
-                
-            }
-            const response = await axios.post('https://oauth2.googleapis.com/token', config);
+            const response = await axios.post('https://oauth2.googleapis.com/token', urlEncoded);
 
             return response.data.access_token;
         } catch (error) {
@@ -56,7 +47,7 @@ class OAuthGoogle implements IOAuth2Strategy {
         if (!userInfo){
             throw new Error("Error decoding token")
         }
-        
+
         return userInfo;
     }
 }

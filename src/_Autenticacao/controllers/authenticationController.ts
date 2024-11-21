@@ -1,5 +1,5 @@
 import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication} from "../Interfaces/authInterfaces";
+import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication, IOAuthUserInfo} from "../Interfaces/authInterfaces";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
 import AuthenticationService from "../services/authenticationService";
 import HttpError from "../../utils/customErrors/httpError";
@@ -17,7 +17,7 @@ function generatePassword(length: number): string{
     return randomBytes(length).toString('base64').slice(0, length)
 }
 
-async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<{id:string, email:string}>{
+async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<IOAuthUserInfo>{
     const OAuth2Strategy = createOAuth2Strategy(provider)
 
     const accessToken = await OAuth2Strategy.getToken(code)
@@ -419,20 +419,22 @@ class AuthenticationController implements IAuthenticationController{
         try {
             const {provider, code} = req.body;
         
+            const cleanProvider = provider.toLowerCase().trim()
+
             let externalAuthentication: IExternalAuthentication
             
-            const userInfo = await getUserInfoByCodeAndProvider(code, provider)
+            const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
             
             let newAuth: Partial<IExternalAuthentication> = {
-                external_id: userInfo.id,
-                email: userInfo.email,
-                provider
+                external_id: userInfo.data!.id,
+                email: userInfo.data!.email,
+                provider: cleanProvider
             }
 
-            const authExist = await this.authService.findByLogin(userInfo.email)
+            const authExist = await this.authService.findByLogin(userInfo.data!.email)
             
             if(!authExist){
-                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.email, passwordHash: generatePassword(10)})
+                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
                 if (!standartAuthentication){
                     throw new HttpError(400, "Erro ao criar autenticação tradicional")
                 }
@@ -461,8 +463,8 @@ class AuthenticationController implements IAuthenticationController{
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
             let newAuth: Partial<IExternalAuthentication> = {
-                external_id: userInfo.id,
-                email: userInfo.email,
+                external_id: userInfo.data.id,
+                email: userInfo.data.email,
                 authentication_id: id,
                 provider
             }
@@ -485,13 +487,13 @@ class AuthenticationController implements IAuthenticationController{
         
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
-            const auth = await this.authService.findByLogin(userInfo.email)
+            const auth = await this.authService.findByLogin(userInfo.data.email)
 
             if(!auth){
                 throw new HttpError(404, "Autenticação nao encontrada")
             }
 
-            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.id, provider)
+            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, provider)
 
             if(!externalAuth){
                 throw new HttpError(404, "Autenticação nao encontrada")

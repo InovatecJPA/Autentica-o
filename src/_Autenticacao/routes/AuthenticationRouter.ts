@@ -584,7 +584,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
         
         /**
          * @swagger
-         * /activate/:id:
+         * /toggle-status/:id:
          *   put:
          *      summary: Ativa ou desativa um usuário
          *      tags:
