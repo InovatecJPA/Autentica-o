@@ -448,7 +448,7 @@ class AuthenticationController implements IAuthenticationController{
             if(!externalAuthentication){
                 throw new HttpError(400, "Erro ao criar autenticação")
             }
-            
+                  
             res.status(201).json(externalAuthentication)
         } catch(error: any){
             next(error)
@@ -499,9 +499,13 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(404, "Autenticação nao encontrada")
             }
 
-            req.session.auth = auth
+            const tokenOrSessionId = await this.authStrategy.authenticate(req, {id: auth!.id}); 
+            
+            if (!tokenOrSessionId) {
+                throw new HttpError(400, 'AuthStrategy Failed');
+            }
 
-            res.status(200).json(auth)
+            res.status(200).json({tokenOrSessionId: tokenOrSessionId});
         } catch(error: any){
             next(error)
         }
