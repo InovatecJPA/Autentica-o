@@ -386,7 +386,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
     
         /**
          * @swagger
-         * /login/external:
+         * /authenticate/external:
          *   post:
          *      summary: Autenticação de usuário externo
          *      tags:
@@ -414,7 +414,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro do servidor
          */
-        app.post(`${basePath}/login/external`, validateBodyExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/authenticate/external`, validateBodyExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.authenticateExternal(req, res, next);
         })
 
@@ -442,37 +442,37 @@ class AuthenticationRouter implements IAuthenticationRouter {
             this.authenticationController.logout(req, res, next);
         });
         
-        /**
-         * @swagger
-         * /register/external:
-         *   post:
-         *      summary: Registra uma autenticação externa
-         *      tags:
-         *          - [Autenticações]
-         *      servers:
-         *          - url: http://localhost:3000/v1/auth
-         *      requestBody:
-         *        required: true
-         *        content:
-         *          application/json:
-         *            schema:
-         *              type: object
-         *              properties:
-         *                  code:
-         *                    type: string
-         *                  provider:
-         *                    type: string
-         *      responses:
-         *         201:
-         *           description: Autenticação criada com sucesso
-         *         400:
-         *           description: Erro de validação
-         *         500:
-         *           description: Erro interno do servidor
-         */
-        app.post(`${basePath}/register/external`, validateBodyExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
-            this.authenticationController.createExternalAuthentication(req, res, next);
-        })
+        // /**
+        //  * @swagger
+        //  * /register/external:
+        //  *   post:
+        //  *      summary: Registra uma autenticação externa
+        //  *      tags:
+        //  *          - [Autenticações]
+        //  *      servers:
+        //  *          - url: http://localhost:3000/v1/auth
+        //  *      requestBody:
+        //  *        required: true
+        //  *        content:
+        //  *          application/json:
+        //  *            schema:
+        //  *              type: object
+        //  *              properties:
+        //  *                  code:
+        //  *                    type: string
+        //  *                  provider:
+        //  *                    type: string
+        //  *      responses:
+        //  *         201:
+        //  *           description: Autenticação criada com sucesso
+        //  *         400:
+        //  *           description: Erro de validação
+        //  *         500:
+        //  *           description: Erro interno do servidor
+        //  */
+        // app.post(`${basePath}/register/external`, validateBodyExternalRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        //     this.authenticationController.createExternalAuthentication(req, res, next);
+        // })
 
         /**
          * @swagger

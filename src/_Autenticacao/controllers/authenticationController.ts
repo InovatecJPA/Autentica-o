@@ -415,45 +415,45 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
-    async createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try {
-            const {provider, code} = req.body;
+    // async createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+    //     try {
+    //         const {provider, code} = req.body;
         
-            const cleanProvider = provider.toLowerCase().trim()
+    //         const cleanProvider = provider.toLowerCase().trim()
 
-            let externalAuthentication: IExternalAuthentication
+    //         let externalAuthentication: IExternalAuthentication
             
-            const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
+    //         const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
             
-            let newAuth: Partial<IExternalAuthentication> = {
-                external_id: userInfo.data!.id,
-                email: userInfo.data!.email,
-                provider: cleanProvider
-            }
+    //         let newAuth: Partial<IExternalAuthentication> = {
+    //             external_id: userInfo.data!.id,
+    //             email: userInfo.data!.email,
+    //             provider: cleanProvider
+    //         }
 
-            const authExist = await this.authService.findByLogin(userInfo.data!.email)
+    //         const authExist = await this.authService.findByLogin(userInfo.data!.email)
             
-            if(!authExist){
-                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
-                if (!standartAuthentication){
-                    throw new HttpError(400, "Erro ao criar autenticação tradicional")
-                }
+    //         if(!authExist){
+    //             const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
+    //             if (!standartAuthentication){
+    //                 throw new HttpError(400, "Erro ao criar autenticação tradicional")
+    //             }
                 
-                newAuth.authentication_id = standartAuthentication.id
-            }else {
-                newAuth.authentication_id = authExist.id
-            }
-            externalAuthentication = await this.externalAuthService.createExternalAuthentication(newAuth)
+    //             newAuth.authentication_id = standartAuthentication.id
+    //         }else {
+    //             newAuth.authentication_id = authExist.id
+    //         }
+    //         externalAuthentication = await this.externalAuthService.createExternalAuthentication(newAuth)
             
-            if(!externalAuthentication){
-                throw new HttpError(400, "Erro ao criar autenticação")
-            }
+    //         if(!externalAuthentication){
+    //             throw new HttpError(400, "Erro ao criar autenticação")
+    //         }
                   
-            res.status(201).json(externalAuthentication)
-        } catch(error: any){
-            next(error)
-        }
-    }
+    //         res.status(201).json(externalAuthentication)
+    //     } catch(error: any){
+    //         next(error)
+    //     }
+    // }
 
     async addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
@@ -481,21 +481,37 @@ class AuthenticationController implements IAuthenticationController{
         }
     }
 
+
+    //PRECISO REFAZER ESSE METODO -- SO FUNCIONA SE AS AUTENTICACOES FOREM IGUAIS EXEMPLO 
+    //INOVATECJPDEV@GMAIL.COM -> Autenticação Interna
+    //INOVATECJPDEV@GMAIL.COM -> Autenticação Externa
+    //CASO SEJA DIFERENTE NAO FUNCIONA
     async authenticateExternal(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const {provider, code} = req.body;
         
-            const userInfo = await getUserInfoByCodeAndProvider(code, provider)
+            const cleanProvider = provider.toLowerCase().trim()
 
-            const auth = await this.authService.findByLogin(userInfo.data.email)
+            const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
 
-            if(!auth){
-                throw new HttpError(404, "Autenticação nao encontrada")
+            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, cleanProvider)
+            
+            if(!externalAuth){
+                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
+                
+                let newAuth: Partial<IExternalAuthentication> = {
+                    authentication_id: standartAuthentication.id,
+                    external_id: userInfo.data!.id,
+                    email: userInfo.data!.email,
+                    provider: cleanProvider
+                }
+
+                await this.externalAuthService.createExternalAuthentication(newAuth)
             }
 
-            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, provider)
+            const auth = await this.authService.findById(externalAuth!.authentication_id)
 
-            if(!externalAuth){
+            if(!auth){
                 throw new HttpError(404, "Autenticação nao encontrada")
             }
 

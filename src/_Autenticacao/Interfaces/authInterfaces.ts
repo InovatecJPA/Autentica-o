@@ -343,13 +343,13 @@ export interface IAuthenticationController {
      */
     getProfilesByAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 
-    /**
-     * Cria uma autenticação externa
-     * @param {IHttpRequest} req - Requisição Genérica
-     * @param {IHttpResponse} res - Resposta Genérica
-     * @param {IHttpNext} next - Proxima Função
-     */
-    createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
+    // /**
+    //  * Cria uma autenticação externa
+    //  * @param {IHttpRequest} req - Requisição Genérica
+    //  * @param {IHttpResponse} res - Resposta Genérica
+    //  * @param {IHttpNext} next - Proxima Função
+    //  */
+    // createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
     
     /**
      * Login com autenticação externa
