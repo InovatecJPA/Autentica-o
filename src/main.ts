@@ -1,5 +1,7 @@
 // main.ts
 import app from "./app";
+import dotenv from 'dotenv';
+dotenv.config();
 // import https from 'https';
 // import fs from 'fs';
 // import path from 'path';
@@ -16,4 +18,4 @@ import app from "./app";
 //   console.log('Servidor HTTPS rodando na porta 3000');
 // });
 
-app.start(3050);
+app.start(Number(process.env.PORT));

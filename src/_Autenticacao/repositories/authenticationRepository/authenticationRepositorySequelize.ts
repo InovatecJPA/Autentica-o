@@ -18,14 +18,14 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
    * @inheritdoc
    */
   async findById(id: string): Promise<IAuthentication | null> {
-    return await models.AuthenticationModelSequelize.findOne({
+    return await models.authenticationModelSequelize.findOne({
       where: { id: id },
       attributes: { exclude: ["passwordHash", "password_token_reset"] },
     });
   }
 
   async findByIdWithPassword(id: string): Promise<IAuthentication | null> {
-    return await models.AuthenticationModelSequelize.findOne({
+    return await models.authenticationModelSequelize.findOne({
       where: { id: id },
     });
   }
@@ -34,7 +34,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
    * @inheritdoc
    */
   async findByToken(token: string): Promise<IAuthentication | null> {
-    return await models.AuthenticationModelSequelize.findOne({
+    return await models.authenticationModelSequelize.findOne({
       where: { password_token_reset: token },
       attributes: { exclude: ["passwordHash", "password_token_reset"] },
     });
@@ -44,7 +44,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
    * @inheritdoc
    */
   async findAll(): Promise<IAuthentication[]> {
-    return await models.AuthenticationModelSequelize.findAll({
+    return await models.authenticationModelSequelize.findAll({
       attributes: { exclude: ["passwordHash", "password_token_reset"] },
     });
   }
@@ -52,11 +52,11 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
   /**
    * @inheritdoc
    */
-  async findByLogin(
+async findByLogin(
     login: string,
     options?: object
   ): Promise<IAuthentication | null> {
-    return await models.AuthenticationModelSequelize.findOne({
+    return await models.authenticationModelSequelize.findOne({
       where: { login: login },
       attributes: { exclude: ["passwordHash", "password_token_reset"] },
       ...options,
@@ -71,7 +71,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     options?: object
   ): Promise<IAuthentication> {
     const { passwordHash, password_token_reset, ...newAuth } =
-      await models.AuthenticationModelSequelize.create(auth, options);
+      await models.authenticationModelSequelize.create(auth, options);
 
     return { ...newAuth.dataValues };
   }
@@ -88,7 +88,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
     );
 
     const [affectedCount, updatedRows] =
-      await models.AuthenticationModelSequelize.update(
+      await models.authenticationModelSequelize.update(
         { ...filteredUpdateData, updatedAt: new Date() },
         { where: { id }, returning: true }
       );
@@ -104,7 +104,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
    * @inheritdoc
    */
   async deleteAuthentication(id: string): Promise<void> {
-    await models.AuthenticationModelSequelize.destroy({ where: { id: id } });
+    await models.authenticationModelSequelize.destroy({ where: { id: id } });
   }
 
   async getProfilesByAuthentication(

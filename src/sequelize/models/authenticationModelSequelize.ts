@@ -24,7 +24,7 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
 
 
     public static associate (models: any) {
-        this.belongsToMany(models.ProfileModelSequelize, {
+        this.belongsToMany(ProfileModelSequelize, {
             through: "authentication_profiles",
             foreignKey: 'authenticationId',
             otherKey: 'profileId',
@@ -32,7 +32,7 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
             onDelete: 'CASCADE'
         })
 
-        this.hasMany(models.ExternalAuthenticationModelSequelize, {
+        this.hasMany(ExternalAuthenticationModelSequelize, {
             foreignKey: 'authentication_id',
             as: 'externalAuthentications',
             onDelete: 'CASCADE'

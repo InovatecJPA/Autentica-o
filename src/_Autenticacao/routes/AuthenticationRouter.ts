@@ -338,7 +338,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
          *         500:
          *           description: Erro interno do servidor
          */
-        app.post(`${basePath}/register`, validateBodyStandardRegisterLogin, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+        app.post(`${basePath}/register`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.createAuthentication(req, res, next);
         });
     
@@ -829,6 +829,11 @@ class AuthenticationRouter implements IAuthenticationRouter {
 
     
     private registerRoutesDelete(basePath: string, app: IAppRouter): void {
+        app.delete(`${basePath}/gateway/:id`, (req: IHttpRequest, res: IHttpResponse, next: IHttpNext) => {
+            this.authenticationController.deleteAuthentication(req, res, next);
+        })
+
+
         /**
          * @swagger
          * /:id:
@@ -859,6 +864,7 @@ class AuthenticationRouter implements IAuthenticationRouter {
         app.delete(`${basePath}/:id`, authenticate, authorize, validateParamId, (req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext) => {
             this.authenticationController.deleteAuthentication(req, res, next);
         });
+
     }
 
 

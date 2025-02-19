@@ -142,7 +142,7 @@ class AuthenticationController implements IAuthenticationController{
         let auth: IAuthentication | undefined
         try {
             const { login, password }  = req.body;
-
+            console.log(login, password)
             const authData: Partial<IAuthentication> = {
                 login,
                 passwordHash: password,
@@ -276,7 +276,6 @@ class AuthenticationController implements IAuthenticationController{
     async deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try{
             const { id } = req.params;
-
             await this.authService.deleteAuthentication(id);
 
             res.status(204).json({});
@@ -308,6 +307,7 @@ class AuthenticationController implements IAuthenticationController{
 
             res.status(200).json({tokenOrSessionId: tokenOrSessionId});
         }catch(error: any){
+            console.log(error)
             next(error)
         }
     }

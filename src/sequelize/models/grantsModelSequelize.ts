@@ -18,7 +18,7 @@ class GrantsModelSequelize extends Model<IGrants> implements IGrants {
     };
 
     public static associate(models: any) {
-        GrantsModelSequelize.belongsToMany(models.ProfileModelSequelize, {
+        GrantsModelSequelize.belongsToMany(ProfileModelSequelize, {
             through: "grants_profiles",
             foreignKey: "grantId",
             otherKey: "profileId",

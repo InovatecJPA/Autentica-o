@@ -29,7 +29,7 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
     public grants!: GrantsModelSequelize[];
 
     public static associate (models: any) {
-        this.belongsToMany(models.AuthenticationModelSequelize, {
+        this.belongsToMany(AuthenticationModelSequelize, {
             // through: {
             //     model: "authentication_profiles",
             //     unique: true
@@ -40,7 +40,7 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
             as: 'authentications'
         })
 
-        this.belongsToMany(models.GrantsModelSequelize, {
+        this.belongsToMany(GrantsModelSequelize, {
             through: "grants_profiles",
             foreignKey: 'profileId',
             otherKey: 'grantId',

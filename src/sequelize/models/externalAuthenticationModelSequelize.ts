@@ -12,7 +12,7 @@ class ExternalAuthenticationModelSequelize extends Model<IExternalAuthentication
     public updatedAt!: Date;
 
     public static associate(models: any) {
-        this.belongsTo(models.AuthenticationModelSequelize, {
+        this.belongsTo(AuthenticationModelSequelize, {
             foreignKey: 'authentication_id',
             as: 'authentication'
         })

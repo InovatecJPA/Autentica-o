@@ -18,18 +18,21 @@ dotenv.config();
 
 const whiteList = ['http://127.0.0.1:3000', 'http://localhost:3000'];
 
-const corsOptions: CorsOptions = {
-  origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
-    if (!requestOrigin || whiteList.includes(requestOrigin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'), false);
-    }
-  },
+// const corsOptions: CorsOptions = {
+//   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => {
+//     if (!requestOrigin || whiteList.includes(requestOrigin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'), false);
+//     }
+//   },
   
-  credentials: true
-};
-
+//   credentials: true
+// };
+const corsOptions = {
+    origin: '*',
+    credentials: true
+}
 function useSession(app: IApp) {
     if (process.env.AUTH_STRATEGY !== 'session') {
         return
@@ -81,13 +84,6 @@ class App {
         return App.instance;
     }
 
-/**
- * Configures and applies middleware to the application.
- * 
- * - Uses body-parser to parse incoming request bodies in JSON format.
- * - If the environment variable AUTH_STRATEGY is set to 'session', applies
- *   cookie-session middleware for session management with specified options.
- */
     private middlewares() {
         this.app.use(cors(corsOptions));
         this.app.use(bodyParser.json());
@@ -95,11 +91,12 @@ class App {
     }
 
     private routes() {
+
         swaggerRouter(this.app.router);
         
-        AuthenticationRouter.registerRoutes("/v1/auth", this.app.router);    
-        ProfileRouter.registerRoutes("/v1/profile", this.app.router);
-        GrantsRouter.registerRoutes("/v1/grants", this.app.router);
+        AuthenticationRouter.registerRoutes("/auth", this.app.router);    
+        ProfileRouter.registerRoutes("/profile", this.app.router);
+        GrantsRouter.registerRoutes("/grants", this.app.router);
         
         this.app.use(this.app.router.getRouter())
     }
