@@ -1,15 +1,15 @@
-import createAuthStrategy from "../auth/authFactory";
-import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication, IOAuthUserInfo} from "../Interfaces/authInterfaces";
-import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
-import AuthenticationService from "../services/authenticationService";
-import HttpError from "../../utils/customErrors/httpError";
-import {sendPasswordResetEmail} from "../../utils/mail/Email"
-import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces";
-import profileService from "../../_Autorização/services/profileService";
-import ExternalAuthenticationService from "../services/externalAuthenticationService";
+import createAuthStrategy from "../auth/authFactory.js";
+import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication, IOAuthUserInfo} from "../Interfaces/authInterfaces.js";
+import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface.js";
+import AuthenticationService from "../services/authenticationService.js";
+import HttpError from "../../utils/customErrors/httpError.js";
+import {sendPasswordResetEmail} from "../../utils/mail/Email.js"
+import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import profileService from "../../_Autorização/services/profileService.js";
+import ExternalAuthenticationService from "../services/externalAuthenticationService.js";
 
 import dotenv from 'dotenv'
-import { createOAuth2Strategy } from "../auth/oAuthFactoty";
+import { createOAuth2Strategy } from "../auth/oAuthFactoty.js";
 import { randomBytes } from "crypto";
 dotenv.config()
 
@@ -404,7 +404,7 @@ class AuthenticationController implements IAuthenticationController{
             const { id } = req.params;
 
             const profiles = await this.authService.getProfilesByAuthenticationId(id);
-
+            
             if (!profiles || profiles.length === 0) {
                 throw new HttpError(404, 'Profiles not found');
             }

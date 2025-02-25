@@ -1,6 +1,6 @@
 import { Association, DataTypes, Model, Sequelize } from "sequelize";
-import { IExternalAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
-import AuthenticationModelSequelize from "./authenticationModelSequelize";
+import { IExternalAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces.js";
+import AuthenticationModelSequelize from "./authenticationModelSequelize.js";
 
 
 class ExternalAuthenticationModelSequelize extends Model<IExternalAuthentication> implements IExternalAuthentication {

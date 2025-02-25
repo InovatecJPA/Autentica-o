@@ -1,6 +1,6 @@
-import { IAuthStrategy } from "../Interfaces/authInterfaces";
-import jwtFactory from "./auths/jwtFactory";
-import sessionFactory from "./auths/sessionFactory";
+import { IAuthStrategy } from "../Interfaces/authInterfaces.js";
+import jwtFactory from "./auths/jwtFactory.js";
+import sessionFactory from "./auths/sessionFactory.js";
 
 import dotenv from 'dotenv';
 dotenv.config();

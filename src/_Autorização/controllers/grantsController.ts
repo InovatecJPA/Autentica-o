@@ -1,7 +1,7 @@
-import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
-import HttpError from "../../utils/customErrors/httpError";
-import { IGrants, IGrantsController, IGrantsParams, IGrantsService } from "../Interfaces/grantsInterfaces";
-import grantsService from "../services/grantsService";
+import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface.js";
+import HttpError from "../../utils/customErrors/httpError.js";
+import { IGrants, IGrantsController, IGrantsParams, IGrantsService } from "../Interfaces/grantsInterfaces.js";
+import grantsService from "../services/grantsService.js"
 
 class GrantsController implements IGrantsController {
     private grantsService: IGrantsService;

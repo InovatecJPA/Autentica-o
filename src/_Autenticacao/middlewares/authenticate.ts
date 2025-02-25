@@ -1,9 +1,9 @@
-import createAuthStrategy from "../auth/authFactory";
+import createAuthStrategy from "../auth/authFactory.js";
 import {
   IHttpAuthenticatedRequest,
   IHttpNext,
   IHttpResponse,
-} from "../../interfaces/httpInterface";
+} from "../../interfaces/httpInterface.js";
 import dotenv from "dotenv";
 
 dotenv.config();

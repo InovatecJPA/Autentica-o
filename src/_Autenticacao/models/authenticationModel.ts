@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { IAuthentication } from '../Interfaces/authInterfaces';
+import { IAuthentication } from '../Interfaces/authInterfaces.js';
 
 
 

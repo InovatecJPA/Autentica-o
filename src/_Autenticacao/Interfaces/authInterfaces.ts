@@ -1,6 +1,6 @@
-import { IAppRouter } from "../../interfaces/appInterface";
-import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
+import { IAppRouter } from "../../interfaces/appInterface.js";
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface.js";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
 
 /**
  * Interface de autenticação para definir os dados necessários para

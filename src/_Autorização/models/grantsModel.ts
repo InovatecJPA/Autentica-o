@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { IGrants, IGrantsParams } from "../Interfaces/grantsInterfaces";
+import { IGrants, IGrantsParams } from "../Interfaces/grantsInterfaces.js";
 
 class Grants implements IGrants {
     id: string

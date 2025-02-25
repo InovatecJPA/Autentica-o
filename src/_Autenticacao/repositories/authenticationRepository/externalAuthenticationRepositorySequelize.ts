@@ -1,5 +1,5 @@
-import { models } from "../../../sequelize/models";
-import { IExternalAuthentication, IExternalAuthenticationRepository } from "../../Interfaces/authInterfaces";
+import { models } from "../../../sequelize/models/index.js";
+import { IExternalAuthentication, IExternalAuthenticationRepository } from "../../Interfaces/authInterfaces.js";
 
 class ExternalAuthenticationRepositorySequelize implements IExternalAuthenticationRepository {
     async findAll(): Promise<IExternalAuthentication[]> {

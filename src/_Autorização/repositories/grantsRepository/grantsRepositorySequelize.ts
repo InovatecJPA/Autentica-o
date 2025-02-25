@@ -1,8 +1,7 @@
-import { models } from "../../../sequelize/models";
-import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize";
-import { IGrants, IGrantsParams, IGrantsRepository } from "../../Interfaces/grantsInterfaces";
-import { IProfile } from "../../Interfaces/profileInterfaces";
-import Grants from "../../models/grantsModel";
+import { models } from "../../../sequelize/models/index.js";
+import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize.js";
+import { IGrants, IGrantsParams, IGrantsRepository } from "../../Interfaces/grantsInterfaces.js";
+import { IProfile } from "../../Interfaces/profileInterfaces.js";
 
 class GrantsRepositorySequelize implements IGrantsRepository{
     

@@ -1,8 +1,8 @@
 import { match } from 'path-to-regexp';
-import authenticationService from "../../_Autenticacao/services/authenticationService";
-import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from "../../interfaces/httpInterface";
-import HttpError from "../../utils/customErrors/httpError";
-import profileService from "../services/profileService";
+import authenticationService from "../../_Autenticacao/services/authenticationService.js";
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpResponse } from "../../interfaces/httpInterface.js";
+import HttpError from "../../utils/customErrors/httpError.js";
+import profileService from "../services/profileService.js";
 
 
 /**

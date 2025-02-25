@@ -1,13 +1,13 @@
 import {
   IAuthentication,
   IAuthenticationRepository,
-} from "../../Interfaces/authInterfaces";
-import { models } from "../../../sequelize/models";
-import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
-import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces";
+} from "../../Interfaces/authInterfaces.js";
+import { models } from "../../../sequelize/models/index.js";
+import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize.js";
+import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces.js";
 import { Transaction } from "sequelize";
-import sequelize from "../../../../config/db";
-import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
+import sequelize from "../../../../config/db.js";
+import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize.js";
 
 class AuthenticationRepositorySequelize implements IAuthenticationRepository {
   async startTransaction(): Promise<Transaction> {

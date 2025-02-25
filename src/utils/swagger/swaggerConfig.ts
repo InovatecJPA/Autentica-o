@@ -1,4 +1,4 @@
-import authorize from '../../_Autorização/middlewares/authorize';
+import authorize from '../../_Autorização/middlewares/authorize.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 

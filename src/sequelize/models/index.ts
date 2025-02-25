@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize"
-import sequelize from "../../../config/db"
-import authenticationModelSequelize from "./authenticationModelSequelize"
-import externalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize"
-import profileModelSequelize from "./profileModelSequelize"
-import grantsModelSequelize from "./grantsModelSequelize"
+import sequelize from "../../../config/db.js"
+import authenticationModelSequelize from "./authenticationModelSequelize.js"
+import externalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize.js"
+import profileModelSequelize from "./profileModelSequelize.js"
+import grantsModelSequelize from "./grantsModelSequelize.js"
 
 const models = {
     authenticationModelSequelize,

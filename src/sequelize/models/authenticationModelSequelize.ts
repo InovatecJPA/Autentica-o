@@ -1,8 +1,8 @@
 import { Model, DataTypes, Association, Sequelize } from "sequelize";
-import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces";
-import  ProfileModelSequelize  from "./profileModelSequelize";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
-import ExternalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize";
+import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces.js";
+import  ProfileModelSequelize  from "./profileModelSequelize.js";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import ExternalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize.js";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
     public id!: string;

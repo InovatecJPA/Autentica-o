@@ -1,8 +1,8 @@
-import HttpError from "../../utils/customErrors/httpError";
-import { IGrants, IGrantsParams, IGrantsRepository, IGrantsService } from "../Interfaces/grantsInterfaces";
-import { IProfile, IProfileParams } from "../Interfaces/profileInterfaces";
-import Grants from "../models/grantsModel";
-import { createGrantsRepository } from "../repositories/factoryAuthorizationRepository";
+import HttpError from "../../utils/customErrors/httpError.js";
+import { IGrants, IGrantsParams, IGrantsRepository, IGrantsService } from "../Interfaces/grantsInterfaces.js";
+import { IProfile, IProfileParams } from "../Interfaces/profileInterfaces.js";
+import Grants from "../models/grantsModel.js";
+import { createGrantsRepository } from "../repositories/factoryAuthorizationRepository.js";
 
 /**
  * @inheritdoc

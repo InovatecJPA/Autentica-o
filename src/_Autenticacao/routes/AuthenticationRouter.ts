@@ -1,8 +1,8 @@
 // src/routes/authenticationRouter.ts
 import express from 'express';
-import authorize from '../../_Autorização/middlewares/authorize';
-import { authenticate } from '../middlewares/authenticate';
-import AuthenticationController from '../controllers/authenticationController';
+import authorize from '../../_Autorização/middlewares/authorize.js';
+import { authenticate } from '../middlewares/authenticate.js';
+import AuthenticationController from '../controllers/authenticationController.js';
 
 
 const router = express.Router();

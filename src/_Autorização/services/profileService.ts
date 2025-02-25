@@ -1,11 +1,11 @@
-import { IAuthentication, IAuthenticationService } from "../../_Autenticacao/Interfaces/authInterfaces";
-import authenticationService from "../../_Autenticacao/services/authenticationService";
-import HttpError from "../../utils/customErrors/httpError";
-import { IGrants, IGrantsService } from "../Interfaces/grantsInterfaces";
-import { IProfile, IProfileParams, IProfileRepository, IProfileService } from "../Interfaces/profileInterfaces";
-import Profile from "../models/ProfileModel";
-import { createProfileRepository } from "../repositories/factoryAuthorizationRepository";
-import grantsService from "./grantsService";
+import { IAuthentication, IAuthenticationService } from "../../_Autenticacao/Interfaces/authInterfaces.js";
+import authenticationService from "../../_Autenticacao/services/authenticationService.js";
+import HttpError from "../../utils/customErrors/httpError.js";
+import { IGrants, IGrantsService } from "../Interfaces/grantsInterfaces.js";
+import { IProfile, IProfileParams, IProfileRepository, IProfileService } from "../Interfaces/profileInterfaces.js";
+import Profile from "../models/ProfileModel.js";
+import { createProfileRepository } from "../repositories/factoryAuthorizationRepository.js";
+import grantsService from "./grantsService.js";
 
 /**
  * @inheritdoc

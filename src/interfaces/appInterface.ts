@@ -1,4 +1,4 @@
-import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "./httpInterface"
+import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "./httpInterface.js"
 
 export interface IApp {
     router: IAppRouter

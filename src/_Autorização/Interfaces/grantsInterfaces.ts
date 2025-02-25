@@ -1,6 +1,6 @@
-import { IAppRouter } from "../../interfaces/appInterface"
-import { IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface"
-import { IProfile } from "./profileInterfaces"
+import { IAppRouter } from "../../interfaces/appInterface.js"
+import { IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface.js"
+import { IProfile } from "./profileInterfaces.js"
 
 /**
  * Interface that represents a grant

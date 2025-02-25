@@ -1,6 +1,6 @@
-import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface";
-import HttpError from "../../../utils/customErrors/httpError";
-import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces";
+import { IHttpAuthenticatedRequest, IHttpRequest } from "../../../interfaces/httpInterface.js";
+import HttpError from "../../../utils/customErrors/httpError.js";
+import { IAuthentication, IAuthStrategy } from "../../Interfaces/authInterfaces.js";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 class jwtFactory implements IAuthStrategy {    

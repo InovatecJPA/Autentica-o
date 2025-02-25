@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import transporter from './transporterMail';
+import transporter from './transporterMail.js';
 dotenv.config();
 
 async function sendPasswordResetEmail(email: string, token: string): Promise<boolean> {

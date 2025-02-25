@@ -1,13 +1,13 @@
-import {createAuthenticationRepository} from "../repositories/factoryAuthenticationRepository";
-import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces";
+import {createAuthenticationRepository} from "../repositories/factoryAuthenticationRepository.js";
+import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces.js";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
-import HttpError from "../../utils/customErrors/httpError";
-import Authentication from "../models/authenticationModel";
+import HttpError from "../../utils/customErrors/httpError.js";
+import Authentication from "../models/authenticationModel.js";
 
 import dotenv from "dotenv";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
-import externalAuthenticationService from "./externalAuthenticationService";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import externalAuthenticationService from "./externalAuthenticationService.js";
 dotenv.config();
 
 class AuthenticationService implements IAuthenticationService {

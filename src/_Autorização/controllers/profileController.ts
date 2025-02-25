@@ -1,7 +1,7 @@
-import { IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface";
-import HttpError from "../../utils/customErrors/httpError";
-import { IProfileController, IProfileParams, IProfileService } from "../Interfaces/profileInterfaces";
-import profileService from "../services/profileService";
+import { IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface.js";
+import HttpError from "../../utils/customErrors/httpError.js";
+import { IProfileController, IProfileParams, IProfileService } from "../Interfaces/profileInterfaces.js";
+import profileService from "../services/profileService.js";
 
 class ProfileController implements IProfileController {
     private profileService: IProfileService;

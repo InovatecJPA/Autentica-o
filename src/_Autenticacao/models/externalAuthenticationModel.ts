@@ -1,4 +1,4 @@
-import { IExternalAuthentication } from "../Interfaces/authInterfaces";
+import { IExternalAuthentication } from "../Interfaces/authInterfaces.js";
 
 class ExternalAuthentication implements IExternalAuthentication {
     external_id: string;

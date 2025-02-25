@@ -1,6 +1,6 @@
-import axios from "../../../utils/axios/axios";
-import { IOAuth2Strategy, IOAuthUserInfo } from "../../Interfaces/authInterfaces";
-import jsonwebtoken from 'jsonwebtoken'
+import axios from "../../../utils/axios/axios.js";
+import { IOAuth2Strategy, IOAuthUserInfo } from "../../Interfaces/authInterfaces.js";
+
 class OAuthGoogle implements IOAuth2Strategy {
     private static instance: IOAuth2Strategy
 

@@ -1,4 +1,4 @@
-import { IAuthentication } from "../_Autenticacao/Interfaces/authInterfaces";
+import { IAuthentication } from "../_Autenticacao/Interfaces/authInterfaces.js";
 
 export interface IHttpRequest {
     body: any;

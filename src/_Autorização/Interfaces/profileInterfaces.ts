@@ -1,7 +1,7 @@
-import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces"
-import { IAppRouter } from "../../interfaces/appInterface"
-import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface"
-import { IGrants } from "./grantsInterfaces"
+import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces.js"
+import { IAppRouter } from "../../interfaces/appInterface.js"
+import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface.js"
+import { IGrants } from "./grantsInterfaces.js"
 /**
  * Represents a profile with its details.
  */

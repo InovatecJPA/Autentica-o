@@ -1,6 +1,6 @@
 // OAuthFactory.ts
-import { IOAuth2Strategy } from '../Interfaces/authInterfaces';
-import GoogleOAuthStrategy  from './OAuth2Strategy/OAuthGoogle';
+import { IOAuth2Strategy } from '../Interfaces/authInterfaces.js';
+import GoogleOAuthStrategy  from './OAuth2Strategy/OAuthGoogle.js';
 
 function createOAuth2Strategy(provider: string): IOAuth2Strategy {
     switch (provider.toLowerCase().trim()) {

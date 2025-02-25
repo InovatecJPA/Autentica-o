@@ -1,6 +1,6 @@
-import { IAuthenticationRepository, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces";
-import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize";
-import externalAuthenticationRepositorySequelize from "./authenticationRepository/externalAuthenticationRepositorySequelize";
+import { IAuthenticationRepository, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces.js";
+import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize.js";
+import externalAuthenticationRepositorySequelize from "./authenticationRepository/externalAuthenticationRepositorySequelize.js";
 import dotenv from 'dotenv';
 dotenv.config();
 

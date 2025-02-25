@@ -1,7 +1,7 @@
-import HttpError from "../../utils/customErrors/httpError";
-import { IAuthentication, IExternalAuthentication, IExternalAuthenticationRepository, IExternalAuthenticationService } from "../Interfaces/authInterfaces";
-import ExternalAuthentication from "../models/externalAuthenticationModel";
-import { createExternalAuthenticationRepository } from "../repositories/factoryAuthenticationRepository";
+import HttpError from "../../utils/customErrors/httpError.js";
+import { IAuthentication, IExternalAuthentication, IExternalAuthenticationRepository, IExternalAuthenticationService } from "../Interfaces/authInterfaces.js";
+import ExternalAuthentication from "../models/externalAuthenticationModel.js";
+import { createExternalAuthenticationRepository } from "../repositories/factoryAuthenticationRepository.js";
 
 class ExternalAuthenticationService implements IExternalAuthenticationService {
     private static instance: ExternalAuthenticationService;

@@ -1,7 +1,7 @@
 import { Association, DataTypes, Model, Sequelize } from "sequelize";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces";
-import  AuthenticationModelSequelize from "./authenticationModelSequelize";
-import  GrantsModelSequelize  from "./grantsModelSequelize";
+import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import  AuthenticationModelSequelize from "./authenticationModelSequelize.js";
+import  GrantsModelSequelize  from "./grantsModelSequelize.js";
 
 
 class ProfileModelSequelize extends Model<IProfile> implements IProfile {

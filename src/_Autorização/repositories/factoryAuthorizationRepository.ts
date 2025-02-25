@@ -1,7 +1,7 @@
-import { IGrantsRepository } from "../Interfaces/grantsInterfaces";
-import { IProfileRepository } from "../Interfaces/profileInterfaces";
-import GrantsRepositorySequelize from "./grantsRepository/grantsRepositorySequelize";
-import ProfileRepositorySequelize from "./profileRepository/profileRepositorySequelize";
+import { IGrantsRepository } from "../Interfaces/grantsInterfaces.js";
+import { IProfileRepository } from "../Interfaces/profileInterfaces.js";
+import GrantsRepositorySequelize from "./grantsRepository/grantsRepositorySequelize.js";
+import ProfileRepositorySequelize from "./profileRepository/profileRepositorySequelize.js";
 
 function createProfileRepository(): IProfileRepository {
     

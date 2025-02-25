@@ -1,11 +1,11 @@
 import { any } from "joi";
-import { IAuthentication } from "../../../_Autenticacao/Interfaces/authInterfaces";
-import { models } from "../../../sequelize/models";
-import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize";
-import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize";
-import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize";
-import { IGrants } from "../../Interfaces/grantsInterfaces";
-import { IGrantProfile, IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces";
+import { IAuthentication } from "../../../_Autenticacao/Interfaces/authInterfaces.js";
+import { models } from "../../../sequelize/models/index.js";
+import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize.js";
+import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize.js";
+import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize.js";
+import { IGrants } from "../../Interfaces/grantsInterfaces.js";
+import { IGrantProfile, IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces.js";
 import { and, Op, QueryTypes } from "sequelize";
 
 class ProfileRepositorySequelize implements IProfileRepository {

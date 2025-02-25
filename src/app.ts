@@ -1,12 +1,11 @@
-import HttpError from './utils/customErrors/httpError';
-import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface';
+import HttpError from './utils/customErrors/httpError.js';
+import { IHttpNext, IHttpRequest, IHttpResponse } from './interfaces/httpInterface.js';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import cookieSession from 'cookie-session';
 import cors, { CorsOptions } from 'cors'
 import express, { Application, Router } from 'express';
 
-import AutenticationRouter from './_Autenticacao/routes/AuthenticationRouter'
+import AutenticationRouter from './_Autenticacao/routes/AuthenticationRouter.js'
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -25,6 +24,7 @@ const corsOptions: CorsOptions = {
   
   credentials: true
 };
+
 function useSession(app: Application) {
     if (process.env.AUTH_STRATEGY !== 'session') {
       return;
@@ -38,8 +38,8 @@ function useSession(app: Application) {
         resave: false,
         saveUninitialized: false,
         cookie: {
-          maxAge: 24 * 60 * 60 * 1000, // 1 dia
-          secure: isProduction, // true em produção, false em desenvolvimento
+          maxAge: 24 * 60 * 60 * 1000,
+          secure: isProduction, 
         },
       })
     );
