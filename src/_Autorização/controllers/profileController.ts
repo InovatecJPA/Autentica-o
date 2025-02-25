@@ -4,7 +4,7 @@ import { IProfileController, IProfileParams, IProfileService } from "../Interfac
 import profileService from "../services/profileService.js";
 
 class ProfileController implements IProfileController {
-    private profileService: IProfileService;
+    private profileService: IProfileService; 
     private static instance: IProfileController;
 
     /**
@@ -12,8 +12,8 @@ class ProfileController implements IProfileController {
      * It is private because only the getInstance method should be able to create an instance of this class.
      * @param profileService The profile service to use.
      */
-    private constructor(profileService: IProfileService) {
-        this.profileService = profileService;
+    private constructor() {
+        this.profileService = profileService.getInstance();
     }
 
 
@@ -24,7 +24,7 @@ class ProfileController implements IProfileController {
      */
     public static getInstance(): IProfileController {
         if(!ProfileController.instance){
-            ProfileController.instance = new ProfileController(profileService);
+            ProfileController.instance = new ProfileController();
         }
         return ProfileController.instance;
     }

@@ -21,8 +21,8 @@ class ProfileService implements IProfileService {
 
     private constructor(){
         this.profileRepository = createProfileRepository();
-        this.grantsService = grantsService;
-        this.authenticationService = authenticationService;
+        this.grantsService = grantsService.getInstance();
+        this.authenticationService = authenticationService.getInstance();
     }
 
     static getInstance(): ProfileService {
@@ -151,7 +151,7 @@ class ProfileService implements IProfileService {
             throw new HttpError(404, 'Profile not found');
         }
 
-        const auth = await authenticationService.findById(authId);
+        const auth = await this.authenticationService.findById(authId);
         if (!auth) {
             throw new HttpError(404, 'User not found');
         }   
@@ -181,4 +181,4 @@ class ProfileService implements IProfileService {
 
 }
 
-export default ProfileService.getInstance();
+export default ProfileService

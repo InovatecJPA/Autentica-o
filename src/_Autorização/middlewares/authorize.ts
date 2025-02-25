@@ -25,7 +25,7 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
             throw new HttpError(401, 'Unauthorized');
         }
 
-        const user = await authenticationService.findById(userId)
+        const user = await authenticationService.getInstance().findById(userId)
 
         if (!user || !user.active) {
             throw new HttpError(403, 'User not authorized');
@@ -34,14 +34,14 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
         const requestPath = req.path;
         const requestMethod = req.method.toUpperCase();
 
-        const profiles = await authenticationService.getProfilesByAuthenticationId(userId);
+        const profiles = await authenticationService.getInstance().getProfilesByAuthenticationId(userId);
 
         if (profiles.some(profile => profile.name.toLowerCase() === 'admin')) {
             return next();
         }
 
         const profileIds = profiles.map(profile => profile.id);
-        const grants = await profileService.getGrantsByProfilesId(profileIds);
+        const grants = await profileService.getInstance().getGrantsByProfilesId(profileIds);
 
         const hasAccess = grants.some(grant => {
             const grantMethod = grant.method.toUpperCase();

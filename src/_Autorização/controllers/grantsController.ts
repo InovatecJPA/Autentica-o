@@ -12,8 +12,8 @@ class GrantsController implements IGrantsController {
      * It's private, so it can't be called from outside the class.
      * @param grantsService The service that will be used to interact with the grants.
      */
-    private constructor(grantsService: IGrantsService) {
-        this.grantsService = grantsService;
+    private constructor() {
+        this.grantsService = grantsService.getInstance();
     }
     
     /**
@@ -24,7 +24,7 @@ class GrantsController implements IGrantsController {
      */
     public static getInstance(): IGrantsController {
         if(!GrantsController.instance){
-            GrantsController.instance = new GrantsController(grantsService);
+            GrantsController.instance = new GrantsController();
         }
         return GrantsController.instance;
     }

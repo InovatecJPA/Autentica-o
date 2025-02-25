@@ -1,5 +1,5 @@
 import {createAuthenticationRepository} from "../repositories/factoryAuthenticationRepository.js";
-import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces.js";
+import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository, IExternalAuthenticationService } from "../Interfaces/authInterfaces.js";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import HttpError from "../../utils/customErrors/httpError.js";
@@ -13,6 +13,7 @@ dotenv.config();
 class AuthenticationService implements IAuthenticationService {
     private static instance: AuthenticationService;
     private authRepository: IAuthenticationRepository;
+    private externalAuthenticationService: IExternalAuthenticationService
 
     /**
      * Private constructor to create the AuthenticationService instance.
@@ -21,6 +22,7 @@ class AuthenticationService implements IAuthenticationService {
      */
     private constructor() {
         this.authRepository = createAuthenticationRepository();
+        this.externalAuthenticationService = externalAuthenticationService.getInstance()
     }
 
     /**
@@ -95,7 +97,7 @@ class AuthenticationService implements IAuthenticationService {
             throw new HttpError(404, 'Authentication not found');
         }
 
-        if ( (await externalAuthenticationService.findAllByAuthenticationId(id)).length > 0) {
+        if ( (await this.externalAuthenticationService.findAllByAuthenticationId(id)).length > 0) {
             throw new HttpError( 409, "Por favor remova todas as autenticações externas para poder atualizar o cadastro" );
         }
         
@@ -224,4 +226,4 @@ class AuthenticationService implements IAuthenticationService {
         return profiles;
     }
 }
-export default AuthenticationService.getInstance();
+export default AuthenticationService;

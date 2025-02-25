@@ -91,4 +91,4 @@ class ExternalAuthenticationService implements IExternalAuthenticationService {
     
 }
 
-export default ExternalAuthenticationService.getInstance();
+export default ExternalAuthenticationService;

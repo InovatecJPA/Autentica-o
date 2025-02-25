@@ -5,12 +5,12 @@ import AuthenticationService from "../services/authenticationService.js";
 import HttpError from "../../utils/customErrors/httpError.js";
 import {sendPasswordResetEmail} from "../../utils/mail/Email.js"
 import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces.js";
-import profileService from "../../_Autorização/services/profileService.js";
 import ExternalAuthenticationService from "../services/externalAuthenticationService.js";
-
-import dotenv from 'dotenv'
 import { createOAuth2Strategy } from "../auth/oAuthFactoty.js";
 import { randomBytes } from "crypto";
+import ProfileService from "../../_Autorização/services/profileService.js";
+
+import dotenv from 'dotenv'
 dotenv.config()
 
 function generatePassword(length: number): string{
@@ -41,11 +41,11 @@ class AuthenticationController implements IAuthenticationController{
      * It is private because only the getInstance method should be able to create an instance of this class.
      * @param authService The authentication service to use.
      */
-    private constructor(authService: IAuthenticationService, externalAuthService: IExternalAuthenticationService) {
-        this.authService = authService;
-        this.externalAuthService = externalAuthService
+    private constructor() {
         this.authStrategy = createAuthStrategy();
-        this.profileService = profileService;
+        this.authService = AuthenticationService.getInstance();
+        this.externalAuthService = ExternalAuthenticationService.getInstance();
+        this.profileService = ProfileService.getInstance()
     }
 
 
@@ -55,9 +55,9 @@ class AuthenticationController implements IAuthenticationController{
      * @param authService The authentication service to use.
      * @returns The instance of the AuthenticationController.
      */
-    static getInstance(authService: IAuthenticationService, externalAuthService: IExternalAuthenticationService): AuthenticationController {
+    static getInstance(): AuthenticationController {
         if (!AuthenticationController.instance) {
-            AuthenticationController.instance = new AuthenticationController(authService, externalAuthService);
+            AuthenticationController.instance = new AuthenticationController();
         }               
 
         return AuthenticationController.instance; 
@@ -528,4 +528,4 @@ class AuthenticationController implements IAuthenticationController{
     }
 }
     
-export default AuthenticationController.getInstance(AuthenticationService, ExternalAuthenticationService);
+export default AuthenticationController

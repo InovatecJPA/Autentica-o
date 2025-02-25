@@ -93,4 +93,4 @@ class GrantsService implements IGrantsService{
     }
 }
 
-export default GrantsService.getInstance();
+export default GrantsService
