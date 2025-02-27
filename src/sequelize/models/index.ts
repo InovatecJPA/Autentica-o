@@ -3,13 +3,11 @@ import sequelize from "../../../config/db.js"
 import authenticationModelSequelize from "./authenticationModelSequelize.js"
 import externalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize.js"
 import profileModelSequelize from "./profileModelSequelize.js"
-import grantsModelSequelize from "./grantsModelSequelize.js"
 
 const models = {
     authenticationModelSequelize,
     externalAuthenticationModelSequelize,
     profileModelSequelize,
-    grantsModelSequelize,
 }
 
 function initModels (sequelize: Sequelize):void {
@@ -26,8 +24,6 @@ function associateModels (): void  {
 
 initModels(sequelize)
 associateModels()
-
-console.log(models)
 
 export {
     models

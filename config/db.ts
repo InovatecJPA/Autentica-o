@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+// @ts-ignore
 import dbConfig from './config.js';
 
 import dotenv from 'dotenv';

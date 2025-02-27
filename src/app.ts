@@ -85,7 +85,6 @@ class App {
     private routes() {
         this.app.use("/v1/auth", AutenticationRouter);    
         // ProfileRouter.registerRoutes("/profile", this.app.router);
-        // GrantsRouter.registerRoutes("/grants", this.app.router);
     }
 
     /**

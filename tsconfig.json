@@ -6,10 +6,11 @@
     "strict": true,
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": [
-              "src/**/*"
-, "config"            ],
+              "src/**/*",
+               "config/config.js"
+  ],
   "exclude": ["node_modules"]
 }

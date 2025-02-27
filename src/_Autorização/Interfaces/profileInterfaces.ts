@@ -1,7 +1,6 @@
 import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces.js"
 import { IAppRouter } from "../../interfaces/appInterface.js"
 import { IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface.js"
-import { IGrants } from "./grantsInterfaces.js"
 /**
  * Represents a profile with its details.
  */
@@ -19,13 +18,6 @@ export interface IProfile {
 export interface IProfileParams {
     name: string;
     description: string | null;
-}
-
-export interface IGrantProfile {
-    grantId: string;
-    profileId: string;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 /**
@@ -103,32 +95,6 @@ export interface IProfileRepository {
      * @returns A promise that resolves when the operation is complete.
      */
     removeProfilesFromAuthentication(profiles: IProfile[], auth: IAuthentication): Promise<void>;
-
-    /**
-     * Retrieves grants associated with a profile.
-     * @param profile - The profile to get grants for.
-     * @returns A promise that resolves to an array of grants.
-     */
-    getGrantsByProfileId(profile: IProfile): Promise<IGrants[]>;
-
-    getGrantsByProfiles(profiles: IProfile[]): Promise<IGrants[]>
-
-    /**
-     * Adds a profile to multiple grants.
-     * @param profile - The profile to add.
-     * @param grants - An array of grants to add the profile to.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    addProfileToGrants(profile: IProfile, grants: IGrants[]): Promise<void>;
-
-    /**
-     * Removes a profile from multiple grants.
-     * @param profile - The profile to remove.
-     * @param grants - An array of grants to remove the profile from.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    removeProfileFromGrants(profile: IProfile, grants: IGrants[]): Promise<void>;
-
 }
 
 /**
@@ -192,31 +158,6 @@ export interface IProfileService {
      * @returns A promise that resolves when the operation is complete.
      */
     removeProfilesFromAuthentication(profilesId: string[], authId: string): Promise<void>;
-
-    /**
-     * Retrieves grants associated with a profile ID.
-     * @param profileId - The profile ID to get grants for.
-     * @returns A promise that resolves to an array of grants.
-     */
-    getGrantsByProfileId(profileId: string): Promise<IGrants[]>;
-
-    getGrantsByProfilesId(profilesId: string[]): Promise<IGrants[]>;
-    /**
-     * Adds a profile to multiple grants.
-     * @param profileId - The profile ID to add.
-     * @param grantsId - An array of grants IDs to add the profile to.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    addProfileToGrants(profileId: string, grantsId: string[]): Promise<void>;
-
-    /**
-     * Removes a profile from multiple grants.
-     * @param profileId - The profile ID to remove.
-     * @param grantsId - An array of grants IDs to remove the profile from.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    removeProfileFromGrants(profileId: string, grantsId: string[]): Promise<void>;
-
 }
 
 /**
@@ -294,34 +235,6 @@ export interface IProfileController {
      * @returns A promise that resolves when the operation is complete.
      */
     removeProfilesFromAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-
-    /**
-     * Retrieves grants associated with a profile.
-     * @param req - The HTTP request object.
-     * @param res - The HTTP response object.
-     * @param next - The next middleware function in the stack.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    getGrantsByProfileId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-
-
-    /**
-     * Adds a profile to multiple grants.
-     * @param req - The HTTP request object.
-     * @param res - The HTTP response object.
-     * @param next - The next middleware function in the stack.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    addProfileToGrants(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-
-    /**
-     * Removes a profile from multiple grants.
-     * @param req - The HTTP request object.
-     * @param res - The HTTP response object.
-     * @param next - The next middleware function in the stack.
-     * @returns A promise that resolves when the operation is complete.
-     */
-    removeProfileFromGrants(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
 
 }
 

@@ -1,12 +1,8 @@
-import { any } from "joi";
 import { IAuthentication } from "../../../_Autenticacao/Interfaces/authInterfaces.js";
 import { models } from "../../../sequelize/models/index.js";
 import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize.js";
-import GrantsModelSequelize from "../../../sequelize/models/grantsModelSequelize.js";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize.js";
-import { IGrants } from "../../Interfaces/grantsInterfaces.js";
-import { IGrantProfile, IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces.js";
-import { and, Op, QueryTypes } from "sequelize";
+import { IProfile, IProfileParams, IProfileRepository } from "../../Interfaces/profileInterfaces.js";
 
 class ProfileRepositorySequelize implements IProfileRepository {
     async findAll(): Promise<IProfile[]> {
@@ -68,54 +64,6 @@ class ProfileRepositorySequelize implements IProfileRepository {
             await profile.removeAuthentications(auth);
         }
     }
-
-
-
-    async getGrantsByProfileId(profile: ProfileModelSequelize): Promise<GrantsModelSequelize[]> {
-        const grants =  await profile.getGrants({
-            attributes: ['id', 'method', 'path','description'],
-            through: { attributes: [] }
-        });
-
-        return grants.map(grant => {
-            const { grants_profiles, ...grantData } = grant.toJSON();
-            return grantData as GrantsModelSequelize;
-        });
-    }
-
-    async getGrantsByProfiles(profiles: IProfile[]): Promise<IGrants[]> {
-        const profileIds = profiles.map(profile => profile.id);
-    
-        const profilesWithGrants = await models.profileModelSequelize.findAll({
-            where: {
-                id: profileIds
-            },
-            include: [{
-                model: models.grantsModelSequelize,
-                as: 'grants',
-                through: { attributes: [] } // Exclui atributos da tabela intermediária
-            }]
-        });
-    
-        const grants = profilesWithGrants.flatMap((profile: any) => profile.grants);
-    
-        const uniqueGrantsMap = new Map<string, IGrants>();
-        grants.forEach((grant: any) => {
-            uniqueGrantsMap.set(grant.id, grant);
-        });
-    
-        return Array.from(uniqueGrantsMap.values());
-    }
-    
-
-    async addProfileToGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
-        await profile.addGrants(grants);
-    }
-
-    async removeProfileFromGrants(profile: ProfileModelSequelize, grants: GrantsModelSequelize[]): Promise<void> {
-        await profile.removeGrants(grants);
-    }
-
 }
 
 export default ProfileRepositorySequelize

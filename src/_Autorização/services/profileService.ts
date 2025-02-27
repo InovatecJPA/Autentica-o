@@ -1,11 +1,9 @@
 import { IAuthentication, IAuthenticationService } from "../../_Autenticacao/Interfaces/authInterfaces.js";
 import authenticationService from "../../_Autenticacao/services/authenticationService.js";
 import HttpError from "../../utils/customErrors/httpError.js";
-import { IGrants, IGrantsService } from "../Interfaces/grantsInterfaces.js";
 import { IProfile, IProfileParams, IProfileRepository, IProfileService } from "../Interfaces/profileInterfaces.js";
 import Profile from "../models/ProfileModel.js";
 import { createProfileRepository } from "../repositories/factoryAuthorizationRepository.js";
-import grantsService from "./grantsService.js";
 
 /**
  * @inheritdoc
@@ -16,12 +14,10 @@ import grantsService from "./grantsService.js";
 class ProfileService implements IProfileService {
     private static instance: ProfileService;
     private profileRepository: IProfileRepository;
-    private grantsService: IGrantsService;
     private authenticationService: IAuthenticationService
 
     private constructor(){
         this.profileRepository = createProfileRepository();
-        this.grantsService = grantsService.getInstance();
         this.authenticationService = authenticationService.getInstance();
     }
 
@@ -99,44 +95,6 @@ class ProfileService implements IProfileService {
         await this.profileRepository.deleteProfile(id);
     }
 
-    async getGrantsByProfileId(profileId: string): Promise<IGrants[]> {
-        const profile = await this.profileRepository.findById(profileId);
-        if (!profile) {
-            throw new HttpError(404, 'Profile not found');
-        }
-
-        return await this.profileRepository.getGrantsByProfileId(profile);
-    }
-
-    async addProfileToGrants(profileId: string, grantsId: string[]): Promise<void> {
-        const profile = await this.profileRepository.findById(profileId);
-        if (!profile) {
-            throw new HttpError(404, 'Profile not found');
-        }
-
-        const existingGrants = await this.grantsService.findByIds(grantsId);
-        
-        if (existingGrants.length !== grantsId.length) {
-            throw new HttpError(404, 'Grants not found');
-        }
-
-        await this.profileRepository.addProfileToGrants(profile, existingGrants);
-        
-    }
-
-    async removeProfileFromGrants(profileId: string, grantsId: string[]): Promise<void> {
-        const profile = await this.profileRepository.findById(profileId);
-        if (!profile) {
-            throw new HttpError(404, 'Profile not found');
-        }
-        const grant = await this.grantsService.findByIds(grantsId);
-        if (!grant) {
-            throw new HttpError(404, 'Grant not found');
-        }
-        return this.profileRepository.removeProfileFromGrants(profile, grant);
-    }
-
-
     async getAuthenticationsByProfileId(profileId: string): Promise<IAuthentication[]> {
         const profile = await this.profileRepository.findById(profileId);
         if (!profile) {
@@ -170,13 +128,6 @@ class ProfileService implements IProfileService {
         }
 
         return this.profileRepository.removeProfilesFromAuthentication(profiles, auth); 
-    }
-
-
-    async getGrantsByProfilesId(profilesId: string[]): Promise<IGrants[]> {
-        const profiles = await this.profileRepository.findByIds(profilesId);
-
-        return await this.profileRepository.getGrantsByProfiles(profiles);  
     }
 
 }
