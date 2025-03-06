@@ -59,12 +59,6 @@ class AuthenticationService implements IAuthenticationService {
     async findByLogin(login: string): Promise<IAuthentication | null> {
         return await this.authRepository.findByLogin(login);
     }
-    /**
-     * @inheritdoc
-     */
-    async findByToken(token: string): Promise<IAuthentication | null> {
-        return await this.authRepository.findByToken(token);
-    }
 
     /**
      * @inheritdoc
@@ -79,7 +73,7 @@ class AuthenticationService implements IAuthenticationService {
             const password = await bcrypt.hash(authData.passwordHash!, salt);
             authData.passwordHash = password;
 
-            const auth = new Authentication(authData);
+            const auth = Authentication.create(authData);
             
             const newAuth = await this.authRepository.createAuthentication(auth);
             if(!newAuth) {
@@ -136,20 +130,6 @@ class AuthenticationService implements IAuthenticationService {
         await this.authRepository.updateAuthentication(id, {passwordHash});
     }
 
-
-    /**
-     * @inheritdoc
-     */
-    async isPasswordTokenValid(id: string, token: string): Promise<boolean> {
-        const auth: IAuthentication | null = await this.authRepository.findByIdWithPassword(id);
-        if (!auth) {
-            throw new HttpError(404, 'Authentication not found');
-        }
-        if (!auth.password_token_reset || !auth.password_token_expiry_date || auth.password_token_expiry_date < new Date()) {
-            return false;
-        }
-        return auth.password_token_reset === token;   
-    }
      
     /**
      * @inheritdoc
@@ -177,7 +157,7 @@ class AuthenticationService implements IAuthenticationService {
             throw new HttpError(403, 'Usuário inativo');
         }
 
-        if (!await this.validatePassword(auth.id, passwordHash)) {
+        if (!await this.validatePassword(auth.id!, passwordHash)) {
             throw new HttpError(401, 'Login ou senha inválidos');
         }
         return auth || null;
@@ -197,19 +177,7 @@ class AuthenticationService implements IAuthenticationService {
         await this.authRepository.updateAuthentication(id, {active: true});
     }
 
-    /**
-     * @inheritdoc
-     */
-    async setPasswordTokenAndExpiryDate(id: string): Promise<string> {
-        const token = nanoid();
 
-        const expiryDate = new Date();
-        expiryDate.setMinutes(expiryDate.getHours() + 1);
-
-        await this.authRepository.updateAuthentication(id, {password_token_reset: token, password_token_expiry_date: expiryDate});
-    
-        return token;
-    }
 
     async getProfilesByAuthenticationId(id: string): Promise<IProfile[]> {
         const authentication = await this.findById(id);

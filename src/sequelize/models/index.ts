@@ -3,11 +3,13 @@ import sequelize from "../../../config/db.js"
 import authenticationModelSequelize from "./authenticationModelSequelize.js"
 import externalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize.js"
 import profileModelSequelize from "./profileModelSequelize.js"
+import authPasswordRecoveryModelSequelize from "./authPasswordRecovery.js"
 
 const models = {
     authenticationModelSequelize,
     externalAuthenticationModelSequelize,
     profileModelSequelize,
+    authPasswordRecoveryModelSequelize
 }
 
 function initModels (sequelize: Sequelize):void {

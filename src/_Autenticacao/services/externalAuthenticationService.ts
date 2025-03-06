@@ -38,7 +38,7 @@ class ExternalAuthenticationService implements IExternalAuthenticationService {
     }
     
     async createExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication> {
-        const externalAuth = new ExternalAuthentication(externalAuthentication)
+        const externalAuth = ExternalAuthentication.create(externalAuthentication);
         const newExternalAuth = await this.externalAuthRepository.createExternalAuthentication(externalAuth);
         if (!newExternalAuth) {
             throw new Error('ExternalAuthentication not created');

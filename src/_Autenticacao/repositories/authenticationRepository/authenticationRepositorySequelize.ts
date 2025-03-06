@@ -33,16 +33,6 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
   /**
    * @inheritdoc
    */
-  async findByToken(token: string): Promise<IAuthentication | null> {
-    return await models.authenticationModelSequelize.findOne({
-      where: { password_token_reset: token },
-      attributes: { exclude: ["passwordHash", "password_token_reset"] },
-    });
-  }
-
-  /**
-   * @inheritdoc
-   */
   async findAll(): Promise<IAuthentication[]> {
     return await models.authenticationModelSequelize.findAll({
       attributes: { exclude: ["passwordHash", "password_token_reset"] },
@@ -70,7 +60,7 @@ async findByLogin(
     auth: AuthenticationModelSequelize,
     options?: object
   ): Promise<IAuthentication> {
-    const { passwordHash, password_token_reset, ...newAuth } =
+    const { passwordHash, ...newAuth } =
       await models.authenticationModelSequelize.create(auth, options);
 
     return { ...newAuth.dataValues };

@@ -1,5 +1,7 @@
 import { IAuthenticationRepository, IExternalAuthenticationRepository } from "../Interfaces/authInterfaces.js";
+import { IAuthRecoveryRepository } from "../Interfaces/authRecoveryInterfaces.js";
 import authenticationRepositorySequelize from "./authenticationRepository/authenticationRepositorySequelize.js";
+import AuthRecoveryPasswordRepositorySequelize from "./authenticationRepository/authRecoveryPasswordSequelize.js";
 import externalAuthenticationRepositorySequelize from "./authenticationRepository/externalAuthenticationRepositorySequelize.js";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -24,7 +26,16 @@ function createExternalAuthenticationRepository(): IExternalAuthenticationReposi
    throw new Error("Repository not found");
 }
 
+function createAuthRecoveryPasswordRepository(): IAuthRecoveryRepository{
+    if (process.env.AUTHENTICATION_REPOSITORY === "sequelize") {
+        return new AuthRecoveryPasswordRepositorySequelize();
+    }
+    
+   throw new Error("Repository not found");
+}
+
 export {
     createAuthenticationRepository,
-    createExternalAuthenticationRepository
+    createExternalAuthenticationRepository,
+    createAuthRecoveryPasswordRepository
 };

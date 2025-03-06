@@ -11,6 +11,7 @@ import { randomBytes } from "crypto";
 import ProfileService from "../../_Autorização/services/profileService.js";
 
 import dotenv from 'dotenv'
+import AuthRecoveryPasswordService from "../services/authRecoveryPasswordService.js";
 dotenv.config()
 
 function generatePassword(length: number): string{
@@ -33,6 +34,7 @@ class AuthenticationController implements IAuthenticationController{
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
     private externalAuthService: IExternalAuthenticationService
+    private authRecoveryService: AuthRecoveryPasswordService
     private authStrategy: IAuthStrategy;
     private profileService: IProfileService;
  
@@ -43,6 +45,7 @@ class AuthenticationController implements IAuthenticationController{
      */
     private constructor() {
         this.authStrategy = createAuthStrategy();
+        this.authRecoveryService = AuthRecoveryPasswordService.getInstance();
         this.authService = AuthenticationService.getInstance();
         this.externalAuthService = ExternalAuthenticationService.getInstance();
         this.profileService = ProfileService.getInstance()
@@ -156,9 +159,9 @@ class AuthenticationController implements IAuthenticationController{
 
             const profile_id = process.env.USER_COMUM_PROFILE!
 
-            await this.profileService.addProfilesToAuthentication([profile_id], auth.id);
+            await this.profileService.addProfilesToAuthentication([profile_id], auth.id!);
 
-            const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = auth;
+            const { passwordHash, ...authSemSenha } = auth;
 
             res.status(201).json({ auth: authSemSenha });
         } catch (error: any) {
@@ -184,7 +187,7 @@ class AuthenticationController implements IAuthenticationController{
             
             const updatedAuth = await this.authService.updateAuthentication(id!, authData);
 
-            const { passwordHash, password_token_expiry_date, password_token_reset, ...authSemSenha } = updatedAuth;
+            const { passwordHash, ...authSemSenha } = updatedAuth;
             res.status(200).json(authSemSenha);
         } catch(error: any){
             next(error)
@@ -231,7 +234,7 @@ class AuthenticationController implements IAuthenticationController{
                throw new HttpError(404, 'Authentication not found');
             }
 
-            const token = await this.authService.setPasswordTokenAndExpiryDate(auth!.id);
+            const token = await this.authRecoveryService.create(auth.id!);
             
             const sent = await sendPasswordResetEmail(login, token)
 
@@ -253,17 +256,19 @@ class AuthenticationController implements IAuthenticationController{
             const { token } = req.query;
             const { password } = req.body;
 
-            const user = await this.authService.findByToken(token);
+            const authRecovery = await this.authRecoveryService.findByToken(token);
             
-            if(!user){
-                throw new HttpError(404, 'Authentication not found');
-            }
+            if(!authRecovery) throw new HttpError(404, 'AuthenticationRecovery não encontrada');
             
-            if (!await this.authService.isPasswordTokenValid(user.id, token)){;
+            const user = await this.authService.findById(authRecovery.authenticationId);
+
+            if (!user) throw new HttpError(404, 'User not found');
+
+            if (!await this.authRecoveryService.isRecoveryTokenValid(user.id!, token)){;
                 throw new HttpError(403, 'Token is not valid');
             }   
 
-            await this.authService.updatePassword(user.id, password);
+            await this.authService.updatePassword(user.id!, password);
             res.status(204).json({})
         } catch(error: any){
             next(error)

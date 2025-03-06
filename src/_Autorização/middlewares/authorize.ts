@@ -20,7 +20,6 @@ async function authorize(req: IHttpAuthenticatedRequest, res: IHttpResponse, nex
 
         const profiles = await authenticationService.getInstance().getProfilesByAuthenticationId(userId);
 
-        // Se for admin, acesso total
         if (profiles.some((profile) => profile.name.toLowerCase() === "admin")) {
             return next();
         }

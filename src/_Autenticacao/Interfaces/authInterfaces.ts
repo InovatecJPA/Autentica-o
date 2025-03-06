@@ -7,14 +7,12 @@ import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
  * autenticação interna e externa de um usuário
  */
 export interface IAuthentication {
-    id: string;
+    id?: string;
     login: string;
     passwordHash: string;
     active: boolean;
-    password_token_reset: string | null;
-    password_token_expiry_date: Date | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 
@@ -54,12 +52,6 @@ export interface IAuthenticationRepository {
     findByIdWithPassword(id: string): Promise<IAuthentication | null>;
 
     /**
-     * Encontra uma autenticação pelo seu token
-     * @param {string} token - Token da autenticação
-     * @returns {Promise<IAuthentication | null>} Autenticação encontrada 
-     */
-    findByToken(token: string): Promise<IAuthentication | null>;
-    /**
      * Encontra todas as autenticações no banco de dados
      * @returns {Promise<IAuthentication[] | null>} Lista de autenticações 
      */
@@ -96,12 +88,6 @@ export interface IAuthenticationService  {
      */
     findAll(): Promise<IAuthentication[]>;
     /**
-     * Encontra uma autenticação pelo seu token
-     * @param {string} token - Token da autenticação
-     * @returns {Promise<IAuthentication | null>} Autenticação encontrada
-     */
-    findByToken(token: string): Promise<IAuthentication | null>;
-    /**
      * Encontra uma autenticação pelo seu id
      * @param {string} id - Id da autenticação
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada
@@ -126,13 +112,6 @@ export interface IAuthenticationService  {
      * @returns {Promise<IAuthentication>}
      */
     updateAuthentication(id: string, updateData: Partial<IAuthentication>): Promise<IAuthentication>;
-    /**
-     * Ativa uma autenticação   
-     * @param {string} id - Id da autenticação
-     * @param {string} token - token que será validado
-     * @returns {Promise<IAuthentication>}
-     */
-    isPasswordTokenValid(id: string, token: string): Promise<boolean>;
     /**
      * Verifica se uma senha é valida
      * @param {string} id - Id da autenticação
@@ -167,12 +146,6 @@ export interface IAuthenticationService  {
      */
     activateAccountAuthentication(id: string): Promise<void>;
     /**
-     * Gera um token de redefinição de senha e o salva no banco de dados com validade de 1 hora
-     * @param {string} id - Id da autenticação
-     * @returns {Promise<string>}
-     */
-    setPasswordTokenAndExpiryDate(id: string): Promise<string>;
-    /**
      * Deleta uma autenticação
      * @param {string} id - Id da autenticação
      * @returns {Promise<void>}
@@ -194,8 +167,8 @@ export interface IExternalAuthentication {
     external_id: string;
     email: string;
     provider: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface IExternalAuthenticationRepository {

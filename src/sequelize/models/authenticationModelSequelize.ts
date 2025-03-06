@@ -9,8 +9,6 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
     public login!: string;
     public passwordHash!: string;
     public active!: boolean;
-    public password_token_reset!: string | null;
-    public password_token_expiry_date!: Date | null;
     public createdAt!: Date;
     public updatedAt!: Date;
 
@@ -53,12 +51,6 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
             },
             active: {
                 type: DataTypes.BOOLEAN
-            },
-            password_token_reset: {
-                type: DataTypes.STRING
-            },
-            password_token_expiry_date: {
-                type: DataTypes.DATE
             },
             createdAt: {
                 type: DataTypes.DATE

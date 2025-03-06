@@ -15,12 +15,6 @@ module.exports = {
           active: {
               type: Sequelize.BOOLEAN
           },
-          password_token_reset: {
-              type: Sequelize.STRING
-          },
-          password_token_expiry_date: {
-              type: Sequelize.DATE
-          },
           createdAt: {
               type: Sequelize.DATE
           },
