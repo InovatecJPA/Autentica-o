@@ -12,6 +12,7 @@ import ProfileService from "../../_Autorização/services/profileService.js";
 
 import dotenv from 'dotenv'
 import AuthRecoveryPasswordService from "../services/authRecoveryPasswordService.js";
+import Authentication from "../models/authenticationModel.js";
 dotenv.config()
 
 function generatePassword(length: number): string{
@@ -145,11 +146,12 @@ class AuthenticationController implements IAuthenticationController{
         let auth: IAuthentication | undefined
         try {
             const { login, password }  = req.body;
-            console.log(login, password)
-            const authData: Partial<IAuthentication> = {
+
+            const authData = Authentication.create({
                 login,
                 passwordHash: password,
-            }
+            }) 
+
 
             auth = await this.authService.createStandartAuthentication(authData);
         

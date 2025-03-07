@@ -63,19 +63,17 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-    async createStandartAuthentication(authData: Partial<IAuthentication>): Promise<IAuthentication> {    
+    async createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication> {    
                    
-            if (await this.authRepository.findByLogin(authData.login!)) {
+            if (await this.authRepository.findByLogin(authData.login)) {
                 throw new HttpError(409, 'Authentication already exists');
             }
 
             const salt = bcrypt.genSaltSync(10);
-            const password = await bcrypt.hash(authData.passwordHash!, salt);
+            const password = await bcrypt.hash(authData.passwordHash, salt);
             authData.passwordHash = password;
-
-            const auth = Authentication.create(authData);
             
-            const newAuth = await this.authRepository.createAuthentication(auth);
+            const newAuth = await this.authRepository.createAuthentication(authData );
             if(!newAuth) {
                 throw new HttpError(400, 'Authentication not created');
             }
