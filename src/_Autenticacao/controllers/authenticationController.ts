@@ -487,11 +487,9 @@ class AuthenticationController implements IAuthenticationController{
     }
 
 
-    //PRECISO REFAZER ESSE METODO -- SO FUNCIONA SE AS AUTENTICACOES FOREM IGUAIS EXEMPLO 
-    //INOVATECJPDEV@GMAIL.COM -> Autenticação Interna
-    //INOVATECJPDEV@GMAIL.COM -> Autenticação Externa
-    //CASO SEJA DIFERENTE NAO FUNCIONA
+
     async authenticateExternal(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
+        let externalAuth: IExternalAuthentication | null
         try {
             const {provider, code} = req.body;
         
@@ -499,7 +497,7 @@ class AuthenticationController implements IAuthenticationController{
 
             const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
 
-            const externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, cleanProvider)
+            externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, cleanProvider)
             
             if(!externalAuth){
                 const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
@@ -511,7 +509,7 @@ class AuthenticationController implements IAuthenticationController{
                     provider: cleanProvider
                 }
 
-                await this.externalAuthService.createExternalAuthentication(newAuth)
+                externalAuth = await this.externalAuthService.createExternalAuthentication(newAuth)
             }
 
             const auth = await this.authService.findById(externalAuth!.authentication_id)
