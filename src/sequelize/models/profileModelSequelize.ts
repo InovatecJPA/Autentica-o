@@ -1,24 +1,24 @@
 import { Association, DataTypes, Model, Sequelize } from "sequelize";
 import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
-import  AuthenticationModelSequelize from "./authenticationModelSequelize.js";
+import AuthenticationModelSequelize from "./authenticationModelSequelize.js";
 
 
 class ProfileModelSequelize extends Model<IProfile> implements IProfile {
-    public id!: string;
-    public name!: string;
-    public description!: string | null;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+    declare id: string;
+    declare name: string;
+    declare description: string | null;
+    declare createdAt: Date;
+    declare updatedAt: Date;
 
-    public getAuthentications!: (options?: object) => Promise<AuthenticationModelSequelize[]>;
-    public addAuthentications!: (auth: AuthenticationModelSequelize, options?: object) => Promise<void>;
-    public removeAuthentications!: (auth: AuthenticationModelSequelize) => Promise<void>;
+    declare getAuthentications: (options?: object) => Promise<AuthenticationModelSequelize[]>;
+    declare addAuthentications: (auth: AuthenticationModelSequelize, options?: object) => Promise<void>;
+    declare removeAuthentications: (auth: AuthenticationModelSequelize) => Promise<void>;
 
     public static associations: {
         authentication: Association<ProfileModelSequelize, AuthenticationModelSequelize>;
     }
 
-    public static associate (models: any) {
+    public static associate(models: any) {
         this.belongsToMany(AuthenticationModelSequelize, {
             through: "authentication_profiles",
             foreignKey: 'profileId',
@@ -28,8 +28,8 @@ class ProfileModelSequelize extends Model<IProfile> implements IProfile {
 
     }
 
-    public static initModel (sequelize: Sequelize) {
-        ProfileModelSequelize.init({ 
+    public static initModel(sequelize: Sequelize) {
+        ProfileModelSequelize.init({
             id: {
                 type: DataTypes.STRING,
                 primaryKey: true

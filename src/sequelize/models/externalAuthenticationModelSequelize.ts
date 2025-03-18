@@ -4,12 +4,12 @@ import AuthenticationModelSequelize from "./authenticationModelSequelize.js";
 
 
 class ExternalAuthenticationModelSequelize extends Model<IExternalAuthentication> implements IExternalAuthentication {
-    public external_id!: string;
-    public authentication_id!: string;
-    public email!: string;
-    public provider!: string;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+    declare external_id: string;
+    declare authentication_id: string;
+    declare email: string;
+    declare provider: string;
+    declare createdAt: Date;
+    declare updatedAt: Date;
 
     public static associate(models: any) {
         this.belongsTo(AuthenticationModelSequelize, {

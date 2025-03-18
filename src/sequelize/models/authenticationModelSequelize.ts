@@ -1,19 +1,19 @@
 import { Model, DataTypes, Association, Sequelize } from "sequelize";
 import { IAuthentication } from "../../_Autenticacao/Interfaces/authInterfaces.js";
-import  ProfileModelSequelize  from "./profileModelSequelize.js";
+import ProfileModelSequelize from "./profileModelSequelize.js";
 import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
 import ExternalAuthenticationModelSequelize from "./externalAuthenticationModelSequelize.js";
 
 class AuthenticationModelSequelize extends Model<IAuthentication> implements IAuthentication {
-    public id!: string;
-    public login!: string;
-    public passwordHash!: string;
-    public active!: boolean;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+    declare id: string;
+    declare login: string;
+    declare passwordHash: string;
+    declare active: boolean;
+    declare createdAt: Date;
+    declare updatedAt: Date;
 
-    public getProfiles!: () => Promise<ProfileModelSequelize[]>
-    public addProfiles!: (profiles: IProfile, options?: object) => Promise<void>
+    declare getProfiles: () => Promise<ProfileModelSequelize[]>
+    declare addProfiles: (profiles: IProfile, options?: object) => Promise<void>
 
     public static associations: {
         profiles: Association<AuthenticationModelSequelize, ProfileModelSequelize>;
@@ -21,7 +21,7 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
     };
 
 
-    public static associate (models: any) {
+    public static associate(models: any) {
         this.belongsToMany(ProfileModelSequelize, {
             through: "authentication_profiles",
             foreignKey: 'authenticationId',
@@ -37,8 +37,8 @@ class AuthenticationModelSequelize extends Model<IAuthentication> implements IAu
         })
     }
 
-    public static initModel (sequelize: Sequelize) {
-        AuthenticationModelSequelize.init({ 
+    public static initModel(sequelize: Sequelize) {
+        AuthenticationModelSequelize.init({
             id: {
                 type: DataTypes.STRING,
                 primaryKey: true

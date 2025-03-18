@@ -4,11 +4,11 @@ import AuthenticationModelSequelize from "./authenticationModelSequelize.js";
 
 
 class AuthPasswordRecoveryModelSequelize extends Model<IAuthenticationRecovery> implements IAuthenticationRecovery {
-  public id!: number;
-  public authenticationId!: string;
-  public token!: string;
-  public expirationDate!: Date;
-  public createdAt!: Date;
+  declare id: number;
+  declare authenticationId: string;
+  declare token: string;
+  declare expirationDate: Date;
+  declare createdAt: Date;
 
   public static associate(models: any) {
     this.belongsTo(AuthenticationModelSequelize, {
