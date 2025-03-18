@@ -1,4 +1,4 @@
-import {createAuthenticationRepository} from "../repositories/factoryAuthenticationRepository.js";
+import { createAuthenticationRepository } from "../repositories/factoryAuthenticationRepository.js";
 import { IAuthentication, IAuthenticationRepository, IAuthenticationService, IExternalAuthenticationRepository, IExternalAuthenticationService } from "../Interfaces/authInterfaces.js";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
@@ -6,7 +6,7 @@ import HttpError from "../../utils/customErrors/httpError.js";
 import Authentication from "../models/authenticationModel.js";
 
 import dotenv from "dotenv";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import { IProfile } from "../../_Autorizacao/Interfaces/profileInterfaces.js";
 import externalAuthenticationService from "./externalAuthenticationService.js";
 dotenv.config();
 
@@ -35,17 +35,17 @@ class AuthenticationService implements IAuthenticationService {
         if (!AuthenticationService.instance) {
             AuthenticationService.instance = new AuthenticationService();
         }
-        
+
         return AuthenticationService.instance;
-    }   
-    
+    }
+
     /**
      * @inheritdoc
      */
     async findAll(): Promise<IAuthentication[]> {
         return await this.authRepository.findAll();
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -63,21 +63,21 @@ class AuthenticationService implements IAuthenticationService {
     /**
      * @inheritdoc
      */
-    async createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication> {    
-                   
-            if (await this.authRepository.findByLogin(authData.login)) {
-                throw new HttpError(409, 'Authentication already exists');
-            }
+    async createStandartAuthentication(authData: IAuthentication): Promise<IAuthentication> {
 
-            const salt = bcrypt.genSaltSync(10);
-            const password = await bcrypt.hash(authData.passwordHash, salt);
-            authData.passwordHash = password;
-            
-            const newAuth = await this.authRepository.createAuthentication(authData );
-            if(!newAuth) {
-                throw new HttpError(400, 'Authentication not created');
-            }
-            return newAuth;
+        if (await this.authRepository.findByLogin(authData.login)) {
+            throw new HttpError(409, 'Authentication already exists');
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const password = await bcrypt.hash(authData.passwordHash, salt);
+        authData.passwordHash = password;
+
+        const newAuth = await this.authRepository.createAuthentication(authData);
+        if (!newAuth) {
+            throw new HttpError(400, 'Authentication not created');
+        }
+        return newAuth;
     }
 
     /**
@@ -89,12 +89,12 @@ class AuthenticationService implements IAuthenticationService {
             throw new HttpError(404, 'Authentication not found');
         }
 
-        if ( (await this.externalAuthenticationService.findAllByAuthenticationId(id)).length > 0) {
-            throw new HttpError( 409, "Por favor remova todas as autenticações externas para poder atualizar o cadastro" );
+        if ((await this.externalAuthenticationService.findAllByAuthenticationId(id)).length > 0) {
+            throw new HttpError(409, "Por favor remova todas as autenticações externas para poder atualizar o cadastro");
         }
-        
+
         const filteredData = Object.entries(authData)
-            .filter(([_, value]) => value !== null && value !== undefined && 
+            .filter(([_, value]) => value !== null && value !== undefined &&
                 !(typeof value === 'string' && value.trim() === ''))
             .reduce((acc, [key, value]) => {
                 acc[key as keyof IAuthentication] = value as any
@@ -106,7 +106,7 @@ class AuthenticationService implements IAuthenticationService {
         }
 
         return await this.authRepository.updateAuthentication(id, filteredData);
-        
+
     }
 
     /**
@@ -125,10 +125,10 @@ class AuthenticationService implements IAuthenticationService {
     async updatePassword(id: string, password: string): Promise<void> {
         const salt = bcrypt.genSaltSync(10);
         const passwordHash = await bcrypt.hash(password, salt);
-        await this.authRepository.updateAuthentication(id, {passwordHash});
+        await this.authRepository.updateAuthentication(id, { passwordHash });
     }
 
-     
+
     /**
      * @inheritdoc
      */
@@ -146,12 +146,12 @@ class AuthenticationService implements IAuthenticationService {
      */
     async authenticate(login: string, passwordHash: string): Promise<IAuthentication | null> {
         const auth: IAuthentication | null = await this.authRepository.findByLogin(login);
-        
+
         if (!auth) {
             return null;
         }
 
-        if(auth.active === false) {
+        if (auth.active === false) {
             throw new HttpError(403, 'Usuário inativo');
         }
 
@@ -159,27 +159,27 @@ class AuthenticationService implements IAuthenticationService {
             throw new HttpError(401, 'Login ou senha inválidos');
         }
         return auth || null;
-    };   
-        
+    };
+
     /**
      * @inheritdoc
      */
     async deactivateAccountAuthentication(id: string): Promise<void> {
-        await this.authRepository.updateAuthentication(id, {active: false});
+        await this.authRepository.updateAuthentication(id, { active: false });
     }
 
     /**
      * @inheritdoc
      */
     async activateAccountAuthentication(id: string): Promise<void> {
-        await this.authRepository.updateAuthentication(id, {active: true});
+        await this.authRepository.updateAuthentication(id, { active: true });
     }
 
 
 
     async getProfilesByAuthenticationId(id: string): Promise<IProfile[]> {
         const authentication = await this.findById(id);
-            
+
         if (!authentication) {
             throw new HttpError(404, 'Authentication not found');
         }

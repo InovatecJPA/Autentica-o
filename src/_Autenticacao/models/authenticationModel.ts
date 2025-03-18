@@ -18,7 +18,7 @@ class Authentication implements IAuthentication {
      * @throws {Error} Caso o login ou passwordHash sejam nulos e isExternal seja false
      * @throws {Error} Caso o externalId seja nulo e isExternal seja true
      */
-    constructor(data : IAuthentication){
+    private constructor(data : IAuthentication){
         this.login = data.login;
         this.passwordHash = data.passwordHash;
 

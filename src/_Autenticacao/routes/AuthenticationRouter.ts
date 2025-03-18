@@ -1,6 +1,6 @@
 // src/routes/authenticationRouter.ts
 import express from 'express';
-import authorize from '../../_Autorização/middlewares/authorize.js';
+import authorize from '../../_Autorizacao/middlewares/authorize.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import AuthenticationController from '../controllers/authenticationController.js';
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from '../../interfaces/httpInterface.js';

@@ -1,44 +1,44 @@
 import createAuthStrategy from "../auth/authFactory.js";
-import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication, IOAuthUserInfo} from "../Interfaces/authInterfaces.js";
+import { IAuthenticationController, IAuthenticationService, IAuthStrategy, IAuthentication, IExternalAuthenticationService, IExternalAuthentication, IOAuthUserInfo } from "../Interfaces/authInterfaces.js";
 import { IHttpAuthenticatedRequest, IHttpRequest, IHttpResponse, IHttpNext } from "../../interfaces/httpInterface.js";
 import AuthenticationService from "../services/authenticationService.js";
 import HttpError from "../../utils/customErrors/httpError.js";
-import {sendPasswordResetEmail} from "../../utils/mail/Email.js"
-import { IProfileService } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import { sendPasswordResetEmail } from "../../utils/mail/Email.js"
+import { IProfileService } from "../../_Autorizacao/Interfaces/profileInterfaces.js";
 import ExternalAuthenticationService from "../services/externalAuthenticationService.js";
 import { createOAuth2Strategy } from "../auth/oAuthFactoty.js";
 import { randomBytes } from "crypto";
-import ProfileService from "../../_Autorização/services/profileService.js";
+import ProfileService from "../../_Autorizacao/services/profileService.js";
 
 import dotenv from 'dotenv'
 import AuthRecoveryPasswordService from "../services/authRecoveryPasswordService.js";
 import Authentication from "../models/authenticationModel.js";
 dotenv.config()
 
-function generatePassword(length: number): string{
+function generatePassword(length: number): string {
     return randomBytes(length).toString('base64').slice(0, length)
 }
 
-async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<IOAuthUserInfo>{
+async function getUserInfoByCodeAndProvider(code: string, provider: string): Promise<IOAuthUserInfo> {
     const OAuth2Strategy = createOAuth2Strategy(provider)
 
     const accessToken = await OAuth2Strategy.getToken(code)
 
-    if(!accessToken){
+    if (!accessToken) {
         throw new HttpError(404, "Token de acesso não encontrado")
     }
 
     return await OAuth2Strategy.getUserInfo(accessToken)
 }
 
-class AuthenticationController implements IAuthenticationController{
+class AuthenticationController implements IAuthenticationController {
     private static instance: AuthenticationController;
     private authService: IAuthenticationService;
     private externalAuthService: IExternalAuthenticationService
     private authRecoveryService: AuthRecoveryPasswordService
     private authStrategy: IAuthStrategy;
     private profileService: IProfileService;
- 
+
     /**
      * The private constructor for the AuthenticationController.
      * It is private because only the getInstance method should be able to create an instance of this class.
@@ -62,9 +62,9 @@ class AuthenticationController implements IAuthenticationController{
     static getInstance(): AuthenticationController {
         if (!AuthenticationController.instance) {
             AuthenticationController.instance = new AuthenticationController();
-        }               
+        }
 
-        return AuthenticationController.instance; 
+        return AuthenticationController.instance;
     }
 
     /**
@@ -73,27 +73,27 @@ class AuthenticationController implements IAuthenticationController{
     async findAll(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const authentications = await this.authService.findAll();
-    
+
             if (authentications.length < 1) {
                 throw new HttpError(404, 'Authentications not found');
             }
-                        
+
             res.status(200).json(authentications);
         } catch (error: any) {
             next(error)
         }
     }
-    
+
     async findAllByAuthenticationId(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
 
             const authentications = await this.externalAuthService.findAllByAuthenticationId(id);
-    
+
             if (authentications.length < 1) {
                 throw new HttpError(404, 'Authentications not found');
             }
-                        
+
             res.status(200).json(authentications);
         } catch (error: any) {
             next(error)
@@ -109,7 +109,7 @@ class AuthenticationController implements IAuthenticationController{
 
             const user = await this.authService.findById(id!);
 
-            if(!user) {
+            if (!user) {
                 throw new HttpError(404, 'User not found');
             }
 
@@ -128,7 +128,7 @@ class AuthenticationController implements IAuthenticationController{
             const { id } = req.params;
 
             const auth = await this.authService.findById(id);
-            
+
             if (!auth) {
                 throw new HttpError(404, 'Authentication not found');
             }
@@ -145,16 +145,16 @@ class AuthenticationController implements IAuthenticationController{
     async createAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         let auth: IAuthentication | undefined
         try {
-            const { login, password }  = req.body;
+            const { login, password } = req.body;
 
             const authData = Authentication.create({
                 login,
                 passwordHash: password,
-            }) 
+            })
 
 
             auth = await this.authService.createStandartAuthentication(authData);
-        
+
             if (!auth) {
                 throw new HttpError(400, 'Authentication not created');
             }
@@ -179,19 +179,19 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async updateMyAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
+        try {
             const id = req.session?.auth?.id;
-            const {login} = req.body;
-            
+            const { login } = req.body;
+
             const authData: Partial<IAuthentication> = {
                 login,
             }
-            
+
             const updatedAuth = await this.authService.updateAuthentication(id!, authData);
 
             const { passwordHash, ...authSemSenha } = updatedAuth;
             res.status(200).json(authSemSenha);
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -200,15 +200,15 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async updateAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
-            const {id} = req.params;
-            const {login} = req.body;
+        try {
+            const { id } = req.params;
+            const { login } = req.body;
 
-            if(!id){
+            if (!id) {
                 throw new HttpError(400, 'Id is required');
             }
 
-            if(!login ){
+            if (!login) {
                 throw new HttpError(400, 'Login is required');
             }
 
@@ -218,7 +218,7 @@ class AuthenticationController implements IAuthenticationController{
 
             const updatedAuth = await this.authService.updateAuthentication(id, authData);
             res.status(200).json(updatedAuth);
-        }catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -227,17 +227,17 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async requestPasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
+        try {
             const { login } = req.body;
 
             const auth = await this.authService.findByLogin(login);
-            
+
             if (!auth) {
-               throw new HttpError(404, 'Authentication not found');
+                throw new HttpError(404, 'Authentication not found');
             }
 
             const token = await this.authRecoveryService.create(auth.id!);
-            
+
             const sent = await sendPasswordResetEmail(login, token)
 
             if (!sent) {
@@ -245,7 +245,7 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             res.status(204).send({})
-        }catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -254,39 +254,40 @@ class AuthenticationController implements IAuthenticationController{
      * Fase de testes
      */
     async updatePasswordReset(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
+        try {
             const { token } = req.query;
             const { password } = req.body;
 
             const authRecovery = await this.authRecoveryService.findByToken(token);
-            
-            if(!authRecovery) throw new HttpError(404, 'AuthenticationRecovery não encontrada');
-            
+
+            if (!authRecovery) throw new HttpError(404, 'AuthenticationRecovery não encontrada');
+
             const user = await this.authService.findById(authRecovery.authenticationId);
 
             if (!user) throw new HttpError(404, 'User not found');
 
-            if (!await this.authRecoveryService.isRecoveryTokenValid(user.id!, token)){;
+            if (!await this.authRecoveryService.isRecoveryTokenValid(user.id!, token)) {
+                ;
                 throw new HttpError(403, 'Token is not valid');
-            }   
+            }
 
             await this.authService.updatePassword(user.id!, password);
             res.status(204).json({})
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
-    
+
     /**
      * @inheritdoc
      */
     async deleteAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
+        try {
             const { id } = req.params;
             await this.authService.deleteAuthentication(id);
 
             res.status(204).json({});
-        }catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -295,9 +296,9 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async standartAuthenticate(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
+        try {
             const { login, password } = req.body;
-            
+
             const auth = await this.authService.authenticate(login, password);
 
             if (!auth) {
@@ -307,13 +308,13 @@ class AuthenticationController implements IAuthenticationController{
                 throw new HttpError(401, 'Authentication is not active');
             }
 
-            const tokenOrSessionId = await this.authStrategy.authenticate(req, {id: auth!.id}); 
+            const tokenOrSessionId = await this.authStrategy.authenticate(req, { id: auth!.id });
             if (!tokenOrSessionId) {
                 throw new HttpError(400, 'AuthStrategy Failed');
             }
 
-            res.status(200).json({tokenOrSessionId: tokenOrSessionId});
-        }catch(error: any){
+            res.status(200).json({ tokenOrSessionId: tokenOrSessionId });
+        } catch (error: any) {
             console.log(error)
             next(error)
         }
@@ -323,8 +324,8 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async updatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
-            const { oldPassword, newPassword} = req.body;
+        try {
+            const { oldPassword, newPassword } = req.body;
             const id = req.session?.auth?.id;
 
             if (!await this.authService.validatePassword(id!, oldPassword)) {
@@ -333,7 +334,7 @@ class AuthenticationController implements IAuthenticationController{
 
             await this.authService.updatePassword(id!, newPassword);
             res.status(204).json({});
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -342,8 +343,8 @@ class AuthenticationController implements IAuthenticationController{
      * @inheritdoc
      */
     async toggleAuthenticationStatus(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
-        try{
-            
+        try {
+
             const { id } = req.params;
             const { toggle } = req.query;
 
@@ -358,7 +359,7 @@ class AuthenticationController implements IAuthenticationController{
             }
 
             res.status(204).json({});
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -368,20 +369,20 @@ class AuthenticationController implements IAuthenticationController{
      */
     async validatePassword(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
-            const {password} = req.body;
+            const { password } = req.body;
             const id = req.session?.auth?.id;
 
             const valid = await this.authService.validatePassword(id!, password);
-            
+
             if (!valid) {
                 res.status(400).json({ message: 'Password invalid' });
                 return
-            } 
+            }
 
             res.status(200).json({ message: 'Password valid' });
         } catch (error: any) {
             next(error)
-        }       
+        }
     }
 
     /**
@@ -400,24 +401,24 @@ class AuthenticationController implements IAuthenticationController{
                 }
                 res.status(204).json({});
             });
-        }catch (error: any) {
+        } catch (error: any) {
             next(error)
         }
     }
 
-    
+
     async getProfilesByAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const { id } = req.params;
 
             const profiles = await this.authService.getProfilesByAuthenticationId(id);
-            
+
             if (!profiles || profiles.length === 0) {
                 throw new HttpError(404, 'Profiles not found');
             }
 
             res.status(200).json(profiles);
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -425,13 +426,13 @@ class AuthenticationController implements IAuthenticationController{
     // async createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
     //     try {
     //         const {provider, code} = req.body;
-        
+
     //         const cleanProvider = provider.toLowerCase().trim()
 
     //         let externalAuthentication: IExternalAuthentication
-            
+
     //         const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
-            
+
     //         let newAuth: Partial<IExternalAuthentication> = {
     //             external_id: userInfo.data!.id,
     //             email: userInfo.data!.email,
@@ -439,23 +440,23 @@ class AuthenticationController implements IAuthenticationController{
     //         }
 
     //         const authExist = await this.authService.findByLogin(userInfo.data!.email)
-            
+
     //         if(!authExist){
     //             const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
     //             if (!standartAuthentication){
     //                 throw new HttpError(400, "Erro ao criar autenticação tradicional")
     //             }
-                
+
     //             newAuth.authentication_id = standartAuthentication.id
     //         }else {
     //             newAuth.authentication_id = authExist.id
     //         }
     //         externalAuthentication = await this.externalAuthService.createExternalAuthentication(newAuth)
-            
+
     //         if(!externalAuthentication){
     //             throw new HttpError(400, "Erro ao criar autenticação")
     //         }
-                  
+
     //         res.status(201).json(externalAuthentication)
     //     } catch(error: any){
     //         next(error)
@@ -465,7 +466,7 @@ class AuthenticationController implements IAuthenticationController{
     async addExternalAuthToAuthentication(req: IHttpAuthenticatedRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         try {
             const id = req.session.auth!.id
-            const {provider, code} = req.body;
+            const { provider, code } = req.body;
 
             const userInfo = await getUserInfoByCodeAndProvider(code, provider)
 
@@ -478,12 +479,12 @@ class AuthenticationController implements IAuthenticationController{
 
             const externalAuthentication = await this.externalAuthService.addExternalToAuthentication(newAuth)
 
-            if(!externalAuthentication){
+            if (!externalAuthentication) {
                 throw new HttpError(400, "Erro ao criar autenticação")
             }
 
             res.status(201).json(externalAuthentication)
-        } catch(error: any){
+        } catch (error: any) {
             next(error)
         }
     }
@@ -493,17 +494,17 @@ class AuthenticationController implements IAuthenticationController{
     async authenticateExternal(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void> {
         let externalAuth: IExternalAuthentication | null
         try {
-            const {provider, code} = req.body;
-        
+            const { provider, code } = req.body;
+
             const cleanProvider = provider.toLowerCase().trim()
 
             const userInfo = await getUserInfoByCodeAndProvider(code, cleanProvider)
 
             externalAuth = await this.externalAuthService.findByExternalIdAndProvider(userInfo.data.id, cleanProvider)
-            
-            if(!externalAuth){
-                const standartAuthentication = await this.authService.createStandartAuthentication({login: userInfo.data.email, passwordHash: generatePassword(10)})
-                
+
+            if (!externalAuth) {
+                const standartAuthentication = await this.authService.createStandartAuthentication({ login: userInfo.data.email, passwordHash: generatePassword(10) })
+
                 let newAuth: Partial<IExternalAuthentication> = {
                     authentication_id: standartAuthentication.id,
                     external_id: userInfo.data!.id,
@@ -516,21 +517,21 @@ class AuthenticationController implements IAuthenticationController{
 
             const auth = await this.authService.findById(externalAuth!.authentication_id)
 
-            if(!auth){
+            if (!auth) {
                 throw new HttpError(404, "Autenticação nao encontrada")
             }
 
-            const tokenOrSessionId = await this.authStrategy.authenticate(req, {id: auth!.id}); 
-            
+            const tokenOrSessionId = await this.authStrategy.authenticate(req, { id: auth!.id });
+
             if (!tokenOrSessionId) {
                 throw new HttpError(400, 'AuthStrategy Failed');
             }
 
-            res.status(200).json({tokenOrSessionId: tokenOrSessionId});
-        } catch(error: any){
+            res.status(200).json({ tokenOrSessionId: tokenOrSessionId });
+        } catch (error: any) {
             next(error)
         }
     }
 }
-    
+
 export default AuthenticationController

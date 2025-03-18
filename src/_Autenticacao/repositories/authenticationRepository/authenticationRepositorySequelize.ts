@@ -4,7 +4,7 @@ import {
 } from "../../Interfaces/authInterfaces.js";
 import { models } from "../../../sequelize/models/index.js";
 import AuthenticationModelSequelize from "../../../sequelize/models/authenticationModelSequelize.js";
-import { IProfile } from "../../../_Autorização/Interfaces/profileInterfaces.js";
+import { IProfile } from "../../../_Autorizacao/Interfaces/profileInterfaces.js";
 import { Transaction } from "sequelize";
 import sequelize from "../../../../config/db.js";
 import ProfileModelSequelize from "../../../sequelize/models/profileModelSequelize.js";
@@ -42,7 +42,7 @@ class AuthenticationRepositorySequelize implements IAuthenticationRepository {
   /**
    * @inheritdoc
    */
-async findByLogin(
+  async findByLogin(
     login: string,
     options?: object
   ): Promise<IAuthentication | null> {

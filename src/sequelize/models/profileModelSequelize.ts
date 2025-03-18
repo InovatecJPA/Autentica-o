@@ -1,5 +1,5 @@
 import { Association, DataTypes, Model, Sequelize } from "sequelize";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import { IProfile } from "../../_Autorizacao/Interfaces/profileInterfaces.js";
 import AuthenticationModelSequelize from "./authenticationModelSequelize.js";
 
 

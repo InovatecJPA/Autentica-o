@@ -1,6 +1,6 @@
 import { IAppRouter } from "../../interfaces/appInterface.js";
 import { IHttpAuthenticatedRequest, IHttpNext, IHttpRequest, IHttpResponse } from "../../interfaces/httpInterface.js";
-import { IProfile } from "../../_Autorização/Interfaces/profileInterfaces.js";
+import { IProfile } from "../../_Autorizacao/Interfaces/profileInterfaces.js";
 
 /**
  * Interface de autenticação para definir os dados necessários para
@@ -81,7 +81,7 @@ export interface IAuthenticationRepository {
 /**
  * Interface para o serviço de autenticação
  */
-export interface IAuthenticationService  {
+export interface IAuthenticationService {
     /**
      * Encontra todas as autenticacoes no banco de dados.
      * @returns {Promise<IAuthentication[]>}
@@ -92,7 +92,7 @@ export interface IAuthenticationService  {
      * @param {string} id - Id da autenticação
      * @returns {Promise<IAuthentication | null>} Autenticação encontrada
      */
-    findById(id:string): Promise<IAuthentication | null>;
+    findById(id: string): Promise<IAuthentication | null>;
     /**
      * Encontra uma autenticação pelo seu login
      * @param {string} login - Login do usuário
@@ -191,7 +191,7 @@ export interface IExternalAuthenticationService {
     createExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
     updateExternalAuthentication(externalAuthentication: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
     deleteExternalAuthentication(id: string): Promise<void>;
-    addExternalToAuthentication({}:Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
+    addExternalToAuthentication({ }: Partial<IExternalAuthentication>): Promise<IExternalAuthentication>;
 }
 
 
@@ -323,7 +323,7 @@ export interface IAuthenticationController {
     //  * @param {IHttpNext} next - Proxima Função
     //  */
     // createExternalAuthentication(req: IHttpRequest, res: IHttpResponse, next: IHttpNext): Promise<void>;
-    
+
     /**
      * Login com autenticação externa
      * @param {IHttpRequest} req - Requisição Genérica
@@ -344,7 +344,7 @@ export interface IAuthenticationController {
 /**
  * Interface de rotas de autenticação
  */
-export interface IAuthenticationRouter{
+export interface IAuthenticationRouter {
     registerRoutes(basePath: string, app: IAppRouter): void;
 }
 
@@ -358,7 +358,7 @@ export interface IAuthStrategy {
      * @param {Partial<IAuthentication>} auth - Autenticação
      * @returns {Promise<string>} Retorna uma string com informações da autenticação
      */
-    authenticate(req: IHttpRequest,auth: Partial<IAuthentication>): Promise<string>;
+    authenticate(req: IHttpRequest, auth: Partial<IAuthentication>): Promise<string>;
     /**
      * Verifica se um token ou sessão existe e existe
      * @param {string} tokenOrSessionId - Token ou sessão
@@ -374,12 +374,12 @@ export interface IAuthStrategy {
 }
 
 export interface IOAuth2Strategy {
-    getToken(code: string): Promise<string>;   
+    getToken(code: string): Promise<string>;
     getUserInfo(token: string): Promise<IOAuthUserInfo>;
 }
 
-export interface IOAuthUserInfo{
-    data:{
+export interface IOAuthUserInfo {
+    data: {
         id: string,
         email: string
     }
